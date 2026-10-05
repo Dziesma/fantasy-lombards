@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keeper Līga – keeper rights</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --panel: #ffffff; --text: #1d1f21; --muted: #6b6f76;
+    --line: #e3e3df; --accent: #c2410c; --accent-soft: #fff1e8; --row-hover: #fafaf7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141517; --panel: #1c1d20; --text: #e8e8e6; --muted: #9a9ea6;
+      --line: #2c2e33; --accent: #fb923c; --accent-soft: #2a1d14; --row-hover: #222327;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 1100px; margin: 0 auto; padding: 28px 16px 60px; }
+  h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); margin: 0 0 20px; }
+  .sub code { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; }
+  .warn { background: var(--accent-soft); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 4px; margin-bottom: 18px; }
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  input, select {
+    font: inherit; color: var(--text); background: var(--panel);
+    border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px;
+  }
+  input { flex: 1 1 220px; }
+  select { flex: 0 1 280px; max-width: 100%; }
+  .summary { color: var(--muted); font-size: 14px; margin-bottom: 8px; }
+  .wrap { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+  table { border-collapse: collapse; width: 100%; min-width: 760px; }
+  th, td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted);
+       cursor: pointer; user-select: none; position: sticky; top: 0; background: var(--panel); }
+  th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  th[aria-sort="ascending"]::after { content: " ▲"; }
+  th[aria-sort="descending"]::after { content: " ▼"; }
+  tbody tr:hover { background: var(--row-hover); }
+  td.k1 { font-weight: 650; color: var(--accent); }
+  td.muted, .note { color: var(--muted); }
+  .note { font-size: 13px; white-space: normal; }
+  footer { margin-top: 22px; color: var(--muted); font-size: 13px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Keeper Līga: keeper rights</h1>
+  <p class="sub">Who holds each player's rights and what keeping them costs. Keeper price =
+    <code>ceil(max(base × 1.15, base + 5))</code> per season; base = max(draft price, FAB paid).</p>
+  <div id="warn" class="warn" hidden></div>
+  <div class="controls">
+    <input id="q" type="search" placeholder="Search player…" aria-label="Search player">
+    <select id="team" aria-label="Filter by team"><option value="">All teams</option></select>
+  </div>
+  <div id="summary" class="summary"></div>
+  <div class="wrap"><table>
+    <thead><tr id="head"></tr></thead>
+    <tbody id="body"></tbody>
+  </table></div>
+  <footer>Generated from the league's data files. Spot a mistake? Tell the GM who maintains the repo.</footer>
+</main>
+<script>
+const D = /*__DATA__*/null;
+const cols = [
+  { key: "player", label: "Player" },
+  { key: "pos", label: "Pos", cls: "muted" },
+  { key: "rights", label: "Rights", fmt: v => v || "free agent" },
+  { key: "draft_price", label: "Paid " + D.season, num: true, fmt: v => v === "" ? "undrafted" : "$" + v },
+  ...D.next.map((s, i) => ({ key: "keeper_" + s, label: (i === 0 ? "Keeper " : "") + s, num: true,
+                             fmt: v => "$" + v, cls: i === 0 ? "k1" : "" })),
+  { key: "notes", label: "Notes", cls: "note", sortable: false },
+];
+const rows = D.rows.map(r => {
+  const n = [];
+  if (r.fab_paid !== "") n.push("FAB $" + r.fab_paid);
+  if (r.drafted_by && r.drafted_by !== r.rights) n.push("drafted by " + r.drafted_by);
+  if (r.moves) n.push(r.moves);
+  return { ...r, notes: n.join(", ") };
+});
+const byTeam = Object.fromEntries(D.teams.map(t => [t.team, t]));
+let sortKey = "keeper_" + D.next[0], sortDir = -1;
+
+if (D.drafted < D.slots) {
+  const w = document.getElementById("warn");
+  w.hidden = false;
+  w.textContent = `Draft log incomplete: ${D.drafted} of ${D.slots} picks recorded so far.`;
+}
+const sel = document.getElementById("team");
+[...D.teams].sort((a, b) => a.team.localeCompare(b.team)).forEach(t => {
+  const o = document.createElement("option");
+  o.value = t.team; o.textContent = `${t.team} (${t.manager})`;
+  sel.append(o);
+});
+if (rows.some(r => !r.rights)) {
+  const o = document.createElement("option"); o.value = "__fa"; o.textContent = "Free agents"; sel.append(o);
+}
+
+const head = document.getElementById("head");
+cols.forEach(c => {
+  const th = document.createElement("th");
+  th.textContent = c.label;
+  if (c.num) th.className = "num";
+  if (c.sortable !== false) th.addEventListener("click", () => {
+    sortDir = sortKey === c.key ? -sortDir : (c.num ? -1 : 1);
+    sortKey = c.key; render();
+  });
+  c.th = th; head.append(th);
+});
+
+function cmp(a, b) {
+  const x = a[sortKey], y = b[sortKey];
+  const xe = x === "" || x == null, ye = y === "" || y == null;
+  if (xe || ye) return xe - ye;
+  return (typeof x === "number" ? x - y : String(x).localeCompare(String(y))) * sortDir;
+}
+
+function render() {
+  const q = document.getElementById("q").value.trim().toLowerCase();
+  const t = sel.value;
+  const list = rows.filter(r =>
+    (!q || r.player.toLowerCase().includes(q)) &&
+    (!t || (t === "__fa" ? !r.rights : r.rights === t))
+  ).sort(cmp);
+  cols.forEach(c => c.th.setAttribute("aria-sort",
+    c.key === sortKey ? (sortDir > 0 ? "ascending" : "descending") : "none"));
+  const body = document.getElementById("body");
+  body.replaceChildren(...list.map(r => {
+    const tr = document.createElement("tr");
+    cols.forEach(c => {
+      const td = document.createElement("td");
+      td.textContent = c.fmt ? c.fmt(r[c.key]) : r[c.key];
+      td.className = [c.num ? "num" : "", c.cls || ""].join(" ").trim();
+      tr.append(td);
+    });
+    return tr;
+  }));
+  const s = document.getElementById("summary");
+  if (t && t !== "__fa") {
+    const k = list.reduce((a, r) => a + r["keeper_" + D.next[0]], 0);
+    const tm = byTeam[t];
+    s.textContent = `${tm.manager} · ${list.length} players · ${D.next[0]} keeper cost if all kept: $${k} (budget $${tm.budget})`;
+  } else {
+    s.textContent = `${list.length} players`;
+  }
+}
+document.getElementById("q").addEventListener("input", render);
+sel.addEventListener("change", render);
+render();
+</script>
+</body>
+</html>
