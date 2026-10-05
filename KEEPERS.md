@@ -17,7 +17,7 @@ Draft picks recorded: **208 / 208**.
 | [G League Team](#g-league-team) | Guntars | 13 | $200 | $200 |
 | [Gustava Soliņu Sildītāji](#gustava-soliņu-sildītāji) | Gustavs | 13 | $200 | $200 |
 | [Hole of Fame](#hole-of-fame) | Ingars | 13 | $197 | $200 |
-| [Juglas Brīvmākslinieki](#juglas-brīvmākslinieki) | Toms | 13 | $202 | $200 |
+| [Juglas Brīvmākslinieki](#juglas-brīvmākslinieki) | Toms | 13 | $200 | $200 |
 | [Klāva Varenā Pīle](#klāva-varenā-pīle) | Klavs | 13 | $200 | $200 |
 | [Maris STOPIŅU TURTLES](#maris-stopiņu-turtles) | Maris | 13 | $200 | $200 |
 | [MJ Liepupes Bebri](#mj-liepupes-bebri) | Mikus | 13 | $197 | $200 |
@@ -188,14 +188,14 @@ Manager: Ingars · 13 players · total 2027-28 keeper cost if all kept: $264 (bu
 
 ## Juglas Brīvmākslinieki
 
-Manager: Toms · 13 players · total 2027-28 keeper cost if all kept: $270 (budget $200)
+Manager: Toms · 13 players · total 2027-28 keeper cost if all kept: $268 (budget $200)
 
 | Player | NBA | Pos | Paid 2026-27 | Keeper 2027-28 | 2028-29 | 2029-30 | Notes |
 |---|---|---|---:|---:|---:|---:|---|
 | Stephen Curry | GSW | PG | $38 | **$44** | $51 | $59 |  |
 | Bam Adebayo | MIA | PF/C | $37 | **$43** | $50 | $58 |  |
 | Chet Holmgren | OKC | PF/C | $34 | **$40** | $46 | $53 |  |
-| De'Aaron Fox | SAS | PG | $18 | **$23** | $28 | $33 |  |
+| De'Aaron Fox | SAS | PG | $16 | **$21** | $26 | $31 |  |
 | Payton Pritchard | BOS | PG | $16 | **$21** | $26 | $31 |  |
 | Brandon Ingram | LAC | SG/SF/PF | $15 | **$20** | $25 | $30 |  |
 | Kristaps Porziņģis | GSW | C | $15 | **$20** | $25 | $30 |  |
@@ -404,7 +404,7 @@ Manager: Toms (2) · 13 players · total 2027-28 keeper cost if all kept: $266 (
 | Darryn Peterson | UTA | SG | Toma Violent Monkeys | $14 | **$19** | $24 | $29 |  |
 | Davion Mitchell | MIA | PG | Bukaišu Svelme | $4 | **$9** | $14 | $19 |  |
 | Day'Ron Sharpe | BKN | C | Dataigars | $8 | **$13** | $18 | $23 |  |
-| De'Aaron Fox | SAS | PG | Juglas Brīvmākslinieki | $18 | **$23** | $28 | $33 |  |
+| De'Aaron Fox | SAS | PG | Juglas Brīvmākslinieki | $16 | **$21** | $26 | $31 |  |
 | DeMar DeRozan | DEN | SF/PF | DzintarSkibidi | $5 | **$10** | $15 | $20 |  |
 | Deandre Ayton | WAS | C | G League Team | $1 | **$6** | $11 | $16 |  |
 | Dejounte Murray | NOP | PG | ReinAss Team | $20 | **$25** | $30 | $35 |  |
