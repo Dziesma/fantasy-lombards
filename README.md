@@ -1,7 +1,8 @@
-# Keeper Līga: keeper rights tracker
+# Fantasy Lombards
 
-A shared reference for our 16-team Yahoo NBA keeper league. For every player drafted (or picked up),
-it shows:
+The keeper-rights tracker for our 16-team Yahoo NBA keeper league. Think of it as a pawnshop: every player
+bought at the auction can be bought back next season, with interest. For every player drafted (or picked
+up), it shows:
 
 - what was paid for them in the 2026-27 auction (or FAB),
 - what keeping them costs in 2027-28, 2028-29 and 2029-30,
@@ -11,7 +12,7 @@ it shows:
 
 - **[KEEPERS.md](KEEPERS.md)**: tables per team plus an A–Z list (renders on GitHub).
 - **Website** (`docs/index.html`): searchable and sortable, with a team filter. Once GitHub Pages is
-  enabled it's at `https://<user>.github.io/<repo>/`.
+  enabled it's at `https://<user>.github.io/fantasy-lombards/`.
 - **[rights.csv](rights.csv)**: the same data for spreadsheets.
 
 > **Status:** the 2026 draft log is still incomplete (130 of 208 picks). The remaining picks will be added.
@@ -67,7 +68,7 @@ up red.
 
 ## Hosting on GitHub
 
-1. Create an empty repo on GitHub, then:
-   `git remote add origin git@github.com:<user>/<repo>.git && git push -u origin main`
+1. Create an empty repo named `fantasy-lombards` on GitHub, then:
+   `git remote add origin git@github.com:<user>/fantasy-lombards.git && git push -u origin main`
 2. Settings → Pages → *Deploy from a branch* → `main` / `/docs`.
 3. Optionally, add league members as collaborators so they can open PRs with corrections.
