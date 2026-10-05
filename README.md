@@ -15,8 +15,6 @@ up), it shows:
   push to `main`, at `https://<user>.github.io/fantasy-lombards/`.
 - **[rights.csv](rights.csv)**: the same data for spreadsheets.
 
-> **Status:** the 2026 draft log is still incomplete (130 of 208 picks). The remaining picks will be added.
-
 ## Keeper rules used here
 
 | Rule | Implementation |
@@ -36,7 +34,7 @@ Only edit the files in `data/`. Everything else is generated.
 | File | What goes in it |
 |---|---|
 | `data/teams.csv` | team name ↔ manager |
-| `data/draft_2026.csv` | one row per auction pick: `pick,player,pos,team,price` |
+| `data/draft_2026.csv` | Yahoo draft results, one row per pick: `pick,player,nba_team,pos,team,price` |
 | `data/transactions.csv` | in-season moves that change rights (see below) |
 | `data/budget_trades.csv` | traded draft dollars: `date,from_team,to_team,amount,note` |
 

@@ -1,131 +1,209 @@
-pick,player,pos,team,price
-1,Karl-Anthony Towns,PF/C,BK Zalve-Polýkarpos,46
-2,Stephon Castle,PG/SG,BK Zalve-Polýkarpos,25
-3,Tyrese Maxey,PG,Bukaišu Svelme,55
-4,LeBron James,SF/PF,Maris STOPIŅU TURTLES,22
-5,Matas Buzelis,SF/PF,TaigarEni,28
-6,Victor Wembanyama,C,G League Team,87
-7,Jaylen Brown,SG/SF/PF,BK Zalve-Polýkarpos,33
-8,Kawhi Leonard,SG/SF/PF,Gustava Soliņu Sildītāji,30
-9,Luka Doncic,PG/SG,Klāva Varenā Pīle,82
-10,LaMelo Ball,PG,BK Zalve-Polýkarpos,40
-11,Keaton Wagler,SG,Maris STOPIŅU TURTLES,11
-12,Nikola Jokic,C,Raita 'Būs Sūdi',83
-13,Shai Gilgeous-Alexander,PG,BK 'Vārnu ielas republika',77
-14,Giannis Antetokounmpo,PF/C,Maris STOPIŅU TURTLES,63
-15,Jayson Tatum,SF/PF,MJ Liepupes Bebri,56
-16,Kevin Durant,SG/SF/PF,Dataigars,47
-17,Josh Hart,SG/SF,Gustava Soliņu Sildītāji,16
-18,Cooper Flagg,SG/SF/PF,TaigarEni,57
-19,Stephen Curry,PG,Juglas Brīvmākslinieki,38
-20,Lauri Markkanen,SF/PF,BK Zalve-Polýkarpos,38
-21,Zach Edey,C,Gustava Soliņu Sildītāji,15
-22,Anthony Edwards,PG/SG,Raita 'Būs Sūdi',50
-23,Jalen Johnson,SF/PF,BK 'Vārnu ielas republika',46
-24,Paolo Banchero,PF,Maris STOPIŅU TURTLES,31
-25,Trae Young,PG,Maris STOPIŅU TURTLES,27
-26,Kristaps Porzingis,C,Juglas Brīvmākslinieki,15
-27,Kingston Flemings,PG,Juglas Brīvmākslinieki,7
-28,Cade Cunningham,PG/SG,DzintarSkibidi,54
-29,Tyrese Haliburton,PG/SG,ReinAss Team,46
-30,Zion Williamson,PF/C,Toma Violent Monkeys,17
-31,Jalen Brunson,PG,Toma Violent Monkeys,38
-32,Franz Wagner,SF/PF,Toma Violent Monkeys,29
-33,Joel Embiid,C,Toma Violent Monkeys,25
-34,Anthony Davis,PF/C,Bukaišu Svelme,30
-35,Domantas Sabonis,PF/C,Bukaišu Svelme,32
-36,Jarrett Allen,C,Gustava Soliņu Sildītāji,16
-37,Kyrie Irving,PG,Hole of Fame,28
-38,Donovan Mitchell,PG/SG,Hole of Fame,40
-39,Jamal Murray,PG,Hole of Fame,39
-40,Bam Adebayo,PF/C,Juglas Brīvmākslinieki,37
-41,Khaman Maluach,C,Maris STOPIŅU TURTLES,10
-42,Austin Reaves,PG/SG/SF,DzintarSkibidi,36
-43,Aday Mara,C,Juglas Brīvmākslinieki,7
-44,Scottie Barnes,SF/PF/C,DzintarSkibidi,38
-45,Alperen Sengün,PF/C,Klāva Varenā Pīle,36
-46,Pascal Siakam,PF/C,TaigarEni,27
-47,Josh Giddey,PG/SG,ReinAss Team,36
-48,Derrick White,PG/SG,Dataigars,30
-49,Devin Booker,PG/SG,MJ Liepupes Bebri,31
-50,Chet Holmgren,PF/C,Juglas Brīvmākslinieki,34
-51,Immanuel Quickley,PG/SG,Gustava Soliņu Sildītāji,19
-52,VJ Edgecombe,PG/SG,G League Team,20
-53,Rudy Gobert,C,Toma Violent Monkeys,14
-54,Jalen Duren,C,MJ Liepupes Bebri,24
-55,James Harden,PG/SG,ReinAss Team,27
-56,Dejounte Murray,PG,ReinAss Team,20
-57,Cedric Coward,SG/SF,TaigarEni,12
-58,Amen Thompson,PG/SG,Klāva Varenā Pīle,30
-59,Dailyn Swain,SF,Juglas Brīvmākslinieki,6
-60,Jalen Williams,SF/PF,BK 'Vārnu ielas republika',25
-61,Trey Murphy III,SG/SF,G League Team,33
-62,Ja Morant,PG,Toma Violent Monkeys,11
-63,Evan Mobley,PF/C,Bukaišu Svelme,27
-64,Donovan Clingan,C,Hole of Fame,25
-65,Desmond Bane,SG/SF,Bukaišu Svelme,22
-66,Walker Kessler,C,TaigarEni,24
-67,Scoot Henderson,PG,Toma Violent Monkeys,6
-68,Jusuf Nurkic,C,ReinAss Team,10
-69,Jalen Suggs,PG/SG,Gustava Soliņu Sildītāji,12
-70,Jaren Jackson Jr.,PF/C,Dataigars,25
-71,Kon Knueppel,SG/SF,Raita 'Būs Sūdi',24
-72,Deni Avdija,SG/SF/PF,Raita 'Būs Sūdi',25
-73,Christian Braun,SG/SF/PF,Maris STOPIŅU TURTLES,8
-74,Brandon Miller,SF/PF,Dataigars,25
-75,Hannes Steinbach,PF,Juglas Brīvmākslinieki,4
-76,Michael Porter Jr.,SF/PF,G League Team,24
-77,Keyonte George,PG/SG,Dataigars,27
-78,Coby White,PG/SG,TaigarEni,17
-79,Cameron Boozer,PF,DzintarSkibidi,26
-80,Naz Reid,PF/C,Gustava Soliņu Sildītāji,19
-81,Julius Randle,PF,Toma Violent Monkeys,15
-82,Onyeka Okongwu,C,ReinAss Team,22
-83,Damian Lillard,PG,Gustava Soliņu Sildītāji,17
-84,Paul George,SF/PF,Bukaišu Svelme,15
-85,Fred VanVleet,PG,G League Team,10
-86,AJ Dybantsa,SF,Toma Violent Monkeys,21
-87,OG Anunoby,SF/PF,Gustava Soliņu Sildītāji,20
-88,Darius Garland,PG,TaigarEni,23
-89,Scotty Pippen Jr.,PG,Maris STOPIŅU TURTLES,7
-90,Nickeil Alexander-Walker,PG/SG,MJ Liepupes Bebri,16
-91,Karim Lopez,SF,Juglas Brīvmākslinieki,2
-92,De'Aaron Fox,PG,Juglas Brīvmākslinieki,16
-93,Payton Pritchard,PG,Juglas Brīvmākslinieki,16
-94,Jaime Jaquez Jr.,SG/SF/PF,Toma Violent Monkeys,6
-95,Ivica Zubac,C,MJ Liepupes Bebri,17
-96,Ryan Rollins,PG/SG,Dataigars,16
-97,Brandon Ingram,SG/SF/PF,Juglas Brīvmākslinieki,15
-98,Jimmy Butler III,SF/PF,Gustava Soliņu Sildītāji,7
-99,DeMar DeRozan,SF/PF,DzintarSkibidi,5
-100,Tyler Herro,PG/SG,Klāva Varenā Pīle,17
-101,Mikal Bridges,SF/PF,Hole of Fame,17
-102,Darryn Peterson,SG,Toma Violent Monkeys,14
-103,Alexandre Sarr,C,Hole of Fame,15
-104,Tre Jones,PG/SG,Bukaišu Svelme,6
-105,Andrew Wiggins,SG/SF/PF,MJ Liepupes Bebri,10
-106,Jakob Poeltl,C,BK 'Vārnu ielas republika',9
-107,Brayden Burries,SG,BK 'Vārnu ielas republika',4
-108,Derik Queen,PF/C,DzintarSkibidi,10
-109,Zach LaVine,PG/SG/SF,Maris STOPIŅU TURTLES,10
-110,Andrew Nembhard,PG/SG,BK Zalve-Polýkarpos,7
-111,Nikola Vucevic,C,ReinAss Team,6
-112,Ty Jerome,PG/SG,Gustava Soliņu Sildītāji,10
-113,Tobias Harris,PF,BK 'Vārnu ielas republika',4
-114,Jaden McDaniels,SF,MJ Liepupes Bebri,16
-115,Nicolas Claxton,C,Raita 'Būs Sūdi',6
-116,Kel'el Ware,C,BK 'Vārnu ielas republika',18
-117,Dyson Daniels,SG/SF,DzintarSkibidi,21
-118,Caleb Wilson,PF,Hole of Fame,19
-119,Brandin Podziemski,PG/SG,Gustava Soliņu Sildītāji,8
-120,Darius Acuff Jr.,PG,MJ Liepupes Bebri,8
-121,Isaiah Hartenstein,C,G League Team,7
-122,Norman Powell,SG/SF,Klāva Varenā Pīle,8
-123,Nate Ament,SF,Juglas Brīvmākslinieki,3
-124,Peyton Watson,SF/PF,ReinAss Team,7
-125,CJ McCollum,PG/SG,Raita 'Būs Sūdi',5
-126,Day'Ron Sharpe,C,Dataigars,8
-127,Ausar Thompson,SG/SF/PF,ReinAss Team,10
-128,Jabari Smith Jr.,PF/C,G League Team,6
-129,Grayson Allen,SG/SF,ReinAss Team,4
-130,Dylan Harper,PG/SG,Gustava Soliņu Sildītāji,11
+pick,player,nba_team,pos,team,price
+1,Cade Cunningham,DET,PG/SG,DzintarSkibidi,54
+2,Shai Gilgeous-Alexander,OKC,PG,BK 'Vārnu ielas republika',77
+3,Karl-Anthony Towns,NYK,PF/C,BK Zalve-Polýkarpos,46
+4,Tyrese Maxey,PHI,PG,Bukaišu Svelme,55
+5,Kevin Durant,HOU,SG/SF/PF,Dataigars,47
+6,Victor Wembanyama,SAS,C,G League Team,87
+7,Kawhi Leonard,TOR,SG/SF/PF,Gustava Soliņu Sildītāji,30
+8,Kyrie Irving,DAL,PG,Hole of Fame,28
+9,Stephen Curry,GSW,PG,Juglas Brīvmākslinieki,38
+10,Luka Dončić,LAL,PG/SG,Klāva Varenā Pīle,82
+11,LeBron James,PHI,SF/PF,Maris STOPIŅU TURTLES,22
+12,Jayson Tatum,BOS,SF/PF,MJ Liepupes Bebri,56
+13,Nikola Jokić,DEN,C,Raita 'Būs Sūdi',83
+14,Tyrese Haliburton,IND,PG/SG,ReinAss Team,46
+15,Matas Buzelis,CHI,SF/PF,TaigarEni,28
+16,Zion Williamson,NOP,PF/C,Toma Violent Monkeys,17
+17,Austin Reaves,LAL,PG/SG/SF,DzintarSkibidi,36
+18,Jalen Johnson,ATL,SF/PF,BK 'Vārnu ielas republika',46
+19,Stephon Castle,SAS,PG/SG,BK Zalve-Polýkarpos,25
+20,Anthony Davis,WAS,PF/C,Bukaišu Svelme,30
+21,Derrick White,BOS,PG/SG,Dataigars,30
+22,VJ Edgecombe,PHI,PG/SG,G League Team,20
+23,Josh Hart,NYK,SG/SF,Gustava Soliņu Sildītāji,16
+24,Donovan Mitchell,CLE,PG/SG,Hole of Fame,40
+25,Kristaps Porziņģis,GSW,C,Juglas Brīvmākslinieki,15
+26,Alperen Şengün,HOU,PF/C,Klāva Varenā Pīle,36
+27,Keaton Wagler,LAC,SG,Maris STOPIŅU TURTLES,11
+28,Devin Booker,PHX,PG/SG,MJ Liepupes Bebri,31
+29,Anthony Edwards,MIN,PG/SG,Raita 'Būs Sūdi',50
+30,Josh Giddey,CHI,PG/SG,ReinAss Team,36
+31,Cooper Flagg,DAL,SG/SF/PF,TaigarEni,57
+32,Jalen Brunson,NYK,PG,Toma Violent Monkeys,38
+33,DeMar DeRozan,DEN,SF/PF,DzintarSkibidi,5
+34,Jalen Williams,OKC,SF/PF,BK 'Vārnu ielas republika',25
+35,Jaylen Brown,PHI,SG/SF/PF,BK Zalve-Polýkarpos,33
+36,Domantas Sabonis,SAC,PF/C,Bukaišu Svelme,32
+37,Jaren Jackson Jr.,UTA,PF/C,Dataigars,25
+38,Trey Murphy III,NOP,SG/SF,G League Team,33
+39,Zach Edey,MEM,C,Gustava Soliņu Sildītāji,15
+40,Jamal Murray,DEN,PG,Hole of Fame,39
+41,Kingston Flemings,ATL,PG,Juglas Brīvmākslinieki,7
+42,Amen Thompson,HOU,PG/SG,Klāva Varenā Pīle,30
+43,Giannis Antetokounmpo,MIA,PF/C,Maris STOPIŅU TURTLES,63
+44,Jalen Duren,DET,C,MJ Liepupes Bebri,24
+45,Kon Knueppel,CHA,SG/SF,Raita 'Būs Sūdi',24
+46,James Harden,CLE,PG/SG,ReinAss Team,27
+47,Pascal Siakam,IND,PF/C,TaigarEni,27
+48,Joel Embiid,PHI,C,Toma Violent Monkeys,25
+49,Scottie Barnes,TOR,SF/PF/C,DzintarSkibidi,38
+50,Jakob Poeltl,TOR,C,BK 'Vārnu ielas republika',9
+51,LaMelo Ball,MIN,PG,BK Zalve-Polýkarpos,40
+52,Evan Mobley,CLE,PF/C,Bukaišu Svelme,27
+53,Brandon Miller,CHA,SF/PF,Dataigars,25
+54,Michael Porter Jr.,BKN,SF/PF,G League Team,24
+55,Jarrett Allen,CLE,C,Gustava Soliņu Sildītāji,16
+56,Donovan Clingan,POR,C,Hole of Fame,25
+57,Bam Adebayo,MIA,PF/C,Juglas Brīvmākslinieki,37
+58,Tyler Herro,MIL,PG/SG,Klāva Varenā Pīle,17
+59,Paolo Banchero,ORL,PF,Maris STOPIŅU TURTLES,31
+60,Nickeil Alexander-Walker,ATL,PG/SG,MJ Liepupes Bebri,16
+61,Deni Avdija,POR,SG/SF/PF,Raita 'Būs Sūdi',25
+62,Dejounte Murray,NOP,PG,ReinAss Team,20
+63,Cedric Coward,MEM,SG/SF,TaigarEni,12
+64,Franz Wagner,ORL,SF/PF,Toma Violent Monkeys,29
+65,Cameron Boozer,MEM,PF,DzintarSkibidi,26
+66,Brayden Burries,MIL,SG,BK 'Vārnu ielas republika',4
+67,Lauri Markkanen,UTA,SF/PF,BK Zalve-Polýkarpos,38
+68,Desmond Bane,ORL,SG/SF,Bukaišu Svelme,22
+69,Keyonte George,UTA,PG/SG,Dataigars,27
+70,Fred VanVleet,HOU,PG,G League Team,10
+71,Immanuel Quickley,TOR,PG/SG,Gustava Soliņu Sildītāji,19
+72,Mikal Bridges,NYK,SF/PF,Hole of Fame,17
+73,Aday Mara,OKC,C,Juglas Brīvmākslinieki,7
+74,Norman Powell,CHI,SG/SF,Klāva Varenā Pīle,8
+75,Trae Young,WAS,PG,Maris STOPIŅU TURTLES,27
+76,Ivica Zubac,IND,C,MJ Liepupes Bebri,17
+77,Nic Claxton,CHI,C,Raita 'Būs Sūdi',6
+78,Jusuf Nurkić,UTA,C,ReinAss Team,10
+79,Walker Kessler,LAL,C,TaigarEni,24
+80,Rudy Gobert,MIN,C,Toma Violent Monkeys,14
+81,Dyson Daniels,ATL,SG/SF,DzintarSkibidi,21
+82,Tobias Harris,SAS,PF,BK 'Vārnu ielas republika',4
+83,Andrew Nembhard,IND,PG/SG,BK Zalve-Polýkarpos,7
+84,Paul George,BOS,SF/PF,Bukaišu Svelme,15
+85,Ryan Rollins,MIL,PG/SG,Dataigars,16
+86,Isaiah Hartenstein,OKC,C,G League Team,7
+87,Jalen Suggs,ORL,PG/SG,Gustava Soliņu Sildītāji,12
+88,Alex Sarr,WAS,C,Hole of Fame,15
+89,Chet Holmgren,OKC,PF/C,Juglas Brīvmākslinieki,34
+90,Jalen Green,PHX,SG/SF,Klāva Varenā Pīle,8
+91,Khaman Maluach,PHX,C,Maris STOPIŅU TURTLES,10
+92,Andrew Wiggins,MIA,SG/SF/PF,MJ Liepupes Bebri,10
+93,CJ McCollum,ATL,PG/SG,Raita 'Būs Sūdi',5
+94,Onyeka Okongwu,ATL,C,ReinAss Team,22
+95,Coby White,CHA,PG/SG,TaigarEni,17
+96,Ja Morant,POR,PG,Toma Violent Monkeys,11
+97,Derik Queen,NOP,PF/C,DzintarSkibidi,10
+98,Kel'el Ware,MIL,C,BK 'Vārnu ielas republika',18
+99,Ace Bailey,UTA,SF/PF,BK Zalve-Polýkarpos,3
+100,Tre Jones,CHI,PG/SG,Bukaišu Svelme,6
+101,Day'Ron Sharpe,BKN,C,Dataigars,8
+102,Jabari Smith Jr.,HOU,PF/C,G League Team,6
+103,Naz Reid,CHA,PF/C,Gustava Soliņu Sildītāji,19
+104,Caleb Wilson,CHI,PF,Hole of Fame,19
+105,Dailyn Swain,CHI,SF,Juglas Brīvmākslinieki,6
+106,Myles Turner,MIL,C,Klāva Varenā Pīle,10
+107,Christian Braun,DEN,SG/SF/PF,Maris STOPIŅU TURTLES,8
+108,Jaden McDaniels,MIN,SF,MJ Liepupes Bebri,16
+109,Aaron Nesmith,IND,SG/SF,Raita 'Būs Sūdi',1
+110,Nikola Vučević,ORL,C,ReinAss Team,6
+111,Darius Garland,LAC,PG,TaigarEni,23
+112,Scoot Henderson,POR,PG,Toma Violent Monkeys,6
+113,John Collins,DET,PF/C,DzintarSkibidi,4
+114,Herbert Jones,NOP,SG/SF,BK 'Vārnu ielas republika',5
+115,RJ Barrett,TOR,SG/SF/PF,BK Zalve-Polýkarpos,3
+116,Davion Mitchell,MIA,PG,Bukaišu Svelme,4
+117,Toumani Camara,POR,SF/PF,Dataigars,7
+118,Miles Bridges,PHX,PF,G League Team,6
+119,Damian Lillard,POR,PG,Gustava Soliņu Sildītāji,17
+120,Neemias Queta,BOS,C,Hole of Fame,4
+121,Hannes Steinbach,CHA,PF,Juglas Brīvmākslinieki,4
+122,Aaron Gordon,DEN,PF/C,Klāva Varenā Pīle,4
+123,Scotty Pippen Jr.,MEM,PG,Maris STOPIŅU TURTLES,7
+124,Darius Acuff Jr.,SAC,PG,MJ Liepupes Bebri,8
+125,Bennedict Mathurin,NOP,SG/SF,Raita 'Būs Sūdi',1
+126,Peyton Watson,CLE,SF/PF,ReinAss Team,7
+127,Jeremiah Fears,NOP,PG/SG,TaigarEni,5
+128,Julius Randle,BKN,PF,Toma Violent Monkeys,15
+129,Maxime Raynaud,SAC,C,DzintarSkibidi,2
+130,Sandro Mamukelashvili,LAL,PF/C,BK 'Vārnu ielas republika',1
+131,Moussa Diabaté,CHA,C,BK Zalve-Polýkarpos,1
+132,Kevin Porter Jr.,MIL,PG/SG,Bukaišu Svelme,4
+133,Rui Hachimura,LAC,SF/PF,Dataigars,4
+134,Bez Mbeng,MIA,PG/SG,G League Team,1
+135,OG Anunoby,NYK,SF/PF,Gustava Soliņu Sildītāji,20
+136,Yaxel Lendeborg,GSW,PF,Hole of Fame,6
+137,Karim Lopez,MEM,SF,Juglas Brīvmākslinieki,2
+138,Draymond Green,GSW,PF/C,Klāva Varenā Pīle,1
+139,Zach LaVine,SAC,PG/SG/SF,Maris STOPIŅU TURTLES,10
+140,Keegan Murray,SAC,SF/PF,MJ Liepupes Bebri,7
+141,Shaedon Sharpe,POR,PG/SG,Raita 'Būs Sūdi',1
+142,Ausar Thompson,DET,SG/SF/PF,ReinAss Team,10
+143,Jerami Grant,MEM,SF/PF,TaigarEni,2
+144,AJ Dybantsa,WAS,SF,Toma Violent Monkeys,21
+145,Anthony Black,ORL,PG/SG/SF,DzintarSkibidi,1
+146,Cameron Johnson,DEN,SF/PF,BK 'Vārnu ielas republika',4
+147,Yves Missi,NOP,C,BK Zalve-Polýkarpos,1
+148,P.J. Washington,DAL,PF/C,Bukaišu Svelme,2
+149,Kyshawn George,WAS,SG/SF/PF,Dataigars,5
+150,Collin Gillespie,PHX,PG/SG,G League Team,3
+151,Jimmy Butler III,GSW,SF/PF,Gustava Soliņu Sildītāji,7
+152,Mikel Brown Jr.,BKN,PG,Hole of Fame,1
+153,De'Aaron Fox,SAS,PG,Juglas Brīvmākslinieki,18
+154,Daniel Gafford,DAL,C,Klāva Varenā Pīle,1
+155,Ayo Dosunmu,MIN,PG/SG,Maris STOPIŅU TURTLES,5
+156,Collin Murray-Boyles,TOR,PF/C,MJ Liepupes Bebri,3
+157,Jordan Poole,NOP,PG/SG,Raita 'Būs Sūdi',1
+158,Grayson Allen,CHA,SG/SF,ReinAss Team,4
+159,Santi Aldama,DAL,PF,TaigarEni,2
+160,Jaime Jaquez Jr.,MIL,SG/SF/PF,Toma Violent Monkeys,6
+161,Joan Beringer,MIN,PF/C,DzintarSkibidi,1
+162,Cason Wallace,OKC,PG/SG/SF,BK 'Vārnu ielas republika',3
+163,Max Strus,LAC,SF/PF,BK Zalve-Polýkarpos,1
+164,Daniss Jenkins,DET,PG/SG,Bukaišu Svelme,1
+165,Sam Hauser,BOS,SF/PF,Dataigars,2
+166,Dereck Lively II,DAL,C,G League Team,1
+167,Ty Jerome,MEM,PG/SG,Gustava Soliņu Sildītāji,10
+168,Morez Johnson Jr.,DAL,PF,Hole of Fame,1
+169,Payton Pritchard,BOS,PG,Juglas Brīvmākslinieki,16
+170,Derrick Jones Jr.,LAC,SF/PF,Klāva Varenā Pīle,1
+171,Wendell Carter Jr.,ORL,C,Maris STOPIŅU TURTLES,4
+172,Devin Vassell,SAS,SG/SF,MJ Liepupes Bebri,3
+173,Ryan Kalkbrenner,CHA,C,Raita 'Būs Sūdi',1
+174,Reed Sheppard,HOU,PG/SG,ReinAss Team,7
+175,Paul Reed,DET,PF/C,TaigarEni,1
+176,Darryn Peterson,UTA,SG,Toma Violent Monkeys,14
+177,Pelle Larsson,MIA,SG/SF,DzintarSkibidi,1
+178,Julian Champagnie,SAS,SF/PF,BK 'Vārnu ielas republika',3
+179,Isaiah Stewart,MEM,PF/C,BK Zalve-Polýkarpos,1
+180,Aaron Wiggins,ATL,SG/SF,Bukaišu Svelme,1
+181,Jrue Holiday,POR,PG/SG,Dataigars,3
+182,Bilal Coulibaly,WAS,SG/SF,G League Team,1
+183,Brandin Podziemski,GSW,PG/SG,Gustava Soliņu Sildītāji,8
+184,Jaylon Tyson,CLE,SG/SF/PF,Hole of Fame,1
+185,Brandon Ingram,LAC,SG/SF/PF,Juglas Brīvmākslinieki,15
+186,Zaccharie Risacher,DAL,SF/PF,Klāva Varenā Pīle,1
+187,Tari Eason,HOU,SG/SF/PF,Maris STOPIŅU TURTLES,1
+188,Ajay Mitchell,OKC,PG/SG,MJ Liepupes Bebri,4
+189,Anfernee Simons,PHI,PG/SG,Raita 'Būs Sūdi',1
+190,Saddiq Bey,NOP,SF/PF,ReinAss Team,3
+191,Bobby Portis Jr.,MIA,PF/C,TaigarEni,1
+192,Bennett Stirtz,OKC,PG,Toma Violent Monkeys,1
+193,Max Christie,DAL,SG/SF,DzintarSkibidi,1
+194,Miles McBride,NYK,PG/SG,BK 'Vārnu ielas republika',1
+195,Justin Champagnie,WAS,SF/PF,BK Zalve-Polýkarpos,1
+196,Kyle Filipowski,UTA,PF/C,Bukaišu Svelme,1
+197,Klay Thompson,MIA,SG/SF,Dataigars,1
+198,Deandre Ayton,WAS,C,G League Team,1
+199,Dylan Harper,SAS,PG/SG,Gustava Soliņu Sildītāji,11
+200,Allen Graves,TOR,PF,Hole of Fame,1
+201,Nate Ament,MIL,SF,Juglas Brīvmākslinieki,3
+202,Mitchell Robinson,BOS,C,Klāva Varenā Pīle,1
+203,Kelly Oubre Jr.,IND,SF/PF,Maris STOPIŅU TURTLES,1
+204,Quentin Grimes,LAL,SG/SF,MJ Liepupes Bebri,2
+205,Oso Ighodaro,PHX,C,Raita 'Būs Sūdi',1
+206,Brook Lopez,LAC,C,ReinAss Team,2
+207,Collin Sexton,LAL,PG/SG,TaigarEni,1
+208,Dillon Brooks,PHX,SF/PF,Toma Violent Monkeys,3

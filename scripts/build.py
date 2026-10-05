@@ -3,7 +3,7 @@
 
 Inputs (hand-edited):
   data/teams.csv          team, manager
-  data/draft_2026.csv     pick, player, pos, team, price
+  data/draft_2026.csv     pick, player, nba_team, pos, team, price (Yahoo draft results)
   data/transactions.csv   date, type, player, from_team, to_team, fab, note
   data/budget_trades.csv  date, from_team, to_team, amount, note
 
@@ -73,6 +73,7 @@ def load():
         price = int(r["price"])
         players[name] = {
             "player": name,
+            "nba_team": r.get("nba_team", ""),
             "pos": r["pos"],
             "pick": int(r["pick"]),
             "drafted_by": r["team"],
@@ -95,7 +96,7 @@ def load():
             if kind != "add":
                 die(f"{name} is not drafted or added yet but has a {kind} on {t['date']}")
             p = players[name] = {
-                "player": name, "pos": "", "pick": None, "drafted_by": None,
+                "player": name, "nba_team": "", "pos": "", "pick": None, "drafted_by": None,
                 "draft_price": None, "fab_max": None, "team": None, "history": [],
             }
         if kind in ("trade", "drop") and p["team"] != t["from_team"]:
@@ -124,6 +125,15 @@ def load():
         if total > BUDGET_CAP:
             die(f"{team} has ${total} next-season budget, over the ${BUDGET_CAP} cap")
 
+    spent = {}
+    for p in players.values():
+        if p["drafted_by"]:
+            spent[p["drafted_by"]] = spent.get(p["drafted_by"], 0) + p["draft_price"]
+    for team, total in sorted(spent.items()):
+        if total > BUDGET:
+            print(f"warning: {team} drafted ${total}, over the ${BUDGET} budget "
+                  "(check data/draft_2026.csv against Yahoo)", file=sys.stderr)
+
     rows = []
     for p in players.values():
         # Keeper base = max(draft price this season, FAB paid). Undrafted $0 pickups
@@ -132,6 +142,7 @@ def load():
         k = chain(base, len(NEXT))
         rows.append({
             "player": p["player"],
+            "nba_team": p["nba_team"],
             "pos": p["pos"],
             "rights": p["team"] or "",
             "pick": p["pick"] or "",
@@ -160,7 +171,7 @@ def money(v):
 
 def md_table(rows, show_team):
     k1, k2, k3 = (f"keeper_{s}" for s in NEXT)
-    head = ["Player", "Pos"] + (["Rights"] if show_team else []) + \
+    head = ["Player", "NBA", "Pos"] + (["Rights"] if show_team else []) + \
         [f"Paid {SEASON}", f"Keeper {NEXT[0]}", NEXT[1], NEXT[2], "Notes"]
     lines = ["| " + " | ".join(head) + " |",
              "|" + "|".join("---:" if h.startswith(("Paid", "Keeper", "20")) else "---" for h in head) + "|"]
@@ -173,7 +184,7 @@ def md_table(rows, show_team):
         if r["moves"]:
             notes.append(r["moves"])
         paid = money(r["draft_price"]) if r["draft_price"] != "" else "undrafted"
-        cells = [r["player"], r["pos"]] + ([r["rights"] or "*free agent*"] if show_team else []) + \
+        cells = [r["player"], r["nba_team"], r["pos"]] + ([r["rights"] or "*free agent*"] if show_team else []) + \
             [paid, f"**${r[k1]}**", f"${r[k2]}", f"${r[k3]}", ", ".join(notes)]
         lines.append("| " + " | ".join(str(c).replace("|", "\\|") for c in cells) + " |")
     return "\n".join(lines)
