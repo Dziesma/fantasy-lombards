@@ -11,8 +11,8 @@ up), it shows:
 **Where to look**
 
 - **[KEEPERS.md](KEEPERS.md)**: tables per team plus an A–Z list (renders on GitHub).
-- **Website** (`docs/index.html`): searchable and sortable, with a team filter. Once GitHub Pages is
-  enabled it's at `https://<user>.github.io/fantasy-lombards/`.
+- **Website**: searchable and sortable, with a team filter. GitHub Actions rebuilds and deploys it on every
+  push to `main`, at `https://<user>.github.io/fantasy-lombards/`.
 - **[rights.csv](rights.csv)**: the same data for spreadsheets.
 
 > **Status:** the 2026 draft log is still incomplete (130 of 208 picks). The remaining picks will be added.
@@ -58,17 +58,20 @@ date,type,player,from_team,to_team,fab,note
 Team names must match `data/teams.csv` exactly, diacritics and quotes included. Then run:
 
 ```sh
-python3 scripts/build.py        # regenerates rights.csv, KEEPERS.md, docs/index.html
+python3 scripts/build.py        # regenerates rights.csv and KEEPERS.md; previews the site in _site/
 ```
 
 It's Python 3, standard library only. The script checks the data and stops with an error on unknown
-teams, double-drafted players, or a trade/drop from a team that doesn't hold the player. CI
-(`.github/workflows/check.yml`) runs `build.py --check` on every push, so a stale or invalid commit shows
-up red.
+teams, double-drafted players, or a trade/drop from a team that doesn't hold the player. Commit the
+regenerated `rights.csv` and `KEEPERS.md` together with your data change. The website itself isn't
+committed. The workflow `.github/workflows/pages.yml` runs `build.py --check` on every push and pull
+request: it fails if the data is invalid or the committed files are stale, and otherwise deploys the site
+(on `main` only). To preview the site locally, open `_site/index.html`.
 
 ## Hosting on GitHub
 
 1. Create an empty repo named `fantasy-lombards` on GitHub, then:
    `git remote add origin git@github.com:<user>/fantasy-lombards.git && git push -u origin main`
-2. Settings → Pages → *Deploy from a branch* → `main` / `/docs`.
+2. Settings → Pages → Build and deployment → Source: **GitHub Actions**. Then re-run the workflow
+   (Actions tab → *build-and-deploy* → *Run workflow*) if the first push ran before Pages was enabled.
 3. Optionally, add league members as collaborators so they can open PRs with corrections.

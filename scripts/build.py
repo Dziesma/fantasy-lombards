@@ -10,10 +10,10 @@ Inputs (hand-edited):
 Outputs (generated, don't edit by hand):
   rights.csv              one row per player with keeper rights info
   KEEPERS.md              per-team and A-Z tables
-  docs/index.html         searchable/sortable page for GitHub Pages
+  _site/                  searchable/sortable website (not committed; deployed by GitHub Actions)
 
 Usage:  python3 scripts/build.py           # rebuild
-        python3 scripts/build.py --check   # fail if generated files are stale
+        python3 scripts/build.py --check   # fail if rights.csv/KEEPERS.md are stale (still builds _site/)
 """
 import csv
 import io
@@ -24,6 +24,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
+SITE = ROOT / "_site"
 
 SEASON = "2026-27"
 NEXT = ["2027-28", "2028-29", "2029-30"]
@@ -252,24 +253,28 @@ def main():
     teams, rows, budgets = load()
     n_drafted = sum(1 for r in rows if r["pick"] != "")
     csv_text = write_csv(rows)
-    outputs = {
+    committed = {
         ROOT / "rights.csv": csv_text,
         ROOT / "KEEPERS.md": build_md(teams, rows, budgets, n_drafted),
-        ROOT / "docs" / "index.html": build_html(teams, rows, budgets, n_drafted),
     }
     stale = []
-    for path, text in outputs.items():
+    for path, text in committed.items():
         old = path.read_text(encoding="utf-8") if path.exists() else None
         if old != text:
             stale.append(path.relative_to(ROOT))
             if not check:
-                path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text(text, encoding="utf-8")
     if check and stale:
         die("generated files are stale, run scripts/build.py: " + ", ".join(map(str, stale)))
-    print(f"{len(rows)} players, {n_drafted} drafted picks; "
-          + ("updated " + ", ".join(map(str, stale)) if stale else "no changes"))
 
+    # The website is not committed; it is always rebuilt (GitHub Actions deploys _site/).
+    SITE.mkdir(exist_ok=True)
+    (SITE / "index.html").write_text(build_html(teams, rows, budgets, n_drafted), encoding="utf-8")
+    (SITE / "rights.csv").write_text(csv_text, encoding="utf-8")
+
+    print(f"{len(rows)} players, {n_drafted} drafted picks; "
+          + ("updated " + ", ".join(map(str, stale)) if stale else "no changes")
+          + f"; site written to {SITE.relative_to(ROOT)}/")
 
 if __name__ == "__main__":
     main()
