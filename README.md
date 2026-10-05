@@ -12,7 +12,7 @@ up), it shows:
 
 - **[KEEPERS.md](KEEPERS.md)**: tables per team plus an A–Z list (renders on GitHub).
 - **Website**: searchable and sortable, with a team filter. GitHub Actions rebuilds and deploys it on every
-  push to `main`, at `https://<user>.github.io/fantasy-lombards/`.
+  push to `main`, at **https://dziesma.github.io/fantasy-lombards/**.
 - **[rights.csv](rights.csv)**: the same data for spreadsheets.
 
 ## Keeper rules used here
@@ -66,10 +66,9 @@ committed. The workflow `.github/workflows/pages.yml` runs `build.py --check` on
 request: it fails if the data is invalid or the committed files are stale, and otherwise deploys the site
 (on `main` only). To preview the site locally, open `_site/index.html`.
 
-## Hosting on GitHub
+## Hosting
 
-1. Create an empty repo named `fantasy-lombards` on GitHub, then:
-   `git remote add origin git@github.com:<user>/fantasy-lombards.git && git push -u origin main`
-2. Settings → Pages → Build and deployment → Source: **GitHub Actions**. Then re-run the workflow
-   (Actions tab → *build-and-deploy* → *Run workflow*) if the first push ran before Pages was enabled.
-3. Optionally, add league members as collaborators so they can open PRs with corrections.
+The repo lives at https://github.com/Dziesma/fantasy-lombards. Pages is deployed by GitHub Actions
+(Settings → Pages → Source: **GitHub Actions**). If a deploy ever fails, re-run it from Actions →
+*build-and-deploy* → *Run workflow*. League members can be added as collaborators, or can open issues and
+pull requests with corrections.
