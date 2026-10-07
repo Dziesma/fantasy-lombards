@@ -42,8 +42,8 @@ Only edit the files in `data/`. Everything else is generated.
 | `data/transactions.csv` | in-season moves that change rights (see below) |
 | `data/budget_trades.csv` | traded draft dollars: `date,from_team,to_team,amount,note` |
 | `data/weeks_<season>.csv` | fantasy weeks from Yahoo: `week,start,end` |
-| `data/matchups_<season>.csv` | the schedule: `week,team1,team2` with **Yahoo team ids** (see `teams.csv`) |
-| `data/results_<season>.csv` | finished weeks: `week,team1,team2,cats1,cats2,ties` (team ids; the three add up to 9) |
+| `data/matchups_<season>.csv` | the schedule: `week,team1,team2` with **Yahoo team ids** (see `teams.csv`), lower id first, sorted by week then team1 |
+| `data/results_<season>.csv` | finished weeks: `week,team1,team2,cats1,cats2,ties` (team ids, lower id first; the three add up to 9) |
 | `data/odds/<season>/` | `week-NN.json`, `outlook.json`: team-level matchup odds and power rankings, exported by the maintainer's h2hcats run (no player values). Don't edit by hand. A week's file is frozen once the week starts |
 
 `transactions.csv` columns: `date,type,player,from_team,to_team,fab,note`, with `type` one of:

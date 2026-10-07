@@ -279,17 +279,23 @@ def load_season(teams):
         w, a, b = int(m["week"]), int(m["team1"]), int(m["team2"])
         if w not in known or a not in ids or b not in ids:
             die(f"matchups_{SEASON}.csv: bad row week {w}: {a} vs {b}")
+        if a >= b:   # one canonical order (Yahoo lists the viewer's own game first; don't copy that)
+            die(f"matchups_{SEASON}.csv: week {w}: write the lower team id first ({b},{a})")
         per_week.setdefault(w, []).extend([a, b])
         matchups.append({"week": w, "team1": a, "team2": b})
     for w, played in per_week.items():
         if sorted(played) != sorted(ids):
             die(f"matchups_{SEASON}.csv: week {w} doesn't have every team exactly once")
+    if matchups != sorted(matchups, key=lambda m: (m["week"], m["team1"])):
+        die(f"matchups_{SEASON}.csv: sort rows by week, then team1")
     pairs = {(m["week"], frozenset((m["team1"], m["team2"]))) for m in matchups}
 
     results = []
     for r in read(f"results_{SEASON}.csv"):
         w, a, b = int(r["week"]), int(r["team1"]), int(r["team2"])
         c1, c2, ties = int(r["cats1"]), int(r["cats2"]), int(r["ties"])
+        if a >= b:
+            die(f"results_{SEASON}.csv: week {w}: write the lower team id first ({b},{a},{c2},{c1},{ties})")
         if (w, frozenset((a, b))) not in pairs:
             die(f"results_{SEASON}.csv: week {w} {a} vs {b} is not in the schedule")
         if c1 + c2 + ties != 9:
@@ -321,7 +327,7 @@ def standings(teams, results):
             s = st[me]
             s["cats"] += mine
             s["w" if mine > theirs else "l" if mine < theirs else "t"] += 1
-    return sorted(st.values(), key=lambda s: (-(s["w"] + s["t"] / 2), -s["cats"]))
+    return sorted(st.values(), key=lambda s: (-(s["w"] + s["t"] / 2), -s["cats"], s["id"]))   # ties: team id
 
 
 def build_odds_html(teams, season):
