@@ -6,11 +6,17 @@ Inputs (hand-edited):
   data/draft_2026.csv     pick, player, nba_team, pos, team, price (Yahoo draft results)
   data/transactions.csv   date, type, player, from_team, to_team, fab, note
   data/budget_trades.csv  date, from_team, to_team, amount, note
+  data/weeks_<season>.csv     week, start, end (fantasy weeks, from Yahoo)
+  data/matchups_<season>.csv  week, team1, team2 (Yahoo team ids)
+  data/results_<season>.csv   week, team1, team2, cats1, cats2, ties (finished weeks, team ids)
+  data/odds/<season>/         week-NN.json + outlook.json: team-level matchup odds and power ranking,
+                              exported by the maintainer's h2hcats run (not hand-edited; no player values)
 
 Outputs (generated, don't edit by hand):
   rights.csv              one row per player with keeper rights info
   KEEPERS.md              per-team and A-Z tables
-  _site/                  searchable/sortable website (not committed; deployed by GitHub Actions)
+  _site/                  website: index.html (keeper rights), odds.html (standings, matchup odds);
+                          not committed, deployed by GitHub Actions
 
 Usage:  python3 scripts/build.py           # rebuild
         python3 scripts/build.py --check   # fail if rights.csv/KEEPERS.md are stale (still builds _site/)
@@ -259,6 +265,77 @@ def build_html(teams, rows, budgets, n_drafted):
     return tpl.replace("/*__DATA__*/null", data)
 
 
+def load_season(teams):
+    """Schedule, results and exported odds for SEASON, validated against each other."""
+    ids = {int(t["id"]): t["team"] for t in teams}
+    weeks = [{"week": int(w["week"]), "start": w["start"], "end": w["end"]} for w in read(f"weeks_{SEASON}.csv")]
+    for a, b in zip(weeks, weeks[1:]):
+        if b["week"] != a["week"] + 1 or b["start"] <= a["end"]:
+            die(f"weeks_{SEASON}.csv: week {b['week']} doesn't follow week {a['week']}")
+    known = {w["week"] for w in weeks}
+
+    matchups, per_week = [], {}
+    for m in read(f"matchups_{SEASON}.csv"):
+        w, a, b = int(m["week"]), int(m["team1"]), int(m["team2"])
+        if w not in known or a not in ids or b not in ids:
+            die(f"matchups_{SEASON}.csv: bad row week {w}: {a} vs {b}")
+        per_week.setdefault(w, []).extend([a, b])
+        matchups.append({"week": w, "team1": a, "team2": b})
+    for w, played in per_week.items():
+        if sorted(played) != sorted(ids):
+            die(f"matchups_{SEASON}.csv: week {w} doesn't have every team exactly once")
+    pairs = {(m["week"], frozenset((m["team1"], m["team2"]))) for m in matchups}
+
+    results = []
+    for r in read(f"results_{SEASON}.csv"):
+        w, a, b = int(r["week"]), int(r["team1"]), int(r["team2"])
+        c1, c2, ties = int(r["cats1"]), int(r["cats2"]), int(r["ties"])
+        if (w, frozenset((a, b))) not in pairs:
+            die(f"results_{SEASON}.csv: week {w} {a} vs {b} is not in the schedule")
+        if c1 + c2 + ties != 9:
+            die(f"results_{SEASON}.csv: week {w} {a} vs {b}: categories don't add up to 9")
+        results.append({"week": w, "team1": a, "team2": b, "cats1": c1, "cats2": c2, "ties": ties})
+
+    odds, names = {}, set(ids.values())
+    folder = DATA / "odds" / SEASON
+    for path in sorted(folder.glob("*.json")) if folder.exists() else []:
+        o = json.loads(path.read_text(encoding="utf-8"))
+        bad = {r["team"] for r in o["power"]} - names
+        if bad:
+            die(f"{path.relative_to(ROOT)}: unknown teams {sorted(bad)}")
+        if o["week"] is not None:
+            for m in o["matchups"]:
+                key = (o["week"], frozenset(i for i, n in ids.items() if n in (m["team1"], m["team2"])))
+                if key not in pairs:
+                    die(f"{path.relative_to(ROOT)}: {m['team1']} vs {m['team2']} is not in the schedule")
+        odds["outlook" if o["week"] is None else str(o["week"])] = o
+    return {"weeks": weeks, "matchups": matchups, "results": results, "odds": odds}
+
+
+def standings(teams, results):
+    """One-Win standings: W-L-T from each finished week, best first."""
+    st = {int(t["id"]): {"id": int(t["id"]), "w": 0, "l": 0, "t": 0, "cats": 0} for t in teams}
+    for r in results:
+        for me, other, mine, theirs in ((r["team1"], r["team2"], r["cats1"], r["cats2"]),
+                                        (r["team2"], r["team1"], r["cats2"], r["cats1"])):
+            s = st[me]
+            s["cats"] += mine
+            s["w" if mine > theirs else "l" if mine < theirs else "t"] += 1
+    return sorted(st.values(), key=lambda s: (-(s["w"] + s["t"] / 2), -s["cats"]))
+
+
+def build_odds_html(teams, season):
+    tpl = (ROOT / "scripts" / "odds_template.html").read_text(encoding="utf-8")
+    payload = {
+        "season": SEASON,
+        "teams": [{"id": int(t["id"]), "team": t["team"], "manager": t["manager"]} for t in teams],
+        **season,
+        "standings": standings(teams, season["results"]),
+    }
+    data = json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
+    return tpl.replace("/*__DATA__*/null", data)
+
+
 def main():
     check = "--check" in sys.argv
     teams, rows, budgets = load()
@@ -282,9 +359,12 @@ def main():
     SITE.mkdir(exist_ok=True)
     (SITE / "index.html").write_text(build_html(teams, rows, budgets, n_drafted), encoding="utf-8")
     (SITE / "rights.csv").write_text(csv_text, encoding="utf-8")
+    season = load_season(teams)
+    (SITE / "odds.html").write_text(build_odds_html(teams, season), encoding="utf-8")
 
     print(f"{len(rows)} players, {n_drafted} drafted picks; "
           + ("updated " + ", ".join(map(str, stale)) if stale else "no changes")
+          + f"; {len(season['results'])} results, odds for {len(season['odds'])} weeks"
           + f"; site written to {SITE.relative_to(ROOT)}/")
 
 if __name__ == "__main__":

@@ -8,12 +8,16 @@ up), it shows:
 - what keeping them costs in 2027-28, 2028-29 and 2029-30,
 - which team holds their keeper rights right now.
 
+It also hosts the season's One-Win **standings** and each week's projected **matchup odds** (team-level only).
+
 **Where to look**
 
 - **[KEEPERS.md](KEEPERS.md)**: tables per team plus an A–Z list (renders on GitHub).
 - **Website**: searchable and sortable, with a team filter. GitHub Actions rebuilds and deploys it on every
   push to `main`, at **https://dziesma.github.io/fantasy-lombards/**.
 - **[rights.csv](rights.csv)**: the same data for spreadsheets.
+- **[Standings & odds](https://dziesma.github.io/fantasy-lombards/odds.html)**: standings from the results, plus every
+  week's matchup odds and power ranking. Pick a week; open a matchup for the per-category breakdown.
 
 ## Keeper rules used here
 
@@ -37,6 +41,10 @@ Only edit the files in `data/`. Everything else is generated.
 | `data/draft_2026.csv` | Yahoo draft results, one row per pick: `pick,player,nba_team,pos,team,price` |
 | `data/transactions.csv` | in-season moves that change rights (see below) |
 | `data/budget_trades.csv` | traded draft dollars: `date,from_team,to_team,amount,note` |
+| `data/weeks_<season>.csv` | fantasy weeks from Yahoo: `week,start,end` |
+| `data/matchups_<season>.csv` | the schedule: `week,team1,team2` with **Yahoo team ids** (see `teams.csv`) |
+| `data/results_<season>.csv` | finished weeks: `week,team1,team2,cats1,cats2,ties` (team ids; the three add up to 9) |
+| `data/odds/<season>/` | `week-NN.json`, `outlook.json`: team-level matchup odds and power rankings, exported by the maintainer's h2hcats run (no player values). Don't edit by hand. A week's file is frozen once the week starts |
 
 `transactions.csv` columns: `date,type,player,from_team,to_team,fab,note`, with `type` one of:
 

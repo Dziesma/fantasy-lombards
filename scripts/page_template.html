@@ -47,11 +47,15 @@
   .note { font-size: 13px; white-space: normal; }
   footer { margin-top: 22px; color: var(--muted); font-size: 13px; }
   a { color: var(--accent); }
+  nav { margin: 0 0 14px; display: flex; gap: 16px; font-size: 14px; }
+  nav a { color: var(--muted); text-decoration: none; }
+  nav a.on { color: var(--accent); font-weight: 600; }
 </style>
 </head>
 <body>
 <main>
   <h1>Fantasy Lombards</h1>
+  <nav><a class="on" href="index.html">Keeper rights</a><a href="odds.html">Standings &amp; odds</a></nav>
   <p class="sub">Who holds each player's rights and what keeping them costs. Keeper price =
     <code>ceil(max(base × 1.15, base + 5))</code> per season; base = max(draft price, FAB paid).</p>
   <div id="warn" class="warn" hidden></div>

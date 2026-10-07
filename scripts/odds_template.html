@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fantasy Lombards: Odds</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --panel: #ffffff; --text: #1d1f21; --muted: #6b6f76;
+    --line: #e3e3df; --accent: #c2410c; --accent-soft: #fff1e8; --row-hover: #fafaf7;
+    --win: #c2410c; --loss: #64748b; --tie: #d6d3cd;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141517; --panel: #1c1d20; --text: #e8e8e6; --muted: #9a9ea6;
+      --line: #2c2e33; --accent: #fb923c; --accent-soft: #2a1d14; --row-hover: #222327;
+      --win: #fb923c; --loss: #94a3b8; --tie: #3a3c42;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 1100px; margin: 0 auto; padding: 28px 16px 60px; }
+  h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  h2 { font-size: 18px; margin: 30px 0 8px; }
+  nav { margin: 0 0 18px; display: flex; gap: 16px; font-size: 14px; }
+  nav a { color: var(--muted); text-decoration: none; }
+  nav a.on { color: var(--accent); font-weight: 600; }
+  .sub, .meta { color: var(--muted); }
+  .sub { margin: 0 0 20px; }
+  .meta { font-size: 13px; margin: 0 0 12px; }
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  select {
+    font: inherit; color: var(--text); background: var(--panel);
+    border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px; max-width: 100%;
+  }
+  .wrap { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); background: var(--panel); }
+  th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: var(--row-hover); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; }
+  .card summary { list-style: none; cursor: pointer; }
+  .card summary::-webkit-details-marker { display: none; }
+  .teams { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; font-size: 14px; }
+  .teams .p { font-variant-numeric: tabular-nums; font-weight: 650; text-align: right; }
+  .fav { font-weight: 650; }
+  .bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin: 9px 0 6px; background: var(--tie); }
+  .bar span:nth-child(1) { background: var(--win); }
+  .bar span:nth-child(2) { background: var(--tie); }
+  .bar span:nth-child(3) { background: var(--loss); }
+  .small { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+  .result { white-space: nowrap; font-size: 12px; font-weight: 600; padding: 1px 7px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); }
+  .cats { margin-top: 10px; font-size: 13px; }
+  .cats td, .cats th { padding: 4px 6px; }
+  .edge { font-weight: 650; }
+  td.rank { text-align: center; font-variant-numeric: tabular-nums; width: 38px; }
+  .empty { color: var(--muted); padding: 14px; background: var(--panel); border: 1px dashed var(--line); border-radius: 8px; }
+  footer { margin-top: 26px; color: var(--muted); font-size: 13px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Fantasy Lombards</h1>
+  <nav><a href="index.html">Keeper rights</a><a class="on" href="odds.html">Standings &amp; odds</a></nav>
+  <p class="sub">One-Win standings and each week's projected matchup odds. Odds come from blended public
+    projections and current rosters, simulated over the week's NBA schedule with every team starting its best
+    10. They are team-level only and frozen once a week starts.</p>
+
+  <section id="standings-sec" hidden>
+    <h2>Standings</h2>
+    <div class="wrap"><table id="standings"></table></div>
+  </section>
+
+  <h2>Week</h2>
+  <div class="controls"><select id="week" aria-label="Week"></select></div>
+  <p id="meta" class="meta"></p>
+  <div id="cards" class="cards"></div>
+
+  <h2 id="power-title">Power ranking</h2>
+  <p class="meta">Average odds against every other team. Category columns: rank 1–16 (1 = best).</p>
+  <div class="wrap"><table id="power"></table></div>
+
+  <footer>Generated from the league's data files. <a href="index.html">Keeper rights</a>.</footer>
+</main>
+<script>
+const D = /*__DATA__*/null;
+const teamById = Object.fromEntries(D.teams.map(t => [t.id, t]));
+const idByName = Object.fromEntries(D.teams.map(t => [t.team, t.id]));
+const pct = x => (100 * x).toFixed(0) + "%";
+const el = (tag, props = {}, ...kids) => { const e = Object.assign(document.createElement(tag), props); e.append(...kids); return e; };
+const fmt = (cat, x) => /pct$/.test(cat) ? x.toFixed(3).replace(/^0/, "") : x.toFixed(1);
+
+// Standings
+if (D.results.length) {
+  document.getElementById("standings-sec").hidden = false;
+  const t = document.getElementById("standings");
+  t.append(el("thead", {}, el("tr", {}, ...["#", "Team", "Manager", "W", "L", "T", "Cats won"].map((h, i) =>
+    el("th", { textContent: h, className: i > 2 ? "num" : "" })))));
+  t.append(el("tbody", {}, ...D.standings.map((s, i) => el("tr", {},
+    el("td", { textContent: i + 1 }), el("td", { textContent: teamById[s.id].team }),
+    el("td", { textContent: teamById[s.id].manager, className: "meta" }),
+    ...[s.w, s.l, s.t, s.cats].map(v => el("td", { textContent: v, className: "num" }))))));
+}
+
+// Week selector: default = the week in progress, else the next one, else the last
+const today = new Date().toISOString().slice(0, 10);
+const sel = document.getElementById("week");
+const cur = D.weeks.find(w => w.end >= today) || D.weeks[D.weeks.length - 1];
+D.weeks.forEach(w => sel.append(el("option", { value: w.week, textContent:
+  `Week ${w.week} · ${w.start.slice(5)} – ${w.end.slice(5)}${w.week === cur.week ? " (current)" : ""}` })));
+if (D.odds.outlook) sel.append(el("option", { value: "outlook", textContent: "Season outlook (typical week, roster strength)" }));
+sel.value = cur.week;
+sel.addEventListener("change", render);
+
+function card(m, o, result) {
+  const cats = o.categories;
+  const t1fav = m.win >= m.loss;
+  const head = el("summary", {},
+    el("div", { className: "teams" },
+      el("span", { textContent: m.team1, className: t1fav ? "fav" : "" }), el("span", { className: "p", textContent: pct(m.win) }),
+      el("span", { textContent: m.team2, className: t1fav ? "" : "fav" }), el("span", { className: "p", textContent: pct(m.loss) })),
+    el("div", { className: "bar", title: `win ${pct(m.win)} · tie ${pct(m.tie)} · loss ${pct(m.loss)}` },
+      el("span", { style: `width:${100 * m.win}%` }), el("span", { style: `width:${100 * m.tie}%` }),
+      el("span", { style: `width:${100 * m.loss}%` })),
+    el("div", { className: "small" },
+      el("span", { textContent: `tie ${pct(m.tie)} · expected cats ${m.cats1.toFixed(1)}–${m.cats2.toFixed(1)} · games ${m.games1}–${m.games2}` }),
+      result ? el("span", { className: "result", textContent: `Final ${result}` }) : el("span", { textContent: "details ▾" })));
+  const rows = cats.map(c => {
+    const x = m.categories[c.id];
+    const e1 = x.win > x.loss;
+    return el("tr", {},
+      el("td", { textContent: c.label }),
+      el("td", { className: "num" + (e1 ? " edge" : ""), textContent: fmt(c.id, x.team1) }),
+      el("td", { className: "num" + (e1 ? "" : " edge"), textContent: fmt(c.id, x.team2) }),
+      el("td", { className: "num", textContent: pct(x.win) }), el("td", { className: "num", textContent: pct(x.loss) }));
+  });
+  const table = el("table", { className: "cats" },
+    el("thead", {}, el("tr", {}, ...["Cat", "Proj. 1", "Proj. 2", "P(1)", "P(2)"].map((h, i) =>
+      el("th", { textContent: h, className: i ? "num" : "" })))), el("tbody", {}, ...rows));
+  return el("details", { className: "card" }, head, table);
+}
+
+function render() {
+  const key = sel.value;
+  const o = D.odds[key];
+  const cards = document.getElementById("cards");
+  const meta = document.getElementById("meta");
+  if (!o) {
+    meta.textContent = "";
+    cards.replaceChildren(el("div", { className: "empty", textContent:
+      "No odds published for this week. Odds appear before a week starts and stay frozen once it does." }));
+    document.getElementById("power").replaceChildren();
+    return;
+  }
+  const projs = Object.entries(o.projections || {}).map(([k, v]) => `${k} ${v}`).join(", ");
+  meta.textContent = `Computed ${o.generated}${projs ? " · projections: " + projs : ""} · games: ${o.games}`;
+  const res = {};
+  D.results.filter(r => String(r.week) === key).forEach(r => {
+    const t = r.ties ? ` · ${r.ties} tie${r.ties > 1 ? "s" : ""}` : "";
+    res[[r.team1, r.team2].join("-")] = `${r.cats1}–${r.cats2}${t}`;
+    res[[r.team2, r.team1].join("-")] = `${r.cats2}–${r.cats1}${t}`;
+  });
+  cards.replaceChildren(...(o.matchups.length ? o.matchups.map(m =>
+    card(m, o, res[[idByName[m.team1], idByName[m.team2]].join("-")])) :
+    [el("div", { className: "empty", textContent: key === "outlook" ?
+      "The season outlook has no matchups: it compares roster strength in a typical week." : "Pairings not set yet." })]));
+
+  document.getElementById("power-title").textContent = key === "outlook" ? "Power ranking (typical week)" : `Power ranking, week ${key}`;
+  const p = document.getElementById("power");
+  p.replaceChildren(
+    el("thead", {}, el("tr", {}, ...["#", "Team", "Win%", "Cats", "Games", ...o.categories.map(c => c.label)].map((h, i) =>
+      el("th", { textContent: h, className: i > 1 ? "num" : "" })))),
+    el("tbody", {}, ...o.power.map((r, i) => el("tr", {},
+      el("td", { textContent: i + 1 }), el("td", { textContent: r.team }),
+      el("td", { className: "num", textContent: pct(r.win) }),
+      el("td", { className: "num", textContent: r.cats.toFixed(2) }),
+      el("td", { className: "num", textContent: r.games }),
+      ...o.categories.map(c => {
+        const k = r.ranks[c.id], n = o.power.length;
+        const a = Math.max(0, (n / 2 - k + 0.5) / (n / 2));   // shade the top half
+        return el("td", { className: "rank", textContent: k,
+          style: a ? `background: color-mix(in srgb, var(--accent) ${Math.round(a * 35)}%, transparent)` : "" });
+      })))));
+}
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,1151 @@
+{
+ "season": "2026-27",
+ "generated": "2026-10-07",
+ "projections": {
+  "espn": "2026-10-07",
+  "fantasypros": "2026-10-07"
+ },
+ "week": 14,
+ "start": "2027-01-25",
+ "end": "2027-01-31",
+ "games": "schedule",
+ "categories": [
+  {
+   "id": "fg_pct",
+   "label": "FG%",
+   "lower_is_better": false
+  },
+  {
+   "id": "ft_pct",
+   "label": "FT%",
+   "lower_is_better": false
+  },
+  {
+   "id": "tpm",
+   "label": "3PM",
+   "lower_is_better": false
+  },
+  {
+   "id": "pts",
+   "label": "PTS",
+   "lower_is_better": false
+  },
+  {
+   "id": "reb",
+   "label": "REB",
+   "lower_is_better": false
+  },
+  {
+   "id": "ast",
+   "label": "AST",
+   "lower_is_better": false
+  },
+  {
+   "id": "stl",
+   "label": "ST",
+   "lower_is_better": false
+  },
+  {
+   "id": "blk",
+   "label": "BLK",
+   "lower_is_better": false
+  },
+  {
+   "id": "tov",
+   "label": "TO",
+   "lower_is_better": true
+  }
+ ],
+ "power": [
+  {
+   "team": "Bukaišu Svelme",
+   "win": 0.762,
+   "tie": 0.0297,
+   "loss": 0.2082,
+   "cats": 5.4491,
+   "games": 38.0,
+   "totals": {
+    "fg_pct": 0.4903,
+    "ft_pct": 0.8014,
+    "tpm": 55.73,
+    "pts": 657.435,
+    "reb": 240.62,
+    "ast": 166.705,
+    "stl": 43.641,
+    "blk": 27.66,
+    "tov": 77.9805
+   },
+   "ranks": {
+    "fg_pct": 6,
+    "ft_pct": 8,
+    "tpm": 12,
+    "pts": 4,
+    "reb": 3,
+    "ast": 2,
+    "stl": 3,
+    "blk": 6,
+    "tov": 12
+   }
+  },
+  {
+   "team": "G League Team",
+   "win": 0.7551,
+   "tie": 0.0307,
+   "loss": 0.2142,
+   "cats": 5.4127,
+   "games": 39.0,
+   "totals": {
+    "fg_pct": 0.4728,
+    "ft_pct": 0.8066,
+    "tpm": 73.9965,
+    "pts": 605.273,
+    "reb": 251.3735,
+    "ast": 129.7835,
+    "stl": 38.7615,
+    "blk": 31.806,
+    "tov": 63.222
+   },
+   "ranks": {
+    "fg_pct": 12,
+    "ft_pct": 7,
+    "tpm": 2,
+    "pts": 10,
+    "reb": 2,
+    "ast": 12,
+    "stl": 7,
+    "blk": 2,
+    "tov": 4
+   }
+  },
+  {
+   "team": "Klāva Varenā Pīle",
+   "win": 0.6991,
+   "tie": 0.0367,
+   "loss": 0.2642,
+   "cats": 5.1659,
+   "games": 38.0,
+   "totals": {
+    "fg_pct": 0.4987,
+    "ft_pct": 0.7557,
+    "tpm": 61.8865,
+    "pts": 683.4235,
+    "reb": 253.4635,
+    "ast": 139.348,
+    "stl": 38.9875,
+    "blk": 29.935,
+    "tov": 78.385
+   },
+   "ranks": {
+    "fg_pct": 4,
+    "ft_pct": 16,
+    "tpm": 7,
+    "pts": 2,
+    "reb": 1,
+    "ast": 8,
+    "stl": 6,
+    "blk": 4,
+    "tov": 13
+   }
+  },
+  {
+   "team": "MJ Liepupes Bebri",
+   "win": 0.621,
+   "tie": 0.0386,
+   "loss": 0.3404,
+   "cats": 4.9333,
+   "games": 37.0,
+   "totals": {
+    "fg_pct": 0.4888,
+    "ft_pct": 0.8128,
+    "tpm": 63.434,
+    "pts": 672.615,
+    "reb": 225.8525,
+    "ast": 138.3565,
+    "stl": 36.7545,
+    "blk": 25.539,
+    "tov": 76.071
+   },
+   "ranks": {
+    "fg_pct": 8,
+    "ft_pct": 5,
+    "tpm": 6,
+    "pts": 3,
+    "reb": 6,
+    "ast": 9,
+    "stl": 9,
+    "blk": 9,
+    "tov": 10
+   }
+  },
+  {
+   "team": "Hole of Fame",
+   "win": 0.5835,
+   "tie": 0.0357,
+   "loss": 0.3808,
+   "cats": 4.8017,
+   "games": 37.0,
+   "totals": {
+    "fg_pct": 0.4901,
+    "ft_pct": 0.7984,
+    "tpm": 60.661,
+    "pts": 609.029,
+    "reb": 219.8835,
+    "ast": 119.706,
+    "stl": 37.553,
+    "blk": 32.5855,
+    "tov": 59.004
+   },
+   "ranks": {
+    "fg_pct": 7,
+    "ft_pct": 9,
+    "tpm": 8,
+    "pts": 9,
+    "reb": 7,
+    "ast": 15,
+    "stl": 8,
+    "blk": 1,
+    "tov": 3
+   }
+  },
+  {
+   "team": "Raita 'Būs Sūdi'",
+   "win": 0.5737,
+   "tie": 0.0392,
+   "loss": 0.3871,
+   "cats": 4.7511,
+   "games": 38.0,
+   "totals": {
+    "fg_pct": 0.5046,
+    "ft_pct": 0.7833,
+    "tpm": 63.5685,
+    "pts": 656.438,
+    "reb": 226.3775,
+    "ast": 145.237,
+    "stl": 32.7425,
+    "blk": 26.086,
+    "tov": 77.479
+   },
+   "ranks": {
+    "fg_pct": 1,
+    "ft_pct": 13,
+    "tpm": 5,
+    "pts": 5,
+    "reb": 5,
+    "ast": 5,
+    "stl": 13,
+    "blk": 7,
+    "tov": 11
+   }
+  },
+  {
+   "team": "ReinAss Team",
+   "win": 0.5524,
+   "tie": 0.0381,
+   "loss": 0.4095,
+   "cats": 4.6726,
+   "games": 38.0,
+   "totals": {
+    "fg_pct": 0.4624,
+    "ft_pct": 0.7919,
+    "tpm": 66.94,
+    "pts": 581.045,
+    "reb": 214.096,
+    "ast": 182.3955,
+    "stl": 45.0135,
+    "blk": 25.0345,
+    "tov": 75.2605
+   },
+   "ranks": {
+    "fg_pct": 15,
+    "ft_pct": 11,
+    "tpm": 3,
+    "pts": 13,
+    "reb": 10,
+    "ast": 1,
+    "stl": 1,
+    "blk": 10,
+    "tov": 9
+   }
+  },
+  {
+   "team": "Gustava Soliņu Sildītāji",
+   "win": 0.5519,
+   "tie": 0.0389,
+   "loss": 0.4092,
+   "cats": 4.6979,
+   "games": 35.0,
+   "totals": {
+    "fg_pct": 0.4924,
+    "ft_pct": 0.8255,
+    "tpm": 65.286,
+    "pts": 587.8635,
+    "reb": 212.1675,
+    "ast": 131.341,
+    "stl": 42.17,
+    "blk": 22.9255,
+    "tov": 66.079
+   },
+   "ranks": {
+    "fg_pct": 5,
+    "ft_pct": 2,
+    "tpm": 4,
+    "pts": 12,
+    "reb": 11,
+    "ast": 11,
+    "stl": 4,
+    "blk": 14,
+    "tov": 5
+   }
+  },
+  {
+   "team": "DzintarSkibidi",
+   "win": 0.5273,
+   "tie": 0.0359,
+   "loss": 0.4368,
+   "cats": 4.5787,
+   "games": 39.0,
+   "totals": {
+    "fg_pct": 0.4884,
+    "ft_pct": 0.8088,
+    "tpm": 46.6195,
+    "pts": 614.952,
+    "reb": 210.406,
+    "ast": 160.298,
+    "stl": 41.6345,
+    "blk": 30.3735,
+    "tov": 79.1205
+   },
+   "ranks": {
+    "fg_pct": 9,
+    "ft_pct": 6,
+    "tpm": 16,
+    "pts": 8,
+    "reb": 12,
+    "ast": 3,
+    "stl": 5,
+    "blk": 3,
+    "tov": 14
+   }
+  },
+  {
+   "team": "BK 'Vārnu ielas republika'",
+   "win": 0.4843,
+   "tie": 0.0378,
+   "loss": 0.478,
+   "cats": 4.4735,
+   "games": 37.0,
+   "totals": {
+    "fg_pct": 0.5044,
+    "ft_pct": 0.813,
+    "tpm": 50.6515,
+    "pts": 570.8765,
+    "reb": 210.0685,
+    "ast": 126.163,
+    "stl": 44.447,
+    "blk": 24.192,
+    "tov": 55.576
+   },
+   "ranks": {
+    "fg_pct": 2,
+    "ft_pct": 4,
+    "tpm": 14,
+    "pts": 15,
+    "reb": 13,
+    "ast": 14,
+    "stl": 2,
+    "blk": 11,
+    "tov": 1
+   }
+  },
+  {
+   "team": "Maris STOPIŅU TURTLES",
+   "win": 0.3553,
+   "tie": 0.0388,
+   "loss": 0.6059,
+   "cats": 3.96,
+   "games": 38.0,
+   "totals": {
+    "fg_pct": 0.5001,
+    "ft_pct": 0.7601,
+    "tpm": 52.366,
+    "pts": 639.3265,
+    "reb": 227.7265,
+    "ast": 150.2785,
+    "stl": 32.3895,
+    "blk": 23.0625,
+    "tov": 81.2645
+   },
+   "ranks": {
+    "fg_pct": 3,
+    "ft_pct": 15,
+    "tpm": 13,
+    "pts": 6,
+    "reb": 4,
+    "ast": 4,
+    "stl": 14,
+    "blk": 13,
+    "tov": 15
+   }
+  },
+  {
+   "team": "Toma Violent Monkeys",
+   "win": 0.346,
+   "tie": 0.0382,
+   "loss": 0.6158,
+   "cats": 3.9829,
+   "games": 36.0,
+   "totals": {
+    "fg_pct": 0.4872,
+    "ft_pct": 0.7947,
+    "tpm": 46.6535,
+    "pts": 748.0565,
+    "reb": 218.804,
+    "ast": 142.5715,
+    "stl": 34.4965,
+    "blk": 21.408,
+    "tov": 83.991
+   },
+   "ranks": {
+    "fg_pct": 10,
+    "ft_pct": 10,
+    "tpm": 15,
+    "pts": 1,
+    "reb": 8,
+    "ast": 6,
+    "stl": 10,
+    "blk": 15,
+    "tov": 16
+   }
+  },
+  {
+   "team": "TaigarEni",
+   "win": 0.3432,
+   "tie": 0.0365,
+   "loss": 0.6203,
+   "cats": 3.9006,
+   "games": 37.0,
+   "totals": {
+    "fg_pct": 0.4814,
+    "ft_pct": 0.7884,
+    "tpm": 59.955,
+    "pts": 617.7075,
+    "reb": 206.566,
+    "ast": 131.89,
+    "stl": 33.013,
+    "blk": 28.1885,
+    "tov": 74.0825
+   },
+   "ranks": {
+    "fg_pct": 11,
+    "ft_pct": 12,
+    "tpm": 9,
+    "pts": 7,
+    "reb": 14,
+    "ast": 10,
+    "stl": 11,
+    "blk": 5,
+    "tov": 8
+   }
+  },
+  {
+   "team": "Dataigars",
+   "win": 0.2572,
+   "tie": 0.0351,
+   "loss": 0.7077,
+   "cats": 3.7136,
+   "games": 35.0,
+   "totals": {
+    "fg_pct": 0.4568,
+    "ft_pct": 0.839,
+    "tpm": 76.178,
+    "pts": 572.1775,
+    "reb": 172.309,
+    "ast": 128.1005,
+    "stl": 32.958,
+    "blk": 25.797,
+    "tov": 72.1375
+   },
+   "ranks": {
+    "fg_pct": 16,
+    "ft_pct": 1,
+    "tpm": 1,
+    "pts": 14,
+    "reb": 16,
+    "ast": 13,
+    "stl": 12,
+    "blk": 8,
+    "tov": 6
+   }
+  },
+  {
+   "team": "BK Zalve-Polýkarpos",
+   "win": 0.2083,
+   "tie": 0.0303,
+   "loss": 0.7615,
+   "cats": 3.3252,
+   "games": 35.0,
+   "totals": {
+    "fg_pct": 0.4723,
+    "ft_pct": 0.7686,
+    "tpm": 57.1255,
+    "pts": 591.6845,
+    "reb": 218.4615,
+    "ast": 139.503,
+    "stl": 31.6625,
+    "blk": 20.464,
+    "tov": 72.575
+   },
+   "ranks": {
+    "fg_pct": 14,
+    "ft_pct": 14,
+    "tpm": 10,
+    "pts": 11,
+    "reb": 9,
+    "ast": 7,
+    "stl": 15,
+    "blk": 16,
+    "tov": 7
+   }
+  },
+  {
+   "team": "Juglas Brīvmākslinieki",
+   "win": 0.0994,
+   "tie": 0.0203,
+   "loss": 0.8803,
+   "cats": 2.9741,
+   "games": 34.0,
+   "totals": {
+    "fg_pct": 0.4726,
+    "ft_pct": 0.8148,
+    "tpm": 56.9455,
+    "pts": 536.845,
+    "reb": 173.9555,
+    "ast": 109.9955,
+    "stl": 29.3865,
+    "blk": 23.8235,
+    "tov": 58.1035
+   },
+   "ranks": {
+    "fg_pct": 13,
+    "ft_pct": 3,
+    "tpm": 11,
+    "pts": 16,
+    "reb": 15,
+    "ast": 16,
+    "stl": 16,
+    "blk": 12,
+    "tov": 2
+   }
+  }
+ ],
+ "matchups": [
+  {
+   "team1": "Gustava Soliņu Sildītāji",
+   "team2": "Raita 'Būs Sūdi'",
+   "win": 0.4158,
+   "tie": 0.0465,
+   "loss": 0.5377,
+   "cats1": 4.2441,
+   "cats2": 4.5942,
+   "games1": 35.0,
+   "games2": 38.0,
+   "categories": {
+    "fg_pct": {
+     "team1": 0.4924,
+     "team2": 0.5046,
+     "win": 0.3545,
+     "tie": 0.0,
+     "loss": 0.6455
+    },
+    "ft_pct": {
+     "team1": 0.8255,
+     "team2": 0.7833,
+     "win": 0.8166,
+     "tie": 0.0,
+     "loss": 0.1834
+    },
+    "tpm": {
+     "team1": 65.286,
+     "team2": 63.5685,
+     "win": 0.5407,
+     "tie": 0.0332,
+     "loss": 0.4261
+    },
+    "pts": {
+     "team1": 587.8635,
+     "team2": 656.438,
+     "win": 0.0831,
+     "tie": 0.0031,
+     "loss": 0.9138
+    },
+    "reb": {
+     "team1": 212.1675,
+     "team2": 226.3775,
+     "win": 0.2607,
+     "tie": 0.0144,
+     "loss": 0.725
+    },
+    "ast": {
+     "team1": 131.341,
+     "team2": 145.237,
+     "win": 0.2046,
+     "tie": 0.0167,
+     "loss": 0.7788
+    },
+    "stl": {
+     "team1": 42.17,
+     "team2": 32.7425,
+     "win": 0.8488,
+     "tie": 0.0255,
+     "loss": 0.1257
+    },
+    "blk": {
+     "team1": 22.9255,
+     "team2": 26.086,
+     "win": 0.3166,
+     "tie": 0.0478,
+     "loss": 0.6357
+    },
+    "tov": {
+     "team1": 66.079,
+     "team2": 77.479,
+     "win": 0.8185,
+     "tie": 0.0212,
+     "loss": 0.1603
+    }
+   }
+  },
+  {
+   "team1": "DzintarSkibidi",
+   "team2": "TaigarEni",
+   "win": 0.6729,
+   "tie": 0.0373,
+   "loss": 0.2898,
+   "cats1": 5.061,
+   "cats2": 3.7861,
+   "games1": 39.0,
+   "games2": 37.0,
+   "categories": {
+    "fg_pct": {
+     "team1": 0.4884,
+     "team2": 0.4814,
+     "win": 0.586,
+     "tie": 0.0,
+     "loss": 0.414
+    },
+    "ft_pct": {
+     "team1": 0.8088,
+     "team2": 0.7884,
+     "win": 0.6676,
+     "tie": 0.0,
+     "loss": 0.3324
+    },
+    "tpm": {
+     "team1": 46.6195,
+     "team2": 59.955,
+     "win": 0.1007,
+     "tie": 0.0173,
+     "loss": 0.8821
+    },
+    "pts": {
+     "team1": 614.952,
+     "team2": 617.7075,
+     "win": 0.4739,
+     "tie": 0.008,
+     "loss": 0.5181
+    },
+    "reb": {
+     "team1": 210.406,
+     "team2": 206.566,
+     "win": 0.5593,
+     "tie": 0.0176,
+     "loss": 0.4231
+    },
+    "ast": {
+     "team1": 160.298,
+     "team2": 131.89,
+     "win": 0.9402,
+     "tie": 0.0063,
+     "loss": 0.0534
+    },
+    "stl": {
+     "team1": 41.6345,
+     "team2": 33.013,
+     "win": 0.8264,
+     "tie": 0.0281,
+     "loss": 0.1455
+    },
+    "blk": {
+     "team1": 30.3735,
+     "team2": 28.1885,
+     "win": 0.5797,
+     "tie": 0.046,
+     "loss": 0.3744
+    },
+    "tov": {
+     "team1": 79.1205,
+     "team2": 74.0825,
+     "win": 0.3273,
+     "tie": 0.0297,
+     "loss": 0.6431
+    }
+   }
+  },
+  {
+   "team1": "BK 'Vārnu ielas republika'",
+   "team2": "Juglas Brīvmākslinieki",
+   "win": 0.9137,
+   "tie": 0.0165,
+   "loss": 0.0698,
+   "cats1": 6.1454,
+   "cats2": 2.6987,
+   "games1": 37.0,
+   "games2": 34.0,
+   "categories": {
+    "fg_pct": {
+     "team1": 0.5044,
+     "team2": 0.4726,
+     "win": 0.8223,
+     "tie": 0.0,
+     "loss": 0.1777
+    },
+    "ft_pct": {
+     "team1": 0.813,
+     "team2": 0.8148,
+     "win": 0.4857,
+     "tie": 0.0,
+     "loss": 0.5143
+    },
+    "tpm": {
+     "team1": 50.6515,
+     "team2": 56.9455,
+     "win": 0.2662,
+     "tie": 0.031,
+     "loss": 0.7028
+    },
+    "pts": {
+     "team1": 570.8765,
+     "team2": 536.845,
+     "win": 0.7619,
+     "tie": 0.0065,
+     "loss": 0.2316
+    },
+    "reb": {
+     "team1": 210.0685,
+     "team2": 173.9555,
+     "win": 0.9514,
+     "tie": 0.0045,
+     "loss": 0.044
+    },
+    "ast": {
+     "team1": 126.163,
+     "team2": 109.9955,
+     "win": 0.8345,
+     "tie": 0.015,
+     "loss": 0.1505
+    },
+    "stl": {
+     "team1": 44.447,
+     "team2": 29.3865,
+     "win": 0.9549,
+     "tie": 0.01,
+     "loss": 0.0351
+    },
+    "blk": {
+     "team1": 24.192,
+     "team2": 23.8235,
+     "win": 0.4931,
+     "tie": 0.0525,
+     "loss": 0.4545
+    },
+    "tov": {
+     "team1": 55.576,
+     "team2": 58.1035,
+     "win": 0.5754,
+     "tie": 0.0364,
+     "loss": 0.3882
+    }
+   }
+  },
+  {
+   "team1": "BK Zalve-Polýkarpos",
+   "team2": "Hole of Fame",
+   "win": 0.1181,
+   "tie": 0.0227,
+   "loss": 0.8592,
+   "cats1": 3.0179,
+   "cats2": 5.8414,
+   "games1": 35.0,
+   "games2": 37.0,
+   "categories": {
+    "fg_pct": {
+     "team1": 0.4723,
+     "team2": 0.4901,
+     "win": 0.2928,
+     "tie": 0.0,
+     "loss": 0.7072
+    },
+    "ft_pct": {
+     "team1": 0.7686,
+     "team2": 0.7984,
+     "win": 0.2777,
+     "tie": 0.0,
+     "loss": 0.7223
+    },
+    "tpm": {
+     "team1": 57.1255,
+     "team2": 60.661,
+     "win": 0.3615,
+     "tie": 0.0334,
+     "loss": 0.6051
+    },
+    "pts": {
+     "team1": 591.6845,
+     "team2": 609.029,
+     "win": 0.3579,
+     "tie": 0.0076,
+     "loss": 0.6345
+    },
+    "reb": {
+     "team1": 218.4615,
+     "team2": 219.8835,
+     "win": 0.4666,
+     "tie": 0.0174,
+     "loss": 0.516
+    },
+    "ast": {
+     "team1": 139.503,
+     "team2": 119.706,
+     "win": 0.8734,
+     "tie": 0.0119,
+     "loss": 0.1147
+    },
+    "stl": {
+     "team1": 31.6625,
+     "team2": 37.553,
+     "win": 0.2212,
+     "tie": 0.0373,
+     "loss": 0.7415
+    },
+    "blk": {
+     "team1": 20.464,
+     "team2": 32.5855,
+     "win": 0.0568,
+     "tie": 0.0158,
+     "loss": 0.9274
+    },
+    "tov": {
+     "team1": 72.575,
+     "team2": 59.004,
+     "win": 0.11,
+     "tie": 0.0173,
+     "loss": 0.8728
+    }
+   }
+  },
+  {
+   "team1": "Bukaišu Svelme",
+   "team2": "Dataigars",
+   "win": 0.9175,
+   "tie": 0.0155,
+   "loss": 0.0669,
+   "cats1": 5.792,
+   "cats2": 3.0968,
+   "games1": 38.0,
+   "games2": 35.0,
+   "categories": {
+    "fg_pct": {
+     "team1": 0.4903,
+     "team2": 0.4568,
+     "win": 0.8514,
+     "tie": 0.0,
+     "loss": 0.1486
+    },
+    "ft_pct": {
+     "team1": 0.8014,
+     "team2": 0.839,
+     "win": 0.2141,
+     "tie": 0.0,
+     "loss": 0.7859
+    },
+    "tpm": {
+     "team1": 55.73,
+     "team2": 76.178,
+     "win": 0.041,
+     "tie": 0.0078,
+     "loss": 0.9511
+    },
+    "pts": {
+     "team1": 657.435,
+     "team2": 572.1775,
+     "win": 0.9563,
+     "tie": 0.0018,
+     "loss": 0.0419
+    },
+    "reb": {
+     "team1": 240.62,
+     "team2": 172.309,
+     "win": 0.9988,
+     "tie": 0.0002,
+     "loss": 0.001
+    },
+    "ast": {
+     "team1": 166.705,
+     "team2": 128.1005,
+     "win": 0.9828,
+     "tie": 0.0022,
+     "loss": 0.0149
+    },
+    "stl": {
+     "team1": 43.641,
+     "team2": 32.958,
+     "win": 0.8777,
+     "tie": 0.0216,
+     "loss": 0.1007
+    },
+    "blk": {
+     "team1": 27.66,
+     "team2": 25.797,
+     "win": 0.5676,
+     "tie": 0.0485,
+     "loss": 0.384
+    },
+    "tov": {
+     "team1": 77.9805,
+     "team2": 72.1375,
+     "win": 0.3023,
+     "tie": 0.0291,
+     "loss": 0.6686
+    }
+   }
+  },
+  {
+   "team1": "G League Team",
+   "team2": "Toma Violent Monkeys",
+   "win": 0.8545,
+   "tie": 0.0229,
+   "loss": 0.1226,
+   "cats1": 5.564,
+   "cats2": 3.3395,
+   "games1": 39.0,
+   "games2": 36.0,
+   "categories": {
+    "fg_pct": {
+     "team1": 0.4728,
+     "team2": 0.4872,
+     "win": 0.3205,
+     "tie": 0.0,
+     "loss": 0.6795
+    },
+    "ft_pct": {
+     "team1": 0.8066,
+     "team2": 0.7947,
+     "win": 0.6028,
+     "tie": 0.0,
+     "loss": 0.3972
+    },
+    "tpm": {
+     "team1": 73.9965,
+     "team2": 46.6535,
+     "win": 0.9901,
+     "tie": 0.0021,
+     "loss": 0.0078
+    },
+    "pts": {
+     "team1": 605.273,
+     "team2": 748.0565,
+     "win": 0.0029,
+     "tie": 0.0002,
+     "loss": 0.9969
+    },
+    "reb": {
+     "team1": 251.3735,
+     "team2": 218.804,
+     "win": 0.9115,
+     "tie": 0.0066,
+     "loss": 0.0819
+    },
+    "ast": {
+     "team1": 129.7835,
+     "team2": 142.5715,
+     "win": 0.2213,
+     "tie": 0.0175,
+     "loss": 0.7611
+    },
+    "stl": {
+     "team1": 38.7615,
+     "team2": 34.4965,
+     "win": 0.67,
+     "tie": 0.0412,
+     "loss": 0.2889
+    },
+    "blk": {
+     "team1": 31.806,
+     "team2": 21.408,
+     "win": 0.8923,
+     "tie": 0.0214,
+     "loss": 0.0863
+    },
+    "tov": {
+     "team1": 63.222,
+     "team2": 83.991,
+     "win": 0.9526,
+     "tie": 0.0076,
+     "loss": 0.0398
+    }
+   }
+  },
+  {
+   "team1": "Klāva Varenā Pīle",
+   "team2": "ReinAss Team",
+   "win": 0.5649,
+   "tie": 0.0483,
+   "loss": 0.3868,
+   "cats1": 4.689,
+   "cats2": 4.1665,
+   "games1": 38.0,
+   "games2": 38.0,
+   "categories": {
+    "fg_pct": {
+     "team1": 0.4987,
+     "team2": 0.4624,
+     "win": 0.8739,
+     "tie": 0.0,
+     "loss": 0.1261
+    },
+    "ft_pct": {
+     "team1": 0.7557,
+     "team2": 0.7919,
+     "win": 0.2269,
+     "tie": 0.0,
+     "loss": 0.7731
+    },
+    "tpm": {
+     "team1": 61.8865,
+     "team2": 66.94,
+     "win": 0.3204,
+     "tie": 0.0306,
+     "loss": 0.649
+    },
+    "pts": {
+     "team1": 683.4235,
+     "team2": 581.045,
+     "win": 0.9786,
+     "tie": 0.001,
+     "loss": 0.0204
+    },
+    "reb": {
+     "team1": 253.4635,
+     "team2": 214.096,
+     "win": 0.9496,
+     "tie": 0.0042,
+     "loss": 0.0462
+    },
+    "ast": {
+     "team1": 139.348,
+     "team2": 182.3955,
+     "win": 0.0103,
+     "tie": 0.0015,
+     "loss": 0.9881
+    },
+    "stl": {
+     "team1": 38.9875,
+     "team2": 45.0135,
+     "win": 0.2382,
+     "tie": 0.0351,
+     "loss": 0.7267
+    },
+    "blk": {
+     "team1": 29.935,
+     "team2": 25.0345,
+     "win": 0.706,
+     "tie": 0.0409,
+     "loss": 0.253
+    },
+    "tov": {
+     "team1": 78.385,
+     "team2": 75.2605,
+     "win": 0.385,
+     "tie": 0.0312,
+     "loss": 0.5838
+    }
+   }
+  },
+  {
+   "team1": "Maris STOPIŅU TURTLES",
+   "team2": "MJ Liepupes Bebri",
+   "win": 0.1979,
+   "tie": 0.0371,
+   "loss": 0.765,
+   "cats1": 3.3861,
+   "cats2": 5.4303,
+   "games1": 38.0,
+   "games2": 37.0,
+   "categories": {
+    "fg_pct": {
+     "team1": 0.5001,
+     "team2": 0.4888,
+     "win": 0.6394,
+     "tie": 0.0,
+     "loss": 0.3606
+    },
+    "ft_pct": {
+     "team1": 0.7601,
+     "team2": 0.8128,
+     "win": 0.124,
+     "tie": 0.0,
+     "loss": 0.876
+    },
+    "tpm": {
+     "team1": 52.366,
+     "team2": 63.434,
+     "win": 0.1527,
+     "tie": 0.0219,
+     "loss": 0.8255
+    },
+    "pts": {
+     "team1": 639.3265,
+     "team2": 672.615,
+     "win": 0.2547,
+     "tie": 0.0063,
+     "loss": 0.7389
+    },
+    "reb": {
+     "team1": 227.7265,
+     "team2": 225.8525,
+     "win": 0.5235,
+     "tie": 0.017,
+     "loss": 0.4595
+    },
+    "ast": {
+     "team1": 150.2785,
+     "team2": 138.3565,
+     "win": 0.7392,
+     "tie": 0.0179,
+     "loss": 0.2429
+    },
+    "stl": {
+     "team1": 32.3895,
+     "team2": 36.7545,
+     "win": 0.2793,
+     "tie": 0.0418,
+     "loss": 0.679
+    },
+    "blk": {
+     "team1": 23.0625,
+     "team2": 25.539,
+     "win": 0.3484,
+     "tie": 0.0495,
+     "loss": 0.6021
+    },
+    "tov": {
+     "team1": 81.2645,
+     "team2": 76.071,
+     "win": 0.3249,
+     "tie": 0.0292,
+     "loss": 0.6459
+    }
+   }
+  }
+ ]
+}
