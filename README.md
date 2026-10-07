@@ -17,7 +17,8 @@ It also hosts the season's One-Win **standings** and each week's projected **mat
   push to `main`, at **https://dziesma.github.io/fantasy-lombards/**.
 - **[rights.csv](rights.csv)**: the same data for spreadsheets.
 - **[Standings & odds](https://dziesma.github.io/fantasy-lombards/odds.html)**: standings from the results, plus every
-  week's matchup odds and power ranking. Pick a week; open a matchup for the per-category breakdown.
+  week's matchup odds and power ranking. Pick a week and whose projections to use (ESPN, Yahoo/Rotowire, or the
+  average of both); open a matchup for the per-category breakdown.
 
 ## Keeper rules used here
 
@@ -44,7 +45,7 @@ Only edit the files in `data/`. Everything else is generated.
 | `data/weeks_<season>.csv` | fantasy weeks from Yahoo: `week,start,end` |
 | `data/matchups_<season>.csv` | the schedule: `week,team1,team2` with **Yahoo team ids** (see `teams.csv`), lower id first, sorted by week then team1 |
 | `data/results_<season>.csv` | finished weeks: `week,team1,team2,cats1,cats2,ties` (team ids, lower id first; the three add up to 9) |
-| `data/odds/<season>/` | `week-NN.json`, `outlook.json`: team-level matchup odds and power rankings, exported by the maintainer's h2hcats run (no player values). Don't edit by hand. A week's file is frozen once the week starts |
+| `data/odds/<season>/<variant>/` | `week-NN.json`, `outlook.json`: team-level matchup odds and power rankings, one folder per projection variant (`blend` = average of ESPN and Yahoo, `espn`, `yahoo`), exported by the maintainer's h2hcats run (no player values). Don't edit by hand. A week's file is frozen once the week starts |
 
 `transactions.csv` columns: `date,type,player,from_team,to_team,fab,note`, with `type` one of:
 

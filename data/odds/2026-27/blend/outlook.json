@@ -1,0 +1,542 @@
+{
+ "season": "2026-27",
+ "generated": "2026-10-07",
+ "variant": "blend",
+ "label": "Average (ESPN + Yahoo)",
+ "projections": {
+  "espn": "2026-10-07",
+  "yahoo": "2026-10-07"
+ },
+ "week": null,
+ "games": "typical (3.5 per player)",
+ "categories": [
+  {
+   "id": "fg_pct",
+   "label": "FG%",
+   "lower_is_better": false
+  },
+  {
+   "id": "ft_pct",
+   "label": "FT%",
+   "lower_is_better": false
+  },
+  {
+   "id": "tpm",
+   "label": "3PM",
+   "lower_is_better": false
+  },
+  {
+   "id": "pts",
+   "label": "PTS",
+   "lower_is_better": false
+  },
+  {
+   "id": "reb",
+   "label": "REB",
+   "lower_is_better": false
+  },
+  {
+   "id": "ast",
+   "label": "AST",
+   "lower_is_better": false
+  },
+  {
+   "id": "stl",
+   "label": "ST",
+   "lower_is_better": false
+  },
+  {
+   "id": "blk",
+   "label": "BLK",
+   "lower_is_better": false
+  },
+  {
+   "id": "tov",
+   "label": "TO",
+   "lower_is_better": true
+  }
+ ],
+ "power": [
+  {
+   "team": 7,
+   "win": 0.6866,
+   "tie": 0.0382,
+   "loss": 0.2752,
+   "cats": 5.1176,
+   "games": 35.0,
+   "totals": {
+    "fg_pct": 0.4947,
+    "ft_pct": 0.8268,
+    "tpm": 65.8927,
+    "pts": 582.8637,
+    "reb": 218.3597,
+    "ast": 132.3578,
+    "stl": 41.5292,
+    "blk": 23.6547,
+    "tov": 66.2392
+   },
+   "ranks": {
+    "fg_pct": 6,
+    "ft_pct": 2,
+    "tpm": 5,
+    "pts": 12,
+    "reb": 4,
+    "ast": 9,
+    "stl": 3,
+    "blk": 10,
+    "tov": 6
+   }
+  },
+  {
+   "team": 6,
+   "win": 0.6725,
+   "tie": 0.0372,
+   "loss": 0.2903,
+   "cats": 5.0235,
+   "games": 35.0,
+   "totals": {
+    "fg_pct": 0.4741,
+    "ft_pct": 0.8076,
+    "tpm": 68.6647,
+    "pts": 563.6453,
+    "reb": 236.7837,
+    "ast": 119.5618,
+    "stl": 35.6335,
+    "blk": 32.4065,
+    "tov": 59.101
+   },
+   "ranks": {
+    "fg_pct": 12,
+    "ft_pct": 6,
+    "tpm": 4,
+    "pts": 14,
+    "reb": 1,
+    "ast": 13,
+    "stl": 8,
+    "blk": 1,
+    "tov": 3
+   }
+  },
+  {
+   "team": 4,
+   "win": 0.662,
+   "tie": 0.0376,
+   "loss": 0.3004,
+   "cats": 5.0373,
+   "games": 35.0,
+   "totals": {
+    "fg_pct": 0.4976,
+    "ft_pct": 0.7952,
+    "tpm": 49.7122,
+    "pts": 597.3362,
+    "reb": 223.3648,
+    "ast": 159.9885,
+    "stl": 40.9062,
+    "blk": 26.2342,
+    "tov": 70.4095
+   },
+   "ranks": {
+    "fg_pct": 3,
+    "ft_pct": 12,
+    "tpm": 14,
+    "pts": 8,
+    "reb": 3,
+    "ast": 2,
+    "stl": 4,
+    "blk": 7,
+    "tov": 7
+   }
+  },
+  {
+   "team": 10,
+   "win": 0.5815,
+   "tie": 0.0445,
+   "loss": 0.3739,
+   "cats": 4.7422,
+   "games": 35.0,
+   "totals": {
+    "fg_pct": 0.4963,
+    "ft_pct": 0.7608,
+    "tpm": 58.7772,
+    "pts": 633.9918,
+    "reb": 230.6885,
+    "ast": 129.0433,
+    "stl": 35.973,
+    "blk": 28.1137,
+    "tov": 70.7647
+   },
+   "ranks": {
+    "fg_pct": 4,
+    "ft_pct": 15,
+    "tpm": 11,
+    "pts": 4,
+    "reb": 2,
+    "ast": 10,
+    "stl": 7,
+    "blk": 3,
+    "tov": 8
+   }
+  },
+  {
+   "team": 12,
+   "win": 0.5696,
+   "tie": 0.0429,
+   "loss": 0.3876,
+   "cats": 4.7067,
+   "games": 35.0,
+   "totals": {
+    "fg_pct": 0.4896,
+    "ft_pct": 0.8108,
+    "tpm": 64.561,
+    "pts": 625.2295,
+    "reb": 217.644,
+    "ast": 116.186,
+    "stl": 33.4582,
+    "blk": 24.9042,
+    "tov": 63.4725
+   },
+   "ranks": {
+    "fg_pct": 9,
+    "ft_pct": 5,
+    "tpm": 7,
+    "pts": 5,
+    "reb": 5,
+    "ast": 15,
+    "stl": 11,
+    "blk": 8,
+    "tov": 5
+   }
+  },
+  {
+   "team": 8,
+   "win": 0.5621,
+   "tie": 0.0395,
+   "loss": 0.3983,
+   "cats": 4.6706,
+   "games": 35.0,
+   "totals": {
+    "fg_pct": 0.489,
+    "ft_pct": 0.7965,
+    "tpm": 58.828,
+    "pts": 582.8777,
+    "reb": 216.6675,
+    "ast": 114.8367,
+    "stl": 35.4113,
+    "blk": 32.4047,
+    "tov": 57.9512
+   },
+   "ranks": {
+    "fg_pct": 10,
+    "ft_pct": 9,
+    "tpm": 10,
+    "pts": 11,
+    "reb": 7,
+    "ast": 16,
+    "stl": 9,
+    "blk": 2,
+    "tov": 2
+   }
+  },
+  {
+   "team": 15,
+   "win": 0.462,
+   "tie": 0.0433,
+   "loss": 0.4947,
+   "cats": 4.3601,
+   "games": 35.0,
+   "totals": {
+    "fg_pct": 0.4824,
+    "ft_pct": 0.7964,
+    "tpm": 65.513,
+    "pts": 635.9202,
+    "reb": 207.2998,
+    "ast": 127.9723,
+    "stl": 31.1692,
+    "blk": 27.1442,
+    "tov": 73.1587
+   },
+   "ranks": {
+    "fg_pct": 11,
+    "ft_pct": 10,
+    "tpm": 6,
+    "pts": 2,
+    "reb": 10,
+    "ast": 11,
+    "stl": 14,
+    "blk": 5,
+    "tov": 11
+   }
+  },
+  {
+   "team": 1,
+   "win": 0.4573,
+   "tie": 0.0401,
+   "loss": 0.5027,
+   "cats": 4.3361,
+   "games": 35.0,
+   "totals": {
+    "fg_pct": 0.491,
+    "ft_pct": 0.8072,
+    "tpm": 38.4948,
+    "pts": 589.47,
+    "reb": 216.2632,
+    "ast": 151.4258,
+    "stl": 40.712,
+    "blk": 24.465,
+    "tov": 77.5268
+   },
+   "ranks": {
+    "fg_pct": 8,
+    "ft_pct": 7,
+    "tpm": 16,
+    "pts": 9,
+    "reb": 8,
+    "ast": 4,
+    "stl": 5,
+    "blk": 9,
+    "tov": 13
+   }
+  },
+  {
+   "team": 5,
+   "win": 0.4452,
+   "tie": 0.0439,
+   "loss": 0.5109,
+   "cats": 4.3192,
+   "games": 35.0,
+   "totals": {
+    "fg_pct": 0.4621,
+    "ft_pct": 0.8285,
+    "tpm": 73.7012,
+    "pts": 589.064,
+    "reb": 185.843,
+    "ast": 140.455,
+    "stl": 38.2147,
+    "blk": 26.5633,
+    "tov": 79.2557
+   },
+   "ranks": {
+    "fg_pct": 15,
+    "ft_pct": 1,
+    "tpm": 1,
+    "pts": 10,
+    "reb": 15,
+    "ast": 6,
+    "stl": 6,
+    "blk": 6,
+    "tov": 14
+   }
+  },
+  {
+   "team": 14,
+   "win": 0.4452,
+   "tie": 0.0414,
+   "loss": 0.5133,
+   "cats": 4.3319,
+   "games": 35.0,
+   "totals": {
+    "fg_pct": 0.4562,
+    "ft_pct": 0.7973,
+    "tpm": 70.3395,
+    "pts": 545.587,
+    "reb": 185.9795,
+    "ast": 174.5503,
+    "stl": 44.107,
+    "blk": 23.4902,
+    "tov": 71.358
+   },
+   "ranks": {
+    "fg_pct": 16,
+    "ft_pct": 8,
+    "tpm": 2,
+    "pts": 15,
+    "reb": 14,
+    "ast": 1,
+    "stl": 1,
+    "blk": 11,
+    "tov": 9
+   }
+  },
+  {
+   "team": 13,
+   "win": 0.4423,
+   "tie": 0.0437,
+   "loss": 0.514,
+   "cats": 4.3099,
+   "games": 35.0,
+   "totals": {
+    "fg_pct": 0.4941,
+    "ft_pct": 0.7927,
+    "tpm": 69.0007,
+    "pts": 634.6182,
+    "reb": 200.06,
+    "ast": 133.8872,
+    "stl": 30.9348,
+    "blk": 22.148,
+    "tov": 72.1822
+   },
+   "ranks": {
+    "fg_pct": 7,
+    "ft_pct": 13,
+    "tpm": 3,
+    "pts": 3,
+    "reb": 12,
+    "ast": 8,
+    "stl": 16,
+    "blk": 14,
+    "tov": 10
+   }
+  },
+  {
+   "team": 2,
+   "win": 0.4096,
+   "tie": 0.0419,
+   "loss": 0.5485,
+   "cats": 4.2038,
+   "games": 35.0,
+   "totals": {
+    "fg_pct": 0.4982,
+    "ft_pct": 0.8215,
+    "tpm": 50.0763,
+    "pts": 529.3663,
+    "reb": 199.5717,
+    "ast": 119.875,
+    "stl": 41.573,
+    "blk": 22.988,
+    "tov": 52.871
+   },
+   "ranks": {
+    "fg_pct": 2,
+    "ft_pct": 3,
+    "tpm": 13,
+    "pts": 16,
+    "reb": 13,
+    "ast": 12,
+    "stl": 2,
+    "blk": 13,
+    "tov": 1
+   }
+  },
+  {
+   "team": 3,
+   "win": 0.3697,
+   "tie": 0.043,
+   "loss": 0.5872,
+   "cats": 4.0449,
+   "games": 35.0,
+   "totals": {
+    "fg_pct": 0.4731,
+    "ft_pct": 0.7857,
+    "tpm": 62.0392,
+    "pts": 610.603,
+    "reb": 217.4865,
+    "ast": 138.9622,
+    "stl": 31.2235,
+    "blk": 23.1543,
+    "tov": 74.0005
+   },
+   "ranks": {
+    "fg_pct": 13,
+    "ft_pct": 14,
+    "tpm": 8,
+    "pts": 7,
+    "reb": 6,
+    "ast": 7,
+    "stl": 13,
+    "blk": 12,
+    "tov": 12
+   }
+  },
+  {
+   "team": 16,
+   "win": 0.3627,
+   "tie": 0.0403,
+   "loss": 0.597,
+   "cats": 4.0879,
+   "games": 35.0,
+   "totals": {
+    "fg_pct": 0.4958,
+    "ft_pct": 0.7955,
+    "tpm": 40.5965,
+    "pts": 706.9423,
+    "reb": 209.4715,
+    "ast": 149.1455,
+    "stl": 32.6672,
+    "blk": 20.272,
+    "tov": 81.5588
+   },
+   "ranks": {
+    "fg_pct": 5,
+    "ft_pct": 11,
+    "tpm": 15,
+    "pts": 1,
+    "reb": 9,
+    "ast": 5,
+    "stl": 12,
+    "blk": 16,
+    "tov": 15
+   }
+  },
+  {
+   "team": 11,
+   "win": 0.292,
+   "tie": 0.0396,
+   "loss": 0.6684,
+   "cats": 3.8207,
+   "games": 35.0,
+   "totals": {
+    "fg_pct": 0.5002,
+    "ft_pct": 0.7565,
+    "tpm": 51.0703,
+    "pts": 618.1612,
+    "reb": 201.7733,
+    "ast": 157.7537,
+    "stl": 34.874,
+    "blk": 21.2538,
+    "tov": 81.9613
+   },
+   "ranks": {
+    "fg_pct": 1,
+    "ft_pct": 16,
+    "tpm": 12,
+    "pts": 6,
+    "reb": 11,
+    "ast": 3,
+    "stl": 10,
+    "blk": 15,
+    "tov": 16
+   }
+  },
+  {
+   "team": 9,
+   "win": 0.2528,
+   "tie": 0.0366,
+   "loss": 0.7106,
+   "cats": 3.656,
+   "games": 35.0,
+   "totals": {
+    "fg_pct": 0.4685,
+    "ft_pct": 0.8159,
+    "tpm": 60.6725,
+    "pts": 568.6765,
+    "reb": 183.2933,
+    "ast": 117.1958,
+    "stl": 31.0187,
+    "blk": 27.5415,
+    "tov": 60.9577
+   },
+   "ranks": {
+    "fg_pct": 14,
+    "ft_pct": 4,
+    "tpm": 9,
+    "pts": 13,
+    "reb": 16,
+    "ast": 14,
+    "stl": 15,
+    "blk": 4,
+    "tov": 4
+   }
+  }
+ ],
+ "matchups": []
+}

@@ -9,7 +9,8 @@ Inputs (hand-edited):
   data/weeks_<season>.csv     week, start, end (fantasy weeks, from Yahoo)
   data/matchups_<season>.csv  week, team1, team2 (Yahoo team ids)
   data/results_<season>.csv   week, team1, team2, cats1, cats2, ties (finished weeks, team ids)
-  data/odds/<season>/         week-NN.json + outlook.json: team-level matchup odds and power ranking,
+  data/odds/<season>/<variant>/  week-NN.json + outlook.json: team-level matchup odds and power ranking, one
+                              folder per projection variant (blend = average of ESPN and Yahoo, espn, yahoo),
                               exported by the maintainer's h2hcats run (not hand-edited; no player values)
 
 Outputs (generated, don't edit by hand):
@@ -38,6 +39,7 @@ BUDGET = 200
 BUDGET_CAP = 215
 ROSTER_SPOTS = 13
 TRANSACTION_TYPES = {"trade", "drop", "add"}
+ODDS_ORDER = ["blend", "espn", "yahoo"]   # projection variants on the odds page; the first one present is the default
 
 
 def escalate(price):
@@ -302,19 +304,30 @@ def load_season(teams):
             die(f"results_{SEASON}.csv: week {w} {a} vs {b}: categories don't add up to 9")
         results.append({"week": w, "team1": a, "team2": b, "cats1": c1, "cats2": c2, "ties": ties})
 
-    odds = {}
-    folder = DATA / "odds" / SEASON
-    for path in sorted(folder.glob("*.json")) if folder.exists() else []:
-        o = json.loads(path.read_text(encoding="utf-8"))   # teams are ids, so renames can't break old weeks
-        bad = {r["team"] for r in o["power"]} - set(ids)
-        if bad:
-            die(f"{path.relative_to(ROOT)}: unknown team ids {sorted(bad)}")
-        if o["week"] is not None:
-            for m in o["matchups"]:
-                if (o["week"], frozenset((m["team1"], m["team2"]))) not in pairs:
-                    die(f"{path.relative_to(ROOT)}: {m['team1']} vs {m['team2']} is not in the schedule")
-        odds["outlook" if o["week"] is None else str(o["week"])] = o
-    return {"weeks": weeks, "matchups": matchups, "results": results, "odds": odds}
+    odds, variants = {}, []
+    root = DATA / "odds" / SEASON
+    if root.exists() and any(root.glob("*.json")):
+        die(f"{root.relative_to(ROOT)}: odds files belong in a projection-variant folder (blend/, espn/, yahoo/)")
+    folders = sorted((d for d in root.iterdir() if d.is_dir()), key=lambda d: (
+        ODDS_ORDER.index(d.name) if d.name in ODDS_ORDER else len(ODDS_ORDER), d.name)) if root.exists() else []
+    for folder in folders:
+        v, docs = folder.name, {}
+        for path in sorted(folder.glob("*.json")):
+            o = json.loads(path.read_text(encoding="utf-8"))   # teams are ids, so renames can't break old weeks
+            bad = {r["team"] for r in o["power"]} - set(ids)
+            if bad:
+                die(f"{path.relative_to(ROOT)}: unknown team ids {sorted(bad)}")
+            if o.get("variant", v) != v:
+                die(f"{path.relative_to(ROOT)}: variant {o['variant']!r} in the {v}/ folder")
+            if o["week"] is not None:
+                for m in o["matchups"]:
+                    if (o["week"], frozenset((m["team1"], m["team2"]))) not in pairs:
+                        die(f"{path.relative_to(ROOT)}: {m['team1']} vs {m['team2']} is not in the schedule")
+            docs["outlook" if o["week"] is None else str(o["week"])] = o
+        if docs:
+            odds[v] = docs
+            variants.append({"id": v, "label": next(iter(docs.values())).get("label", v)})
+    return {"weeks": weeks, "matchups": matchups, "results": results, "odds": odds, "variants": variants}
 
 
 def standings(teams, results):
@@ -369,7 +382,8 @@ def main():
 
     print(f"{len(rows)} players, {n_drafted} drafted picks; "
           + ("updated " + ", ".join(map(str, stale)) if stale else "no changes")
-          + f"; {len(season['results'])} results, odds for {len(season['odds'])} weeks"
+          + f"; {len(season['results'])} results, odds for "
+          + (", ".join(f"{v} {len(d)}" for v, d in season['odds'].items()) or "no") + " weeks"
           + f"; site written to {SITE.relative_to(ROOT)}/")
 
 if __name__ == "__main__":

@@ -69,9 +69,10 @@
 <main>
   <h1>Fantasy Lombards</h1>
   <nav><a href="index.html">Keeper rights</a><a class="on" href="odds.html">Standings &amp; odds</a></nav>
-  <p class="sub">One-Win standings and each week's projected matchup odds. Odds come from blended public
+  <p class="sub">One-Win standings and each week's projected matchup odds. Odds come from public player
     projections and current rosters, simulated over the week's NBA schedule with every team starting its best
-    10. They are team-level only and frozen once a week starts.</p>
+    10. Pick whose projections to use: ESPN's, Yahoo's (made by Rotowire) or the average of both. Odds are
+    team-level only and frozen once a week starts.</p>
 
   <section id="standings-sec" hidden>
     <h2>Standings</h2>
@@ -79,7 +80,8 @@
   </section>
 
   <h2>Week</h2>
-  <div class="controls"><select id="week" aria-label="Week"></select></div>
+  <div class="controls"><select id="week" aria-label="Week"></select>
+    <select id="variant" aria-label="Projections" hidden></select></div>
   <p id="meta" class="meta"></p>
   <div id="cards" class="cards"></div>
 
@@ -115,9 +117,18 @@ const sel = document.getElementById("week");
 const cur = D.weeks.find(w => w.end >= today) || D.weeks[D.weeks.length - 1];
 D.weeks.forEach(w => sel.append(el("option", { value: w.week, textContent:
   `Week ${w.week} · ${w.start.slice(5)} – ${w.end.slice(5)}${w.week === cur.week ? " (current)" : ""}` })));
-if (D.odds.outlook) sel.append(el("option", { value: "outlook", textContent: "Season outlook (typical week, roster strength)" }));
+if (Object.values(D.odds).some(o => o.outlook)) sel.append(el("option", { value: "outlook", textContent: "Season outlook (typical week, roster strength)" }));
 sel.value = cur.week;
 sel.addEventListener("change", render);
+
+// Projection variant: average of ESPN and Yahoo (default), ESPN only or Yahoo only; remembered per browser
+const vsel = document.getElementById("variant");
+D.variants.forEach(v => vsel.append(el("option", { value: v.id, textContent: "Projections: " + v.label })));
+vsel.hidden = D.variants.length < 2;
+let saved = null;
+try { saved = localStorage.getItem("odds-variant"); } catch (e) {}
+vsel.value = D.variants.some(v => v.id === saved) ? saved : (D.variants[0] || {}).id;
+vsel.addEventListener("change", () => { try { localStorage.setItem("odds-variant", vsel.value); } catch (e) {} render(); });
 
 function card(m, o, result) {
   const cats = o.categories;
@@ -149,7 +160,7 @@ function card(m, o, result) {
 
 function render() {
   const key = sel.value;
-  const o = D.odds[key];
+  const o = (D.odds[vsel.value] || {})[key];
   const cards = document.getElementById("cards");
   const meta = document.getElementById("meta");
   if (!o) {
