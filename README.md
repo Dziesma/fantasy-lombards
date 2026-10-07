@@ -68,11 +68,14 @@ python3 scripts/build.py        # regenerates rights.csv and KEEPERS.md; preview
 ```
 
 It's Python 3, standard library only. The script checks the data and stops with an error on unknown
-teams, double-drafted players, or a trade/drop from a team that doesn't hold the player. Commit the
+teams, double-drafted players, a trade/drop from a team that doesn't hold the player, a schedule where a team
+plays twice (or not at all) in a week, rows not in lower-id-first order, a result that isn't in the schedule or
+doesn't add up to 9 categories, or an odds file that doesn't match the schedule. Commit the
 regenerated `rights.csv` and `KEEPERS.md` together with your data change. The website itself isn't
 committed. The workflow `.github/workflows/pages.yml` runs `build.py --check` on every push and pull
 request: it fails if the data is invalid or the committed files are stale, and otherwise deploys the site
-(on `main` only). To preview the site locally, open `_site/index.html`.
+(on `main` only). To preview the site locally, open `_site/index.html` (keeper rights) and `_site/odds.html`
+(standings and odds).
 
 ## Hosting
 
