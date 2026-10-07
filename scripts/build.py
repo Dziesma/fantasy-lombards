@@ -302,17 +302,16 @@ def load_season(teams):
             die(f"results_{SEASON}.csv: week {w} {a} vs {b}: categories don't add up to 9")
         results.append({"week": w, "team1": a, "team2": b, "cats1": c1, "cats2": c2, "ties": ties})
 
-    odds, names = {}, set(ids.values())
+    odds = {}
     folder = DATA / "odds" / SEASON
     for path in sorted(folder.glob("*.json")) if folder.exists() else []:
-        o = json.loads(path.read_text(encoding="utf-8"))
-        bad = {r["team"] for r in o["power"]} - names
+        o = json.loads(path.read_text(encoding="utf-8"))   # teams are ids, so renames can't break old weeks
+        bad = {r["team"] for r in o["power"]} - set(ids)
         if bad:
-            die(f"{path.relative_to(ROOT)}: unknown teams {sorted(bad)}")
+            die(f"{path.relative_to(ROOT)}: unknown team ids {sorted(bad)}")
         if o["week"] is not None:
             for m in o["matchups"]:
-                key = (o["week"], frozenset(i for i, n in ids.items() if n in (m["team1"], m["team2"])))
-                if key not in pairs:
+                if (o["week"], frozenset((m["team1"], m["team2"]))) not in pairs:
                     die(f"{path.relative_to(ROOT)}: {m['team1']} vs {m['team2']} is not in the schedule")
         odds["outlook" if o["week"] is None else str(o["week"])] = o
     return {"weeks": weeks, "matchups": matchups, "results": results, "odds": odds}

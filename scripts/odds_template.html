@@ -92,7 +92,7 @@
 <script>
 const D = /*__DATA__*/null;
 const teamById = Object.fromEntries(D.teams.map(t => [t.id, t]));
-const idByName = Object.fromEntries(D.teams.map(t => [t.team, t.id]));
+const name = id => teamById[id].team;   // odds files store team ids; show the current name
 const pct = x => (100 * x).toFixed(0) + "%";
 const el = (tag, props = {}, ...kids) => { const e = Object.assign(document.createElement(tag), props); e.append(...kids); return e; };
 const fmt = (cat, x) => /pct$/.test(cat) ? x.toFixed(3).replace(/^0/, "") : x.toFixed(1);
@@ -124,8 +124,8 @@ function card(m, o, result) {
   const t1fav = m.win >= m.loss;
   const head = el("summary", {},
     el("div", { className: "teams" },
-      el("span", { textContent: m.team1, className: t1fav ? "fav" : "" }), el("span", { className: "p", textContent: pct(m.win) }),
-      el("span", { textContent: m.team2, className: t1fav ? "" : "fav" }), el("span", { className: "p", textContent: pct(m.loss) })),
+      el("span", { textContent: name(m.team1), className: t1fav ? "fav" : "" }), el("span", { className: "p", textContent: pct(m.win) }),
+      el("span", { textContent: name(m.team2), className: t1fav ? "" : "fav" }), el("span", { className: "p", textContent: pct(m.loss) })),
     el("div", { className: "bar", title: `win ${pct(m.win)} · tie ${pct(m.tie)} · loss ${pct(m.loss)}` },
       el("span", { style: `width:${100 * m.win}%` }), el("span", { style: `width:${100 * m.tie}%` }),
       el("span", { style: `width:${100 * m.loss}%` })),
@@ -168,7 +168,7 @@ function render() {
     res[[r.team2, r.team1].join("-")] = `${r.cats2}–${r.cats1}${t}`;
   });
   cards.replaceChildren(...(o.matchups.length ? o.matchups.map(m =>
-    card(m, o, res[[idByName[m.team1], idByName[m.team2]].join("-")])) :
+    card(m, o, res[[m.team1, m.team2].join("-")])) :
     [el("div", { className: "empty", textContent: key === "outlook" ?
       "The season outlook has no matchups: it compares roster strength in a typical week." : "Pairings not set yet." })]));
 
@@ -178,7 +178,7 @@ function render() {
     el("thead", {}, el("tr", {}, ...["#", "Team", "Win%", "Cats", "Games", ...o.categories.map(c => c.label)].map((h, i) =>
       el("th", { textContent: h, className: i > 1 ? "num" : "" })))),
     el("tbody", {}, ...o.power.map((r, i) => el("tr", {},
-      el("td", { textContent: i + 1 }), el("td", { textContent: r.team }),
+      el("td", { textContent: i + 1 }), el("td", { textContent: name(r.team) }),
       el("td", { className: "num", textContent: pct(r.win) }),
       el("td", { className: "num", textContent: r.cats.toFixed(2) }),
       el("td", { className: "num", textContent: r.games }),

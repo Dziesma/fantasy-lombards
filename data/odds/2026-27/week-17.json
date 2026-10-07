@@ -58,7 +58,7 @@
  ],
  "power": [
   {
-   "team": "Gustava Soliņu Sildītāji",
+   "team": 7,
    "win": 0.9064,
    "tie": 0.0151,
    "loss": 0.0785,
@@ -88,7 +88,7 @@
    }
   },
   {
-   "team": "MJ Liepupes Bebri",
+   "team": 12,
    "win": 0.6378,
    "tie": 0.035,
    "loss": 0.3271,
@@ -118,7 +118,7 @@
    }
   },
   {
-   "team": "TaigarEni",
+   "team": 15,
    "win": 0.6053,
    "tie": 0.0348,
    "loss": 0.36,
@@ -148,7 +148,7 @@
    }
   },
   {
-   "team": "Bukaišu Svelme",
+   "team": 4,
    "win": 0.5847,
    "tie": 0.0348,
    "loss": 0.3805,
@@ -178,7 +178,7 @@
    }
   },
   {
-   "team": "G League Team",
+   "team": 6,
    "win": 0.5832,
    "tie": 0.0336,
    "loss": 0.3832,
@@ -208,7 +208,7 @@
    }
   },
   {
-   "team": "BK 'Vārnu ielas republika'",
+   "team": 2,
    "win": 0.5684,
    "tie": 0.0342,
    "loss": 0.3974,
@@ -238,7 +238,7 @@
    }
   },
   {
-   "team": "ReinAss Team",
+   "team": 14,
    "win": 0.5478,
    "tie": 0.0352,
    "loss": 0.417,
@@ -268,7 +268,7 @@
    }
   },
   {
-   "team": "Hole of Fame",
+   "team": 8,
    "win": 0.5142,
    "tie": 0.0331,
    "loss": 0.4527,
@@ -298,7 +298,7 @@
    }
   },
   {
-   "team": "BK Zalve-Polýkarpos",
+   "team": 3,
    "win": 0.494,
    "tie": 0.0373,
    "loss": 0.4687,
@@ -328,7 +328,7 @@
    }
   },
   {
-   "team": "Klāva Varenā Pīle",
+   "team": 10,
    "win": 0.4712,
    "tie": 0.0384,
    "loss": 0.4904,
@@ -358,7 +358,7 @@
    }
   },
   {
-   "team": "DzintarSkibidi",
+   "team": 1,
    "win": 0.4448,
    "tie": 0.0329,
    "loss": 0.5223,
@@ -388,7 +388,7 @@
    }
   },
   {
-   "team": "Raita 'Būs Sūdi'",
+   "team": 13,
    "win": 0.4406,
    "tie": 0.0354,
    "loss": 0.524,
@@ -418,7 +418,7 @@
    }
   },
   {
-   "team": "Dataigars",
+   "team": 5,
    "win": 0.2784,
    "tie": 0.0366,
    "loss": 0.685,
@@ -448,7 +448,7 @@
    }
   },
   {
-   "team": "Toma Violent Monkeys",
+   "team": 16,
    "win": 0.2737,
    "tie": 0.0318,
    "loss": 0.6945,
@@ -478,7 +478,7 @@
    }
   },
   {
-   "team": "Maris STOPIŅU TURTLES",
+   "team": 11,
    "win": 0.241,
    "tie": 0.0271,
    "loss": 0.7318,
@@ -508,7 +508,7 @@
    }
   },
   {
-   "team": "Juglas Brīvmākslinieki",
+   "team": 9,
    "win": 0.1487,
    "tie": 0.024,
    "loss": 0.8272,
@@ -540,8 +540,8 @@
  ],
  "matchups": [
   {
-   "team1": "DzintarSkibidi",
-   "team2": "MJ Liepupes Bebri",
+   "team1": 1,
+   "team2": 12,
    "win": 0.2835,
    "tie": 0.0329,
    "loss": 0.6836,
@@ -616,8 +616,8 @@
    }
   },
   {
-   "team1": "BK 'Vārnu ielas republika'",
-   "team2": "Hole of Fame",
+   "team1": 2,
+   "team2": 8,
    "win": 0.5968,
    "tie": 0.0395,
    "loss": 0.3637,
@@ -692,8 +692,8 @@
    }
   },
   {
-   "team1": "BK Zalve-Polýkarpos",
-   "team2": "ReinAss Team",
+   "team1": 3,
+   "team2": 14,
    "win": 0.2966,
    "tie": 0.0382,
    "loss": 0.6652,
@@ -768,8 +768,8 @@
    }
   },
   {
-   "team1": "Bukaišu Svelme",
-   "team2": "TaigarEni",
+   "team1": 4,
+   "team2": 15,
    "win": 0.524,
    "tie": 0.0402,
    "loss": 0.4358,
@@ -844,8 +844,8 @@
    }
   },
   {
-   "team1": "Dataigars",
-   "team2": "Toma Violent Monkeys",
+   "team1": 5,
+   "team2": 16,
    "win": 0.3579,
    "tie": 0.047,
    "loss": 0.5951,
@@ -920,8 +920,8 @@
    }
   },
   {
-   "team1": "G League Team",
-   "team2": "Gustava Soliņu Sildītāji",
+   "team1": 6,
+   "team2": 7,
    "win": 0.1103,
    "tie": 0.0167,
    "loss": 0.873,
@@ -996,8 +996,8 @@
    }
   },
   {
-   "team1": "Juglas Brīvmākslinieki",
-   "team2": "Klāva Varenā Pīle",
+   "team1": 9,
+   "team2": 10,
    "win": 0.1416,
    "tie": 0.0296,
    "loss": 0.8288,
@@ -1072,8 +1072,8 @@
    }
   },
   {
-   "team1": "Maris STOPIŅU TURTLES",
-   "team2": "Raita 'Būs Sūdi'",
+   "team1": 11,
+   "team2": 13,
    "win": 0.2007,
    "tie": 0.0264,
    "loss": 0.7729,

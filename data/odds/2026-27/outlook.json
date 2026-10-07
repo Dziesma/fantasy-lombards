@@ -56,7 +56,7 @@
  ],
  "power": [
   {
-   "team": "Gustava Soliņu Sildītāji",
+   "team": 7,
    "win": 0.7059,
    "tie": 0.0364,
    "loss": 0.2577,
@@ -86,7 +86,7 @@
    }
   },
   {
-   "team": "Bukaišu Svelme",
+   "team": 4,
    "win": 0.6825,
    "tie": 0.0371,
    "loss": 0.2803,
@@ -116,7 +116,7 @@
    }
   },
   {
-   "team": "G League Team",
+   "team": 6,
    "win": 0.634,
    "tie": 0.0393,
    "loss": 0.3267,
@@ -146,7 +146,7 @@
    }
   },
   {
-   "team": "Klāva Varenā Pīle",
+   "team": 10,
    "win": 0.592,
    "tie": 0.0447,
    "loss": 0.3634,
@@ -176,7 +176,7 @@
    }
   },
   {
-   "team": "MJ Liepupes Bebri",
+   "team": 12,
    "win": 0.5903,
    "tie": 0.043,
    "loss": 0.3667,
@@ -206,7 +206,7 @@
    }
   },
   {
-   "team": "Hole of Fame",
+   "team": 8,
    "win": 0.5405,
    "tie": 0.0399,
    "loss": 0.4196,
@@ -236,7 +236,7 @@
    }
   },
   {
-   "team": "ReinAss Team",
+   "team": 14,
    "win": 0.5078,
    "tie": 0.0428,
    "loss": 0.4494,
@@ -266,7 +266,7 @@
    }
   },
   {
-   "team": "BK 'Vārnu ielas republika'",
+   "team": 2,
    "win": 0.494,
    "tie": 0.0413,
    "loss": 0.4648,
@@ -296,7 +296,7 @@
    }
   },
   {
-   "team": "Raita 'Būs Sūdi'",
+   "team": 13,
    "win": 0.4908,
    "tie": 0.0428,
    "loss": 0.4664,
@@ -326,7 +326,7 @@
    }
   },
   {
-   "team": "DzintarSkibidi",
+   "team": 1,
    "win": 0.4574,
    "tie": 0.0386,
    "loss": 0.504,
@@ -356,7 +356,7 @@
    }
   },
   {
-   "team": "TaigarEni",
+   "team": 15,
    "win": 0.372,
    "tie": 0.0419,
    "loss": 0.586,
@@ -386,7 +386,7 @@
    }
   },
   {
-   "team": "Toma Violent Monkeys",
+   "team": 16,
    "win": 0.3726,
    "tie": 0.0407,
    "loss": 0.5867,
@@ -416,7 +416,7 @@
    }
   },
   {
-   "team": "Dataigars",
+   "team": 5,
    "win": 0.3622,
    "tie": 0.0435,
    "loss": 0.5944,
@@ -446,7 +446,7 @@
    }
   },
   {
-   "team": "BK Zalve-Polýkarpos",
+   "team": 3,
    "win": 0.3266,
    "tie": 0.039,
    "loss": 0.6344,
@@ -476,7 +476,7 @@
    }
   },
   {
-   "team": "Juglas Brīvmākslinieki",
+   "team": 9,
    "win": 0.275,
    "tie": 0.0385,
    "loss": 0.6865,
@@ -506,7 +506,7 @@
    }
   },
   {
-   "team": "Maris STOPIŅU TURTLES",
+   "team": 11,
    "win": 0.2736,
    "tie": 0.036,
    "loss": 0.6903,
