@@ -33,7 +33,7 @@ Only edit the files in `data/`. Everything else is generated.
 
 | File | What goes in it |
 |---|---|
-| `data/teams.csv` | team name ↔ manager |
+| `data/teams.csv` | Yahoo team id ↔ team name ↔ manager (ids are stable; names can change) |
 | `data/draft_2026.csv` | Yahoo draft results, one row per pick: `pick,player,nba_team,pos,team,price` |
 | `data/transactions.csv` | in-season moves that change rights (see below) |
 | `data/budget_trades.csv` | traded draft dollars: `date,from_team,to_team,amount,note` |

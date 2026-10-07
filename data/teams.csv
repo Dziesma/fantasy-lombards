@@ -1,17 +1,17 @@
-team,manager
-BK 'Vārnu ielas republika',Martins
-BK Zalve-Polýkarpos,Edmunds
-Bukaišu Svelme,Ronalds
-Dataigars,Aigars
-DzintarSkibidi,Skibidi
-G League Team,Guntars
-Gustava Soliņu Sildītāji,Gustavs
-Hole of Fame,Ingars
-Juglas Brīvmākslinieki,Toms
-Klāva Varenā Pīle,Klavs
-Maris STOPIŅU TURTLES,Maris
-MJ Liepupes Bebri,Mikus
-Raita 'Būs Sūdi',Raitis
-ReinAss Team,Reinis
-TaigarEni,Aigarius Oržopius
-Toma Violent Monkeys,Toms (2)
+id,team,manager
+1,DzintarSkibidi,Skibidi
+2,BK 'Vārnu ielas republika',Martins
+3,BK Zalve-Polýkarpos,Edmunds
+4,Bukaišu Svelme,Ronalds
+5,Dataigars,Aigars
+6,G League Team,Guntars
+7,Gustava Soliņu Sildītāji,Gustavs
+8,Hole of Fame,Ingars
+9,Juglas Brīvmākslinieki,Toms
+10,Klāva Varenā Pīle,Klavs
+11,Maris STOPIŅU TURTLES,Maris
+12,MJ Liepupes Bebri,Mikus
+13,Raita 'Būs Sūdi',Raitis
+14,ReinAss Team,Reinis
+15,TaigarEni,Aigarius Oržopius
+16,Toma Violent Monkeys,Toms (2)

@@ -2,7 +2,7 @@
 """Build the keeper-rights tables from the raw league data (Python 3 stdlib only).
 
 Inputs (hand-edited):
-  data/teams.csv          team, manager
+  data/teams.csv          id (Yahoo team id), team, manager
   data/draft_2026.csv     pick, player, nba_team, pos, team, price (Yahoo draft results)
   data/transactions.csv   date, type, player, from_team, to_team, fab, note
   data/budget_trades.csv  date, from_team, to_team, amount, note
