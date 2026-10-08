@@ -61,6 +61,7 @@ Onyeka Okongwu,ATL,C,ReinAss Team,94,ReinAss Team,22,,22,27,32,37,
 AJ Dybantsa,WAS,SF,Toma Violent Monkeys,144,Toma Violent Monkeys,21,,21,26,31,36,
 Dyson Daniels,ATL,SG/SF,DzintarSkibidi,81,DzintarSkibidi,21,,21,26,31,36,
 Dejounte Murray,NOP,PG,ReinAss Team,62,ReinAss Team,20,,20,25,30,35,
+Jonathan Kuminga,,,Toma Violent Monkeys,,,,20,20,25,30,35,2026-10-08 add
 OG Anunoby,NYK,SF/PF,Gustava Soliņu Sildītāji,135,Gustava Soliņu Sildītāji,20,,20,25,30,35,
 VJ Edgecombe,PHI,PG/SG,G League Team,22,G League Team,20,,20,25,30,35,
 Caleb Wilson,CHI,PF,Hole of Fame,104,Hole of Fame,19,,19,24,29,34,
@@ -116,7 +117,7 @@ Jimmy Butler III,GSW,SF/PF,Gustava Soliņu Sildītāji,151,Gustava Soliņu Sild�
 Keegan Murray,SAC,SF/PF,MJ Liepupes Bebri,140,MJ Liepupes Bebri,7,,7,12,17,22,
 Kingston Flemings,ATL,PG,Juglas Brīvmākslinieki,41,Juglas Brīvmākslinieki,7,,7,12,17,22,
 Peyton Watson,CLE,SF/PF,ReinAss Team,126,ReinAss Team,7,,7,12,17,22,
-Reed Sheppard,HOU,PG/SG,ReinAss Team,174,ReinAss Team,7,,7,12,17,22,
+Reed Sheppard,HOU,PG/SG,,174,ReinAss Team,7,,7,12,17,22,2026-10-08 drop
 Scotty Pippen Jr.,MEM,PG,Maris STOPIŅU TURTLES,123,Maris STOPIŅU TURTLES,7,,7,12,17,22,
 Toumani Camara,POR,SF/PF,Dataigars,117,Dataigars,7,,7,12,17,22,
 Dailyn Swain,CHI,SF,Juglas Brīvmākslinieki,105,Juglas Brīvmākslinieki,6,,6,11,16,21,
@@ -137,6 +138,7 @@ Kyshawn George,WAS,SG/SF/PF,Dataigars,149,Dataigars,5,,5,10,15,20,
 Aaron Gordon,DEN,PF/C,Klāva Varenā Pīle,122,Klāva Varenā Pīle,4,,4,9,14,19,
 Ajay Mitchell,OKC,PG/SG,MJ Liepupes Bebri,188,MJ Liepupes Bebri,4,,4,9,14,19,
 Brayden Burries,MIL,SG,BK 'Vārnu ielas republika',66,BK 'Vārnu ielas republika',4,,4,9,14,19,
+Cam Spencer,,,G League Team,,,,4,4,9,14,19,2026-10-08 add
 Cameron Johnson,DEN,SF/PF,BK 'Vārnu ielas republika',146,BK 'Vārnu ielas republika',4,,4,9,14,19,
 Davion Mitchell,MIA,PG,Bukaišu Svelme,116,Bukaišu Svelme,4,,4,9,14,19,
 Grayson Allen,CHA,SG/SF,ReinAss Team,158,ReinAss Team,4,,4,9,14,19,
@@ -157,10 +159,14 @@ Jrue Holiday,POR,PG/SG,Dataigars,181,Dataigars,3,,3,8,13,18,
 Julian Champagnie,SAS,SF/PF,BK 'Vārnu ielas republika',178,BK 'Vārnu ielas republika',3,,3,8,13,18,
 Nate Ament,MIL,SF,Juglas Brīvmākslinieki,201,Juglas Brīvmākslinieki,3,,3,8,13,18,
 RJ Barrett,TOR,SG/SF/PF,BK Zalve-Polýkarpos,115,BK Zalve-Polýkarpos,3,,3,8,13,18,
-Saddiq Bey,NOP,SF/PF,ReinAss Team,190,ReinAss Team,3,,3,8,13,18,
+Saddiq Bey,NOP,SF/PF,,190,ReinAss Team,3,,3,8,13,18,2026-10-08 drop
 Brook Lopez,LAC,C,ReinAss Team,206,ReinAss Team,2,,2,7,12,17,
+Gui Santos,,,DzintarSkibidi,,,,2,2,7,12,17,2026-10-08 add
+Isaiah Jackson,,,DzintarSkibidi,,,,2,2,7,12,17,2026-10-08 add
 Jerami Grant,MEM,SF/PF,TaigarEni,143,TaigarEni,2,,2,7,12,17,
 Karim Lopez,MEM,SF,Juglas Brīvmākslinieki,137,Juglas Brīvmākslinieki,2,,2,7,12,17,
+Kris Dunn,,,ReinAss Team,,,,2,2,7,12,17,2026-10-08 add
+Mark Williams,,,Gustava Soliņu Sildītāji,,,,2,2,7,12,17,2026-10-08 add
 Maxime Raynaud,SAC,C,DzintarSkibidi,129,DzintarSkibidi,2,,2,7,12,17,
 P.J. Washington,DAL,PF/C,Bukaišu Svelme,148,Bukaišu Svelme,2,,2,7,12,17,
 Quentin Grimes,LAL,SG/SF,MJ Liepupes Bebri,204,MJ Liepupes Bebri,2,,2,7,12,17,
@@ -172,8 +178,8 @@ Allen Graves,TOR,PF,Hole of Fame,200,Hole of Fame,1,,1,6,11,16,
 Anfernee Simons,PHI,PG/SG,Raita 'Būs Sūdi',189,Raita 'Būs Sūdi',1,,1,6,11,16,
 Anthony Black,ORL,PG/SG/SF,DzintarSkibidi,145,DzintarSkibidi,1,,1,6,11,16,
 Bennedict Mathurin,NOP,SG/SF,Raita 'Būs Sūdi',125,Raita 'Būs Sūdi',1,,1,6,11,16,
-Bennett Stirtz,OKC,PG,Toma Violent Monkeys,192,Toma Violent Monkeys,1,,1,6,11,16,
-Bez Mbeng,MIA,PG/SG,G League Team,134,G League Team,1,,1,6,11,16,
+Bennett Stirtz,OKC,PG,,192,Toma Violent Monkeys,1,,1,6,11,16,2026-10-08 drop
+Bez Mbeng,MIA,PG/SG,,134,G League Team,1,,1,6,11,16,2026-10-08 drop
 Bilal Coulibaly,WAS,SG/SF,G League Team,182,G League Team,1,,1,6,11,16,
 Bobby Portis Jr.,MIA,PF/C,TaigarEni,191,TaigarEni,1,,1,6,11,16,
 Collin Sexton,LAL,PG/SG,TaigarEni,207,TaigarEni,1,,1,6,11,16,
@@ -191,7 +197,7 @@ Justin Champagnie,WAS,SF/PF,BK Zalve-Polýkarpos,195,BK Zalve-Polýkarpos,1,,1,6
 Kelly Oubre Jr.,IND,SF/PF,Maris STOPIŅU TURTLES,203,Maris STOPIŅU TURTLES,1,,1,6,11,16,
 Klay Thompson,MIA,SG/SF,Dataigars,197,Dataigars,1,,1,6,11,16,
 Kyle Filipowski,UTA,PF/C,Bukaišu Svelme,196,Bukaišu Svelme,1,,1,6,11,16,
-Max Christie,DAL,SG/SF,DzintarSkibidi,193,DzintarSkibidi,1,,1,6,11,16,
+Max Christie,DAL,SG/SF,,193,DzintarSkibidi,1,,1,6,11,16,2026-10-08 drop
 Max Strus,LAC,SF/PF,BK Zalve-Polýkarpos,163,BK Zalve-Polýkarpos,1,,1,6,11,16,
 Mikel Brown Jr.,BKN,PG,Hole of Fame,152,Hole of Fame,1,,1,6,11,16,
 Miles McBride,NYK,PG/SG,BK 'Vārnu ielas republika',194,BK 'Vārnu ielas republika',1,,1,6,11,16,
@@ -200,10 +206,14 @@ Morez Johnson Jr.,DAL,PF,Hole of Fame,168,Hole of Fame,1,,1,6,11,16,
 Moussa Diabaté,CHA,C,BK Zalve-Polýkarpos,131,BK Zalve-Polýkarpos,1,,1,6,11,16,
 Oso Ighodaro,PHX,C,Raita 'Būs Sūdi',205,Raita 'Būs Sūdi',1,,1,6,11,16,
 Paul Reed,DET,PF/C,TaigarEni,175,TaigarEni,1,,1,6,11,16,
-Pelle Larsson,MIA,SG/SF,DzintarSkibidi,177,DzintarSkibidi,1,,1,6,11,16,
+Pelle Larsson,MIA,SG/SF,,177,DzintarSkibidi,1,,1,6,11,16,2026-10-08 drop
 Ryan Kalkbrenner,CHA,C,Raita 'Būs Sūdi',173,Raita 'Būs Sūdi',1,,1,6,11,16,
 Sandro Mamukelashvili,LAL,PF/C,BK 'Vārnu ielas republika',130,BK 'Vārnu ielas republika',1,,1,6,11,16,
 Shaedon Sharpe,POR,PG/SG,Raita 'Būs Sūdi',141,Raita 'Būs Sūdi',1,,1,6,11,16,
 Tari Eason,HOU,SG/SF/PF,Maris STOPIŅU TURTLES,187,Maris STOPIŅU TURTLES,1,,1,6,11,16,
+Yanic Konan Niederhäuser,,,DzintarSkibidi,,,,1,1,6,11,16,2026-10-08 add
 Yves Missi,NOP,C,BK Zalve-Polýkarpos,147,BK Zalve-Polýkarpos,1,,1,6,11,16,
 Zaccharie Risacher,DAL,SF/PF,Klāva Varenā Pīle,186,Klāva Varenā Pīle,1,,1,6,11,16,
+Donte DiVincenzo,,,DzintarSkibidi,,,,0,0,5,10,15,2026-10-08 add
+Jaxson Hayes,,,ReinAss Team,,,,0,0,5,10,15,2026-10-08 add
+Moses Moody,,,ReinAss Team,,,,0,0,5,10,15,2026-10-08 add

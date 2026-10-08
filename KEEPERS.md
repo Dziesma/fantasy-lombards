@@ -13,16 +13,16 @@ Draft picks recorded: **208 / 208**.
 | [BK Zalve-Polýkarpos](#bk-zalve-polýkarpos) | Edmunds | 13 | $200 | $200 |
 | [Bukaišu Svelme](#bukaišu-svelme) | Ronalds | 13 | $200 | $200 |
 | [Dataigars](#dataigars) | Aigars | 13 | $200 | $200 |
-| [DzintarSkibidi](#dzintarskibidi) | Skibidi | 13 | $200 | $200 |
+| [DzintarSkibidi](#dzintarskibidi) | Skibidi | 15 | $200 | $200 |
 | [G League Team](#g-league-team) | Guntars | 13 | $200 | $200 |
-| [Gustava Soliņu Sildītāji](#gustava-soliņu-sildītāji) | Gustavs | 13 | $200 | $200 |
+| [Gustava Soliņu Sildītāji](#gustava-soliņu-sildītāji) | Gustavs | 14 | $200 | $200 |
 | [Hole of Fame](#hole-of-fame) | Ingars | 13 | $197 | $200 |
 | [Juglas Brīvmākslinieki](#juglas-brīvmākslinieki) | Toms | 13 | $200 | $200 |
 | [Klāva Varenā Pīle](#klāva-varenā-pīle) | Klavs | 13 | $200 | $200 |
 | [Maris STOPIŅU TURTLES](#maris-stopiņu-turtles) | Maris | 13 | $200 | $200 |
 | [MJ Liepupes Bebri](#mj-liepupes-bebri) | Mikus | 13 | $197 | $200 |
 | [Raita 'Būs Sūdi'](#raita-būs-sūdi) | Raitis | 13 | $200 | $200 |
-| [ReinAss Team](#reinass-team) | Reinis | 13 | $200 | $200 |
+| [ReinAss Team](#reinass-team) | Reinis | 14 | $200 | $200 |
 | [TaigarEni](#taigareni) | Aigarius Oržopius | 13 | $200 | $200 |
 | [Toma Violent Monkeys](#toma-violent-monkeys) | Toms (2) | 13 | $200 | $200 |
 
@@ -108,7 +108,7 @@ Manager: Aigars · 13 players · total 2027-28 keeper cost if all kept: $268 (bu
 
 ## DzintarSkibidi
 
-Manager: Skibidi · 13 players · total 2027-28 keeper cost if all kept: $271 (budget $200)
+Manager: Skibidi · 15 players · total 2027-28 keeper cost if all kept: $284 (budget $200)
 
 | Player | NBA | Pos | Paid 2026-27 | Keeper 2027-28 | 2028-29 | 2029-30 | Notes |
 |---|---|---|---:|---:|---:|---:|---|
@@ -120,15 +120,17 @@ Manager: Skibidi · 13 players · total 2027-28 keeper cost if all kept: $271 (b
 | Derik Queen | NOP | PF/C | $10 | **$15** | $20 | $25 |  |
 | DeMar DeRozan | DEN | SF/PF | $5 | **$10** | $15 | $20 |  |
 | John Collins | DET | PF/C | $4 | **$9** | $14 | $19 |  |
+| Gui Santos |  |  | undrafted | **$7** | $12 | $17 | FAB $2, 2026-10-08 add |
+| Isaiah Jackson |  |  | undrafted | **$7** | $12 | $17 | FAB $2, 2026-10-08 add |
 | Maxime Raynaud | SAC | C | $2 | **$7** | $12 | $17 |  |
 | Anthony Black | ORL | PG/SG/SF | $1 | **$6** | $11 | $16 |  |
 | Joan Beringer | MIN | PF/C | $1 | **$6** | $11 | $16 |  |
-| Max Christie | DAL | SG/SF | $1 | **$6** | $11 | $16 |  |
-| Pelle Larsson | MIA | SG/SF | $1 | **$6** | $11 | $16 |  |
+| Yanic Konan Niederhäuser |  |  | undrafted | **$6** | $11 | $16 | FAB $1, 2026-10-08 add |
+| Donte DiVincenzo |  |  | undrafted | **$5** | $10 | $15 | FAB $0, 2026-10-08 add |
 
 ## G League Team
 
-Manager: Guntars · 13 players · total 2027-28 keeper cost if all kept: $274 (budget $200)
+Manager: Guntars · 13 players · total 2027-28 keeper cost if all kept: $277 (budget $200)
 
 | Player | NBA | Pos | Paid 2026-27 | Keeper 2027-28 | 2028-29 | 2029-30 | Notes |
 |---|---|---|---:|---:|---:|---:|---|
@@ -140,15 +142,15 @@ Manager: Guntars · 13 players · total 2027-28 keeper cost if all kept: $274 (b
 | Isaiah Hartenstein | OKC | C | $7 | **$12** | $17 | $22 |  |
 | Jabari Smith Jr. | HOU | PF/C | $6 | **$11** | $16 | $21 |  |
 | Miles Bridges | PHX | PF | $6 | **$11** | $16 | $21 |  |
+| Cam Spencer |  |  | undrafted | **$9** | $14 | $19 | FAB $4, 2026-10-08 add |
 | Collin Gillespie | PHX | PG/SG | $3 | **$8** | $13 | $18 |  |
-| Bez Mbeng | MIA | PG/SG | $1 | **$6** | $11 | $16 |  |
 | Bilal Coulibaly | WAS | SG/SF | $1 | **$6** | $11 | $16 |  |
 | Deandre Ayton | WAS | C | $1 | **$6** | $11 | $16 |  |
 | Dereck Lively II | DAL | C | $1 | **$6** | $11 | $16 |  |
 
 ## Gustava Soliņu Sildītāji
 
-Manager: Gustavs · 13 players · total 2027-28 keeper cost if all kept: $265 (budget $200)
+Manager: Gustavs · 14 players · total 2027-28 keeper cost if all kept: $272 (budget $200)
 
 | Player | NBA | Pos | Paid 2026-27 | Keeper 2027-28 | 2028-29 | 2029-30 | Notes |
 |---|---|---|---:|---:|---:|---:|---|
@@ -165,6 +167,7 @@ Manager: Gustavs · 13 players · total 2027-28 keeper cost if all kept: $265 (b
 | Ty Jerome | MEM | PG/SG | $10 | **$15** | $20 | $25 |  |
 | Brandin Podziemski | GSW | PG/SG | $8 | **$13** | $18 | $23 |  |
 | Jimmy Butler III | GSW | SF/PF | $7 | **$12** | $17 | $22 |  |
+| Mark Williams |  |  | undrafted | **$7** | $12 | $17 | FAB $2, 2026-10-08 add |
 
 ## Hole of Fame
 
@@ -288,7 +291,7 @@ Manager: Raitis · 13 players · total 2027-28 keeper cost if all kept: $276 (bu
 
 ## ReinAss Team
 
-Manager: Reinis · 13 players · total 2027-28 keeper cost if all kept: $268 (budget $200)
+Manager: Reinis · 14 players · total 2027-28 keeper cost if all kept: $265 (budget $200)
 
 | Player | NBA | Pos | Paid 2026-27 | Keeper 2027-28 | 2028-29 | 2029-30 | Notes |
 |---|---|---|---:|---:|---:|---:|---|
@@ -300,11 +303,12 @@ Manager: Reinis · 13 players · total 2027-28 keeper cost if all kept: $268 (bu
 | Ausar Thompson | DET | SG/SF/PF | $10 | **$15** | $20 | $25 |  |
 | Jusuf Nurkić | UTA | C | $10 | **$15** | $20 | $25 |  |
 | Peyton Watson | CLE | SF/PF | $7 | **$12** | $17 | $22 |  |
-| Reed Sheppard | HOU | PG/SG | $7 | **$12** | $17 | $22 |  |
 | Nikola Vučević | ORL | C | $6 | **$11** | $16 | $21 |  |
 | Grayson Allen | CHA | SG/SF | $4 | **$9** | $14 | $19 |  |
-| Saddiq Bey | NOP | SF/PF | $3 | **$8** | $13 | $18 |  |
 | Brook Lopez | LAC | C | $2 | **$7** | $12 | $17 |  |
+| Kris Dunn |  |  | undrafted | **$7** | $12 | $17 | FAB $2, 2026-10-08 add |
+| Jaxson Hayes |  |  | undrafted | **$5** | $10 | $15 | FAB $0, 2026-10-08 add |
+| Moses Moody |  |  | undrafted | **$5** | $10 | $15 | FAB $0, 2026-10-08 add |
 
 ## TaigarEni
 
@@ -328,7 +332,7 @@ Manager: Aigarius Oržopius · 13 players · total 2027-28 keeper cost if all ke
 
 ## Toma Violent Monkeys
 
-Manager: Toms (2) · 13 players · total 2027-28 keeper cost if all kept: $266 (budget $200)
+Manager: Toms (2) · 13 players · total 2027-28 keeper cost if all kept: $285 (budget $200)
 
 | Player | NBA | Pos | Paid 2026-27 | Keeper 2027-28 | 2028-29 | 2029-30 | Notes |
 |---|---|---|---:|---:|---:|---:|---|
@@ -336,6 +340,7 @@ Manager: Toms (2) · 13 players · total 2027-28 keeper cost if all kept: $266 (
 | Franz Wagner | ORL | SF/PF | $29 | **$34** | $40 | $46 |  |
 | Joel Embiid | PHI | C | $25 | **$30** | $35 | $41 |  |
 | AJ Dybantsa | WAS | SF | $21 | **$26** | $31 | $36 |  |
+| Jonathan Kuminga |  |  | undrafted | **$25** | $30 | $35 | FAB $20, 2026-10-08 add |
 | Zion Williamson | NOP | PF/C | $17 | **$22** | $27 | $32 |  |
 | Julius Randle | BKN | PF | $15 | **$20** | $25 | $30 |  |
 | Darryn Peterson | UTA | SG | $14 | **$19** | $24 | $29 |  |
@@ -344,7 +349,19 @@ Manager: Toms (2) · 13 players · total 2027-28 keeper cost if all kept: $266 (
 | Jaime Jaquez Jr. | MIL | SG/SF/PF | $6 | **$11** | $16 | $21 |  |
 | Scoot Henderson | POR | PG | $6 | **$11** | $16 | $21 |  |
 | Dillon Brooks | PHX | SF/PF | $3 | **$8** | $13 | $18 |  |
-| Bennett Stirtz | OKC | PG | $1 | **$6** | $11 | $16 |  |
+
+## Free agents with a keeper base
+
+Drafted players who were dropped. Whoever picks them up inherits at least this base.
+
+| Player | NBA | Pos | Paid 2026-27 | Keeper 2027-28 | 2028-29 | 2029-30 | Notes |
+|---|---|---|---:|---:|---:|---:|---|
+| Reed Sheppard | HOU | PG/SG | $7 | **$12** | $17 | $22 | drafted by ReinAss Team, 2026-10-08 drop |
+| Saddiq Bey | NOP | SF/PF | $3 | **$8** | $13 | $18 | drafted by ReinAss Team, 2026-10-08 drop |
+| Bennett Stirtz | OKC | PG | $1 | **$6** | $11 | $16 | drafted by Toma Violent Monkeys, 2026-10-08 drop |
+| Bez Mbeng | MIA | PG/SG | $1 | **$6** | $11 | $16 | drafted by G League Team, 2026-10-08 drop |
+| Max Christie | DAL | SG/SF | $1 | **$6** | $11 | $16 | drafted by DzintarSkibidi, 2026-10-08 drop |
+| Pelle Larsson | MIA | SG/SF | $1 | **$6** | $11 | $16 | drafted by DzintarSkibidi, 2026-10-08 drop |
 
 ## All players A–Z
 
@@ -372,8 +389,8 @@ Manager: Toms (2) · 13 players · total 2027-28 keeper cost if all kept: $266 (
 | Ayo Dosunmu | MIN | PG/SG | Maris STOPIŅU TURTLES | $5 | **$10** | $15 | $20 |  |
 | Bam Adebayo | MIA | PF/C | Juglas Brīvmākslinieki | $37 | **$43** | $50 | $58 |  |
 | Bennedict Mathurin | NOP | SG/SF | Raita 'Būs Sūdi' | $1 | **$6** | $11 | $16 |  |
-| Bennett Stirtz | OKC | PG | Toma Violent Monkeys | $1 | **$6** | $11 | $16 |  |
-| Bez Mbeng | MIA | PG/SG | G League Team | $1 | **$6** | $11 | $16 |  |
+| Bennett Stirtz | OKC | PG | *free agent* | $1 | **$6** | $11 | $16 | drafted by Toma Violent Monkeys, 2026-10-08 drop |
+| Bez Mbeng | MIA | PG/SG | *free agent* | $1 | **$6** | $11 | $16 | drafted by G League Team, 2026-10-08 drop |
 | Bilal Coulibaly | WAS | SG/SF | G League Team | $1 | **$6** | $11 | $16 |  |
 | Bobby Portis Jr. | MIA | PF/C | TaigarEni | $1 | **$6** | $11 | $16 |  |
 | Brandin Podziemski | GSW | PG/SG | Gustava Soliņu Sildītāji | $8 | **$13** | $18 | $23 |  |
@@ -384,6 +401,7 @@ Manager: Toms (2) · 13 players · total 2027-28 keeper cost if all kept: $266 (
 | CJ McCollum | ATL | PG/SG | Raita 'Būs Sūdi' | $5 | **$10** | $15 | $20 |  |
 | Cade Cunningham | DET | PG/SG | DzintarSkibidi | $54 | **$63** | $73 | $84 |  |
 | Caleb Wilson | CHI | PF | Hole of Fame | $19 | **$24** | $29 | $34 |  |
+| Cam Spencer |  |  | G League Team | undrafted | **$9** | $14 | $19 | FAB $4, 2026-10-08 add |
 | Cameron Boozer | MEM | PF | DzintarSkibidi | $26 | **$31** | $36 | $42 |  |
 | Cameron Johnson | DEN | SF/PF | BK 'Vārnu ielas republika' | $4 | **$9** | $14 | $19 |  |
 | Cason Wallace | OKC | PG/SG/SF | BK 'Vārnu ielas republika' | $3 | **$8** | $13 | $18 |  |
@@ -420,6 +438,7 @@ Manager: Toms (2) · 13 players · total 2027-28 keeper cost if all kept: $266 (
 | Domantas Sabonis | SAC | PF/C | Bukaišu Svelme | $32 | **$37** | $43 | $50 |  |
 | Donovan Clingan | POR | C | Hole of Fame | $25 | **$30** | $35 | $41 |  |
 | Donovan Mitchell | CLE | PG/SG | Hole of Fame | $40 | **$46** | $53 | $61 |  |
+| Donte DiVincenzo |  |  | DzintarSkibidi | undrafted | **$5** | $10 | $15 | FAB $0, 2026-10-08 add |
 | Draymond Green | GSW | PF/C | Klāva Varenā Pīle | $1 | **$6** | $11 | $16 |  |
 | Dylan Harper | SAS | PG/SG | Gustava Soliņu Sildītāji | $11 | **$16** | $21 | $26 |  |
 | Dyson Daniels | ATL | SG/SF | DzintarSkibidi | $21 | **$26** | $31 | $36 |  |
@@ -428,10 +447,12 @@ Manager: Toms (2) · 13 players · total 2027-28 keeper cost if all kept: $266 (
 | Fred VanVleet | HOU | PG | G League Team | $10 | **$15** | $20 | $25 |  |
 | Giannis Antetokounmpo | MIA | PF/C | Maris STOPIŅU TURTLES | $63 | **$73** | $84 | $97 |  |
 | Grayson Allen | CHA | SG/SF | ReinAss Team | $4 | **$9** | $14 | $19 |  |
+| Gui Santos |  |  | DzintarSkibidi | undrafted | **$7** | $12 | $17 | FAB $2, 2026-10-08 add |
 | Hannes Steinbach | CHA | PF | Juglas Brīvmākslinieki | $4 | **$9** | $14 | $19 |  |
 | Herbert Jones | NOP | SG/SF | BK 'Vārnu ielas republika' | $5 | **$10** | $15 | $20 |  |
 | Immanuel Quickley | TOR | PG/SG | Gustava Soliņu Sildītāji | $19 | **$24** | $29 | $34 |  |
 | Isaiah Hartenstein | OKC | C | G League Team | $7 | **$12** | $17 | $22 |  |
+| Isaiah Jackson |  |  | DzintarSkibidi | undrafted | **$7** | $12 | $17 | FAB $2, 2026-10-08 add |
 | Isaiah Stewart | MEM | PF/C | BK Zalve-Polýkarpos | $1 | **$6** | $11 | $16 |  |
 | Ivica Zubac | IND | C | MJ Liepupes Bebri | $17 | **$22** | $27 | $32 |  |
 | Ja Morant | POR | PG | Toma Violent Monkeys | $11 | **$16** | $21 | $26 |  |
@@ -449,6 +470,7 @@ Manager: Toms (2) · 13 players · total 2027-28 keeper cost if all kept: $266 (
 | James Harden | CLE | PG/SG | ReinAss Team | $27 | **$32** | $37 | $43 |  |
 | Jaren Jackson Jr. | UTA | PF/C | Dataigars | $25 | **$30** | $35 | $41 |  |
 | Jarrett Allen | CLE | C | Gustava Soliņu Sildītāji | $16 | **$21** | $26 | $31 |  |
+| Jaxson Hayes |  |  | ReinAss Team | undrafted | **$5** | $10 | $15 | FAB $0, 2026-10-08 add |
 | Jaylen Brown | PHI | SG/SF/PF | BK Zalve-Polýkarpos | $33 | **$38** | $44 | $51 |  |
 | Jaylon Tyson | CLE | SG/SF/PF | Hole of Fame | $1 | **$6** | $11 | $16 |  |
 | Jayson Tatum | BOS | SF/PF | MJ Liepupes Bebri | $56 | **$65** | $75 | $87 |  |
@@ -458,6 +480,7 @@ Manager: Toms (2) · 13 players · total 2027-28 keeper cost if all kept: $266 (
 | Joan Beringer | MIN | PF/C | DzintarSkibidi | $1 | **$6** | $11 | $16 |  |
 | Joel Embiid | PHI | C | Toma Violent Monkeys | $25 | **$30** | $35 | $41 |  |
 | John Collins | DET | PF/C | DzintarSkibidi | $4 | **$9** | $14 | $19 |  |
+| Jonathan Kuminga |  |  | Toma Violent Monkeys | undrafted | **$25** | $30 | $35 | FAB $20, 2026-10-08 add |
 | Jordan Poole | NOP | PG/SG | Raita 'Būs Sūdi' | $1 | **$6** | $11 | $16 |  |
 | Josh Giddey | CHI | PG/SG | ReinAss Team | $36 | **$42** | $49 | $57 |  |
 | Josh Hart | NYK | SG/SF | Gustava Soliņu Sildītāji | $16 | **$21** | $26 | $31 |  |
@@ -480,6 +503,7 @@ Manager: Toms (2) · 13 players · total 2027-28 keeper cost if all kept: $266 (
 | Kingston Flemings | ATL | PG | Juglas Brīvmākslinieki | $7 | **$12** | $17 | $22 |  |
 | Klay Thompson | MIA | SG/SF | Dataigars | $1 | **$6** | $11 | $16 |  |
 | Kon Knueppel | CHA | SG/SF | Raita 'Būs Sūdi' | $24 | **$29** | $34 | $40 |  |
+| Kris Dunn |  |  | ReinAss Team | undrafted | **$7** | $12 | $17 | FAB $2, 2026-10-08 add |
 | Kristaps Porziņģis | GSW | C | Juglas Brīvmākslinieki | $15 | **$20** | $25 | $30 |  |
 | Kyle Filipowski | UTA | PF/C | Bukaišu Svelme | $1 | **$6** | $11 | $16 |  |
 | Kyrie Irving | DAL | PG | Hole of Fame | $28 | **$33** | $38 | $44 |  |
@@ -488,8 +512,9 @@ Manager: Toms (2) · 13 players · total 2027-28 keeper cost if all kept: $266 (
 | Lauri Markkanen | UTA | SF/PF | BK Zalve-Polýkarpos | $38 | **$44** | $51 | $59 |  |
 | LeBron James | PHI | SF/PF | Maris STOPIŅU TURTLES | $22 | **$27** | $32 | $37 |  |
 | Luka Dončić | LAL | PG/SG | Klāva Varenā Pīle | $82 | **$95** | $110 | $127 |  |
+| Mark Williams |  |  | Gustava Soliņu Sildītāji | undrafted | **$7** | $12 | $17 | FAB $2, 2026-10-08 add |
 | Matas Buzelis | CHI | SF/PF | TaigarEni | $28 | **$33** | $38 | $44 |  |
-| Max Christie | DAL | SG/SF | DzintarSkibidi | $1 | **$6** | $11 | $16 |  |
+| Max Christie | DAL | SG/SF | *free agent* | $1 | **$6** | $11 | $16 | drafted by DzintarSkibidi, 2026-10-08 drop |
 | Max Strus | LAC | SF/PF | BK Zalve-Polýkarpos | $1 | **$6** | $11 | $16 |  |
 | Maxime Raynaud | SAC | C | DzintarSkibidi | $2 | **$7** | $12 | $17 |  |
 | Michael Porter Jr. | BKN | SF/PF | G League Team | $24 | **$29** | $34 | $40 |  |
@@ -499,6 +524,7 @@ Manager: Toms (2) · 13 players · total 2027-28 keeper cost if all kept: $266 (
 | Miles McBride | NYK | PG/SG | BK 'Vārnu ielas republika' | $1 | **$6** | $11 | $16 |  |
 | Mitchell Robinson | BOS | C | Klāva Varenā Pīle | $1 | **$6** | $11 | $16 |  |
 | Morez Johnson Jr. | DAL | PF | Hole of Fame | $1 | **$6** | $11 | $16 |  |
+| Moses Moody |  |  | ReinAss Team | undrafted | **$5** | $10 | $15 | FAB $0, 2026-10-08 add |
 | Moussa Diabaté | CHA | C | BK Zalve-Polýkarpos | $1 | **$6** | $11 | $16 |  |
 | Myles Turner | MIL | C | Klāva Varenā Pīle | $10 | **$15** | $20 | $25 |  |
 | Nate Ament | MIL | SF | Juglas Brīvmākslinieki | $3 | **$8** | $13 | $18 |  |
@@ -518,16 +544,16 @@ Manager: Toms (2) · 13 players · total 2027-28 keeper cost if all kept: $266 (
 | Paul George | BOS | SF/PF | Bukaišu Svelme | $15 | **$20** | $25 | $30 |  |
 | Paul Reed | DET | PF/C | TaigarEni | $1 | **$6** | $11 | $16 |  |
 | Payton Pritchard | BOS | PG | Juglas Brīvmākslinieki | $16 | **$21** | $26 | $31 |  |
-| Pelle Larsson | MIA | SG/SF | DzintarSkibidi | $1 | **$6** | $11 | $16 |  |
+| Pelle Larsson | MIA | SG/SF | *free agent* | $1 | **$6** | $11 | $16 | drafted by DzintarSkibidi, 2026-10-08 drop |
 | Peyton Watson | CLE | SF/PF | ReinAss Team | $7 | **$12** | $17 | $22 |  |
 | Quentin Grimes | LAL | SG/SF | MJ Liepupes Bebri | $2 | **$7** | $12 | $17 |  |
 | RJ Barrett | TOR | SG/SF/PF | BK Zalve-Polýkarpos | $3 | **$8** | $13 | $18 |  |
-| Reed Sheppard | HOU | PG/SG | ReinAss Team | $7 | **$12** | $17 | $22 |  |
+| Reed Sheppard | HOU | PG/SG | *free agent* | $7 | **$12** | $17 | $22 | drafted by ReinAss Team, 2026-10-08 drop |
 | Rudy Gobert | MIN | C | Toma Violent Monkeys | $14 | **$19** | $24 | $29 |  |
 | Rui Hachimura | LAC | SF/PF | Dataigars | $4 | **$9** | $14 | $19 |  |
 | Ryan Kalkbrenner | CHA | C | Raita 'Būs Sūdi' | $1 | **$6** | $11 | $16 |  |
 | Ryan Rollins | MIL | PG/SG | Dataigars | $16 | **$21** | $26 | $31 |  |
-| Saddiq Bey | NOP | SF/PF | ReinAss Team | $3 | **$8** | $13 | $18 |  |
+| Saddiq Bey | NOP | SF/PF | *free agent* | $3 | **$8** | $13 | $18 | drafted by ReinAss Team, 2026-10-08 drop |
 | Sam Hauser | BOS | SF/PF | Dataigars | $2 | **$7** | $12 | $17 |  |
 | Sandro Mamukelashvili | LAL | PF/C | BK 'Vārnu ielas republika' | $1 | **$6** | $11 | $16 |  |
 | Santi Aldama | DAL | PF | TaigarEni | $2 | **$7** | $12 | $17 |  |
@@ -552,6 +578,7 @@ Manager: Toms (2) · 13 players · total 2027-28 keeper cost if all kept: $266 (
 | Victor Wembanyama | SAS | C | G League Team | $87 | **$101** | $117 | $135 |  |
 | Walker Kessler | LAL | C | TaigarEni | $24 | **$29** | $34 | $40 |  |
 | Wendell Carter Jr. | ORL | C | Maris STOPIŅU TURTLES | $4 | **$9** | $14 | $19 |  |
+| Yanic Konan Niederhäuser |  |  | DzintarSkibidi | undrafted | **$6** | $11 | $16 | FAB $1, 2026-10-08 add |
 | Yaxel Lendeborg | GSW | PF | Hole of Fame | $6 | **$11** | $16 | $21 |  |
 | Yves Missi | NOP | C | BK Zalve-Polýkarpos | $1 | **$6** | $11 | $16 |  |
 | Zaccharie Risacher | DAL | SF/PF | Klāva Varenā Pīle | $1 | **$6** | $11 | $16 |  |
