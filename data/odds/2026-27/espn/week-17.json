@@ -10,6 +10,7 @@
  "start": "2027-02-15",
  "end": "2027-02-28",
  "games": "schedule",
+ "lineups": "best",
  "categories": [
   {
    "id": "fg_pct",

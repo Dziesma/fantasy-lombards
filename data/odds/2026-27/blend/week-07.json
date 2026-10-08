@@ -11,6 +11,7 @@
  "start": "2026-11-30",
  "end": "2026-12-13",
  "games": "schedule",
+ "lineups": "best",
  "categories": [
   {
    "id": "fg_pct",

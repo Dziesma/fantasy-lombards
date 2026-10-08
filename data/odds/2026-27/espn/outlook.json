@@ -8,6 +8,7 @@
  },
  "week": null,
  "games": "typical (3.5 per player)",
+ "lineups": "best",
  "categories": [
   {
    "id": "fg_pct",
