@@ -2,13 +2,16 @@
 
 The site of our 16-team Yahoo NBA keeper league, at **https://dziesma.github.io/fantasy-lombards/**:
 
-- **Keeper rights** (`index.html`): think of it as a pawnshop: every player bought can be bought back next season,
+- **Standings & odds** (`index.html`, the front page): Yahoo's One-Win standings, every week's projected matchup
+  odds and power ranking, and the season's power ranking (roster strength), by Yahoo's projections (Rotowire's),
+  ESPN's or their average. Team-level only. (`odds.html`, its old address, sends you there.)
+- **Keeper rights** (`keepers.html`): think of it as a pawnshop: every player bought can be bought back next season,
   with interest. For every player drafted or picked up: what was paid for him this season, what keeping him costs
   the next three seasons, and which team holds his rights now. Searchable, sortable, filterable by team; also as
   `rights.csv`.
-- **Standings & odds** (`odds.html`): Yahoo's One-Win standings, every week's projected matchup odds and power
-  ranking, and the season's power ranking (roster strength), by Yahoo's projections (Rotowire's), ESPN's or their
-  average. Team-level only.
+- **Vaimanieki** (`vaimanieki.html`): who has the most to wail about. The dollars each team has on players Yahoo
+  flags as out (`O`) right now, against all its players' dollars, and the ten most expensive injured players. A
+  player's dollars are his keeper base; only players whose rights a team holds count.
 
 ## Keeper rules
 
@@ -32,7 +35,8 @@ Everything on the site is built from the files in `data/`, nothing else:
 | `data/league/budget_trades.csv` | `date, from_team, to_team, amount, note`: next season's draft dollars traded, by team id (Yahoo doesn't know about them) | hand |
 | `data/league/draft_corrections.csv` | `player_id, price, note`: draft prices where Yahoo's draft results are wrong | hand |
 
-`data/yahoo/` has only what the site shows: the players drafted or in a transaction (name, NBA team, positions),
+`data/yahoo/` has only what the site shows: the players drafted or in a transaction (name, NBA team, positions,
+Yahoo's injury flag), when each table was last fetched,
 picks and transactions by ids, the weeks and pairings, Yahoo's W-L-T, and per sim (each projection source, each
 week) the pairings' odds and each team's projected category totals. No player projections.
 
@@ -41,20 +45,54 @@ lineups that locked, the projections of then. Until then they're live, with each
 
 ## Updating
 
-The maintainer, after `yfbb data sync` and `yfbb sim`:
+The maintainer updates the site by hand, from yfbb's data (yfbb fetches from Yahoo as the maintainer, so it can't
+run on GitHub). Everything happens on `main`.
+
+**When.** At least twice a week, around the Monday lineup lock:
+
+| When | Why |
+|---|---|
+| Sunday or Monday, before the first game | fresh projections, injuries and rosters for the coming week's live odds |
+| Monday night or Tuesday, after the lock | records the lineups that locked; the week's odds freeze at the lock |
+| any other time (after a waiver run: Thursday, Sunday) | new transactions on the keeper rights, new injuries on Vaimanieki |
+
+**Steps.**
 
 ```sh
-python3 scripts/import.py   # yfbb's data -> data/yahoo/ (reads yfbb's config for where it is; --data DIR otherwise)
-python3 scripts/build.py    # validates everything, builds the site in _site/ (open _site/index.html to preview)
-git add data && git commit && git push
+# 1. yfbb: fetch from Yahoo, ESPN and the NBA; rebuild the curated data and the sims
+cd ~/workspace/yfbb
+uv run yfbb data sync
+uv run yfbb sim
+
+# 2. this repo: take what the site shows, validate and build
+cd ~/workspace/fantasy-lombards
+python3 scripts/import.py   # yfbb's data -> data/yahoo/ (finds it through yfbb's config; --data DIR otherwise)
+python3 scripts/build.py    # validates everything, builds the site in _site/
+
+# 3. check the preview: _site/index.html, keepers.html, vaimanieki.html (e.g. xdg-open _site/index.html)
+
+# 4. publish: the push makes GitHub Actions build and deploy the site (about a minute)
+git add data && git commit -m "Update $(date +%F)" && git push
 ```
 
-`import.py` warns when a team's Yahoo name isn't its name in `data/league/teams.csv` (a rename to take over, or to
-mark `own_name`). `build.py` (Python 3, standard library only) stops with an error on anything inconsistent: unknown
-team ids, a player drafted twice, a drop by a team without his rights or an add of a player still owned, a week
-without every team exactly once, odds of a pairing not in the schedule, a budget over the cap, a correction for an
-undrafted player, a keeper price rule that doesn't give the league's examples. It warns about a correction Yahoo no
-longer needs.
+**Warnings and errors.**
+
+- `yfbb data sync` failing (Yahoo session expired, a page that changed): fix it in yfbb first; don't import half a
+  sync.
+- `import.py` warns when a team's Yahoo name isn't its name in `data/league/teams.csv`: a GM renamed their team. Take
+  the new name into `teams.csv`, or set that team's `own_name` to 1 to keep the site's.
+- `build.py` (Python 3, standard library only) stops with an error on anything inconsistent: unknown team ids, a
+  player drafted twice, a drop by a team without his rights or an add of a player still owned, a transaction it has
+  no rule for yet (trades), a week without every team exactly once, odds of a pairing not in the schedule, a budget
+  over the cap, a correction for an undrafted player, a keeper price rule that doesn't give the league's examples.
+  Nothing is published until it passes. It warns about a correction Yahoo no longer needs (delete that row).
+
+**The hand-kept files**, edited whenever the league agrees on something Yahoo doesn't record, then built and pushed
+like any update:
+
+- `data/league/budget_trades.csv`: a trade of next season's draft dollars (team ids, amount)
+- `data/league/draft_corrections.csv`: a draft price Yahoo has wrong
+- `data/league/teams.csv`: a new manager, or a team's name on the site
 
 ## Hosting
 

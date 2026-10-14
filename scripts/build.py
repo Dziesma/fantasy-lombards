@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""The site from the data files (Python 3, stdlib only) → _site/: index.html (keeper rights), odds.html (standings and
-matchup odds), rights.csv. Not committed: GitHub Actions builds and deploys it on every push to main.
+"""The site from the data files (Python 3, stdlib only) → _site/: index.html (standings and matchup odds), keepers.html
+(keeper rights), vaimanieki.html (injured players' dollars), rights.csv; odds.html sends old links to index.html. Not
+committed: GitHub Actions builds and deploys it on every push to main.
 
     data/league/            the league's own facts, kept by hand
       teams.csv             team_id, name, manager, own_name: the names the site shows (never Yahoo's); own_name 1:
@@ -14,6 +15,9 @@ frees them, an add takes them). A player's keeper base is the most paid for him 
 if neither) and stays with him through drops and trades; keeping him costs ceil(max(base × 1.15, base + 5)) the next
 season, and so on. Next season's budget: $200 ± draft dollars traded, at most $215.
 
+Vaimanieki: the players whose rights a team holds and whom Yahoo flags injured (INJURED) now; a player's dollars are
+his keeper base.
+
 Any inconsistency in the data stops the build with an error (nothing is written).
 
 Usage: python3 scripts/build.py"""
@@ -21,6 +25,7 @@ import csv
 import io
 import json
 import math
+import shutil
 import sys
 from pathlib import Path
 
@@ -37,6 +42,8 @@ CATEGORIES = [   # id (as in the sims), label, lower wins
     ('fg', 'FG%', False), ('ft', 'FT%', False), ('tpm', '3PM', False), ('pts', 'PTS', False), ('reb', 'REB', False),
     ('ast', 'AST', False), ('stl', 'ST', False), ('blk', 'BLK', False), ('to', 'TO', True)]
 SOURCES = {'blend': 'Average (Yahoo + ESPN)', 'yahoo': 'Yahoo (Rotowire)', 'espn': 'ESPN'}
+INJURED = {'O'}   # Yahoo's injury flags that count as injured on the Vaimanieki page
+TOP_INJURED = 10   # injured players listed there
 # the league's examples of the keeper price rule, checked on every build
 EXAMPLES = [[1, 6, 11, 16, 21, 26, 31, 36, 42], [100, 115]]
 
@@ -47,7 +54,7 @@ def main():
             die(f'the keeper price rule doesn\'t give the league\'s example {chain}')
     league = {name: read(f'league/{name}.csv') for name in ('teams', 'budget_trades', 'draft_corrections')}
     yahoo = {name: read(f'yahoo/{name}.csv') for name in
-             ('players', 'draft', 'transactions', 'matchups', 'standings', 'sims', 'odds', 'power')}
+             ('players', 'draft', 'transactions', 'matchups', 'standings', 'fetched', 'sims', 'odds', 'power')}
     teams = {r['team_id']: r for r in league['teams']}
     season = season_of(yahoo['matchups'])
     seasons = [season_after(season, i + 1) for i in range(KEEPER_SEASONS)]
@@ -57,14 +64,18 @@ def main():
     rows = rights(teams, yahoo, league['draft_corrections'], seasons)
     budgets = next_budgets(teams, league['budget_trades'])
     odds = sims(teams, yahoo, pairs)
+    hurt = injuries(teams, rows, yahoo)
 
-    SITE.mkdir(exist_ok=True)
+    shutil.rmtree(SITE, ignore_errors=True)
+    SITE.mkdir()
     keepers = {'season': season, 'next': seasons, 'slots': len(teams) * ROSTER_SPOTS,
                'drafted': len(yahoo['draft']), 'teams': [{'team': t['name'], 'manager': t['manager'],
                                                           'budget': budgets[i]} for i, t in teams.items()],
                'rows': rows}
-    page('keepers.html', 'index.html', keepers)
-    page('odds.html', 'odds.html', {
+    page('keepers.html', 'keepers.html', keepers)
+    page('vaimanieki.html', 'vaimanieki.html', hurt)
+    page('redirect.html', 'odds.html', {})
+    page('odds.html', 'index.html', {
         'season': season,
         'teams': [{'id': int(i), 'team': t['name'], 'manager': t['manager']} for i, t in teams.items()],
         'weeks': weeks,
@@ -75,7 +86,7 @@ def main():
     })
     (SITE / 'rights.csv').write_text(rights_csv(rows), encoding='utf-8')
     print(f'{len(rows)} players with keeper rights, {len(yahoo["draft"])} picks, {len(yahoo["transactions"])} '
-          f'transactions; odds of {len({w for w, _, _ in pairs})} weeks by {", ".join(odds)} -> {SITE.relative_to(ROOT)}/')
+          f'transactions, {sum(t["injured"] for t in hurt["teams"])} injured; odds of {len({w for w, _, _ in pairs})} weeks by {", ".join(odds)} -> {SITE.relative_to(ROOT)}/')
 
 
 def season_of(matchups):
@@ -172,7 +183,7 @@ def rights(teams, yahoo, corrections, seasons):
         for _ in seasons:
             keep = escalate(keep)
             prices.append(keep)
-        rows.append({'player': players[pid]['name'], 'nba_team': players[pid]['nba_team'],
+        rows.append({'player_id': pid, 'player': players[pid]['name'], 'nba_team': players[pid]['nba_team'],
                      'pos': players[pid]['positions'].replace(',', '/'), 'rights': team_name(teams, p['team']),
                      'pick': p['pick'] or '', 'drafted_by': team_name(teams, p['drafted_by']),
                      'draft_price': '' if p['draft_price'] is None else p['draft_price'],
@@ -187,6 +198,26 @@ def rights(teams, yahoo, corrections, seasons):
         if total > BUDGET:
             warn(f'{team_name(teams, team)} drafted for ${total}, over the ${BUDGET} budget')
     return sorted(rows, key=lambda r: (-r['keeper_base'], r['player']))
+
+
+def injuries(teams, rows, yahoo):
+    """The Vaimanieki page: per team, its players flagged injured now and their dollars (keeper bases), most first,
+    against all its players' dollars; and the TOP_INJURED most expensive injured players. Only players whose rights a
+    team holds."""
+    status = {r['player_id']: r['status'] for r in yahoo['players']}
+    hurt = [r for r in rows if r['rights'] and status[r['player_id']] in INJURED]
+    table = []
+    for t in teams.values():
+        mine = [r for r in rows if r['rights'] == t['name']]
+        out = [r for r in hurt if r['rights'] == t['name']]
+        table.append({'team': t['name'], 'manager': t['manager'], 'injured': len(out),
+                      'value': sum(r['keeper_base'] for r in out), 'total': sum(r['keeper_base'] for r in mine)})
+    table.sort(key=lambda r: (-r['value'], -r['injured'], r['team'].lower()))
+    top = sorted(hurt, key=lambda r: (-r['keeper_base'], r['player']))[:TOP_INJURED]
+    fetched = {r['table']: r['fetched'] for r in yahoo['fetched']}
+    return {'as_of': fetched.get('players', ''), 'flags': sorted(INJURED), 'teams': table,
+            'players': [{'player': r['player'], 'nba_team': r['nba_team'], 'team': r['rights'],
+                         'value': r['keeper_base'], 'status': status[r['player_id']]} for r in top]}
 
 
 def escalate(price):

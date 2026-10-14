@@ -7,11 +7,13 @@ default). Takes no team names (the site's are data/league/teams.csv; Yahoo's are
 and nothing below team level from the sims.
 
 Writes, each file whole (don't edit them by hand):
-    players.csv       player_id, name, nba_team, positions: every player drafted or in a transaction
+    players.csv       player_id, name, nba_team, positions, status: every player drafted or in a transaction;
+                      status: Yahoo's injury flag (O, Q, NA, ...; empty: none)
     draft.csv         pick, player_id, team_id, price
     transactions.csv  time, team_id, action, player_id, fab: oldest first
     matchups.csv      week, first_day, last_day, team1, team2: a week without pairings yet has its teams empty
     standings.csv     team_id, rank, w, l, t: Yahoo's
+    fetched.csv       table, fetched: when each of the tables above was last fetched from Yahoo (UTC)
     sims.csv          source, week, version, as_of, projections: which sim each week's odds come from
     odds.csv          source, week, team1, team2, win1, tie, win2, cats1, cats2, games1, games2, <cat>_win1,
                       <cat>_tie, <cat>_win2: each pairing
@@ -32,12 +34,13 @@ YFBB_CONFIG = Path('~/.config/yfbb/config.toml').expanduser()
 YFBB_DIR = '~/.local/share/yfbb'
 LINEUP = 'locked'
 COLUMNS = {
-    'players': ['player_id', 'name', 'nba_team', 'positions'],
+    'players': ['player_id', 'name', 'nba_team', 'positions', 'status'],
     'draft': ['pick', 'player_id', 'team_id', 'price'],
     'transactions': ['time', 'team_id', 'action', 'player_id', 'fab'],
     'matchups': ['week', 'first_day', 'last_day', 'team1', 'team2'],
     'standings': ['team_id', 'rank', 'w', 'l', 't'],
     'sims': ['source', 'week', 'version', 'as_of', 'projections'],
+    'fetched': ['table', 'fetched'],
 }
 
 
@@ -55,6 +58,7 @@ def main():
     if missing := wanted - {r['player_id'] for r in players}:
         _die(f'curated players has no {sorted(missing, key=int)}, who are drafted or in a transaction')
     tables = {'players': players} | {name: yahoo[name] for name in ('draft', 'transactions', 'matchups', 'standings')}
+    tables['fetched'] = fetched(current, list(tables))
     tables['sims'], odds, power = sims(root)
 
     OUT.mkdir(parents=True, exist_ok=True)
@@ -65,6 +69,18 @@ def main():
     print(f'{len(players)} players, {len(yahoo["draft"])} picks, {len(yahoo["transactions"])} transactions; odds of '
           f'{len({r["week"] for r in tables["sims"]}) - 1} weeks by {", ".join(dict.fromkeys(r["source"] for r in tables["sims"]))}'
           f' -> {OUT.relative_to(ROOT)}/')
+
+
+def fetched(current, names):
+    """[{table, fetched}] of the tables names, from the curated version's manifest: each one's newest fetch."""
+    found = {}
+    for line in (current / 'manifest.txt').read_text().splitlines():
+        parts = line.split()
+        if len(parts) == 3 and parts[0] in names and parts[1].isdigit():
+            found[parts[0]] = parts[2]
+    if missing := [n for n in names if n not in found]:
+        _die(f'{current / "manifest.txt"} has no newest fetch of {missing}')
+    return [{'table': n, 'fetched': found[n]} for n in names]
 
 
 def sims(root):
