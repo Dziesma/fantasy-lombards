@@ -1,86 +1,63 @@
 # Fantasy Lombards
 
-The keeper-rights tracker for our 16-team Yahoo NBA keeper league. Think of it as a pawnshop: every player
-bought at the auction can be bought back next season, with interest. For every player drafted (or picked
-up), it shows:
+The site of our 16-team Yahoo NBA keeper league, at **https://dziesma.github.io/fantasy-lombards/**:
 
-- what was paid for them in the 2026-27 auction (or FAB),
-- what keeping them costs in 2027-28, 2028-29 and 2029-30,
-- which team holds their keeper rights right now.
+- **Keeper rights** (`index.html`): think of it as a pawnshop: every player bought can be bought back next season,
+  with interest. For every player drafted or picked up: what was paid for him this season, what keeping him costs
+  the next three seasons, and which team holds his rights now. Searchable, sortable, filterable by team; also as
+  `rights.csv`.
+- **Standings & odds** (`odds.html`): Yahoo's One-Win standings, every week's projected matchup odds and power
+  ranking, and the season's power ranking (roster strength), by Yahoo's projections (Rotowire's), ESPN's or their
+  average. Team-level only.
 
-It also hosts the season's One-Win **standings** and each week's projected **matchup odds** (team-level only).
+## Keeper rules
 
-**Where to look**
-
-- **[KEEPERS.md](KEEPERS.md)**: tables per team plus an A–Z list (renders on GitHub).
-- **Website**: searchable and sortable, with a team filter. GitHub Actions rebuilds and deploys it on every
-  push to `main`, at **https://dziesma.github.io/fantasy-lombards/**.
-- **[rights.csv](rights.csv)**: the same data for spreadsheets.
-- **[Standings & odds](https://dziesma.github.io/fantasy-lombards/odds.html)**: standings from the results, plus every
-  week's matchup odds and power ranking. Pick a week and whose projections to use (ESPN, Yahoo/Rotowire, or the
-  average of both); open a matchup for the per-category breakdown.
-
-## Keeper rules used here
-
-| Rule | Implementation |
+| Rule | Here |
 |---|---|
-| Price escalation per kept season | `next = ceil(max(price × 1.15, price + 5))`, so +$5 below ~$33 and +15% above |
-| Example chain | $1 → 6 → 11 → 16 → 21 → 26 → 31 → 36 → 42 · $100 → 115 |
-| FA / waiver pickups | base = max(this season's draft price, FAB paid), then the normal escalation |
+| Price per kept season | `next = ceil(max(price × 1.15, price + 5))`: +$5 below ~$33, +15% above |
+| Example chain | $1 → 6 → 11 → 16 → 21 → 26 → 31 → 36 → 42 · $100 → 115 (checked on every build) |
+| Keeper base | the most paid for the player this season: draft price or FAB, whichever is higher (0 if neither) |
+| Drops and trades | rights go with the player; the base stays |
 | Undrafted player added for $0 FAB | base $0, so keeper $5 (**not yet confirmed by the league**) |
-| Next season's budget | $200 ± traded budget dollars − keeper costs; hard cap **$215** including keepers |
+| Next season's budget | $200 ± traded draft dollars − keeper costs; hard cap **$215** including keepers |
 
-"Total keeper cost if all kept" is just the sum. Nobody is expected to keep everyone. It's there to compare against the budget.
+## Data
 
-## Updating the data
+Everything on the site is built from the files in `data/`, nothing else:
 
-Only edit the files in `data/`. Everything else is generated.
+| Files | What | Kept by |
+|---|---|---|
+| `data/yahoo/*.csv` | the league as Yahoo has it: players, draft, transactions, schedule, standings, and the team-level odds and power rankings of the sims | `scripts/import.py`, from the maintainer's yfbb data (a private tool); never edited by hand |
+| `data/league/teams.csv` | `team_id, name, manager, own_name`: the names the site shows (Yahoo's are never used) and the managers. `own_name` 1: the name differs from Yahoo's on purpose | hand |
+| `data/league/budget_trades.csv` | `date, from_team, to_team, amount, note`: next season's draft dollars traded, by team id (Yahoo doesn't know about them) | hand |
+| `data/league/draft_corrections.csv` | `player_id, price, note`: draft prices where Yahoo's draft results are wrong | hand |
 
-| File | What goes in it |
-|---|---|
-| `data/teams.csv` | Yahoo team id ↔ team name ↔ manager (ids are stable; names can change) |
-| `data/draft_2026.csv` | Yahoo draft results, one row per pick: `pick,player,nba_team,pos,team,price` |
-| `data/transactions.csv` | in-season moves that change rights (see below) |
-| `data/budget_trades.csv` | traded draft dollars: `date,from_team,to_team,amount,note` |
-| `data/weeks_<season>.csv` | fantasy weeks from Yahoo: `week,start,end` |
-| `data/matchups_<season>.csv` | the schedule: `week,team1,team2` with **Yahoo team ids** (see `teams.csv`), lower id first, sorted by week then team1 |
-| `data/results_<season>.csv` | finished weeks: `week,team1,team2,cats1,cats2,ties` (team ids, lower id first; the three add up to 9) |
-| `data/odds/<season>/<variant>/` | `week-NN.json`, `outlook.json`: team-level matchup odds and power rankings, one folder per projection variant (`blend` = average of ESPN and Yahoo, `espn`, `yahoo`), exported by the maintainer's h2hcats run (no player values). Don't edit by hand. A week's file is frozen once the week starts |
+`data/yahoo/` has only what the site shows: the players drafted or in a transaction (name, NBA team, positions),
+picks and transactions by ids, the weeks and pairings, Yahoo's W-L-T, and per sim (each projection source, each
+week) the pairings' odds and each team's projected category totals. No player projections.
 
-`transactions.csv` columns: `date,type,player,from_team,to_team,fab,note`, with `type` one of:
+A week's odds are frozen at its lineup lock (Monday; weeks 7 and 17 have a second, on their middle Monday): the
+lineups that locked, the projections of then. Until then they're live, with each team's best lineup.
 
-- `trade`: rights move `from_team` → `to_team`; keeper base unchanged
-- `drop`: `from_team` releases the player (rights go back to the pool, base is kept)
-- `add`: `to_team` picks the player up for `fab` dollars; base becomes max(draft price, FAB)
+## Updating
 
-Examples:
-
-```csv
-date,type,player,from_team,to_team,fab,note
-2026-11-02,trade,Dylan Harper,Gustava Soliņu Sildītāji,Hole of Fame,,for Mikal Bridges
-2026-11-09,drop,LeBron James,Maris STOPIŅU TURTLES,,,
-2026-11-12,add,LeBron James,,Dataigars,1,base stays $22 (draft price)
-```
-
-Team names must match `data/teams.csv` exactly, diacritics and quotes included. Then run:
+The maintainer, after `yfbb data sync` and `yfbb sim`:
 
 ```sh
-python3 scripts/build.py        # regenerates rights.csv and KEEPERS.md; previews the site in _site/
+python3 scripts/import.py   # yfbb's data -> data/yahoo/ (reads yfbb's config for where it is; --data DIR otherwise)
+python3 scripts/build.py    # validates everything, builds the site in _site/ (open _site/index.html to preview)
+git add data && git commit && git push
 ```
 
-It's Python 3, standard library only. The script checks the data and stops with an error on unknown
-teams, double-drafted players, a trade/drop from a team that doesn't hold the player, a schedule where a team
-plays twice (or not at all) in a week, rows not in lower-id-first order, a result that isn't in the schedule or
-doesn't add up to 9 categories, or an odds file that doesn't match the schedule. Commit the
-regenerated `rights.csv` and `KEEPERS.md` together with your data change. The website itself isn't
-committed. The workflow `.github/workflows/pages.yml` runs `build.py --check` on every push and pull
-request: it fails if the data is invalid or the committed files are stale, and otherwise deploys the site
-(on `main` only). To preview the site locally, open `_site/index.html` (keeper rights) and `_site/odds.html`
-(standings and odds).
+`import.py` warns when a team's Yahoo name isn't its name in `data/league/teams.csv` (a rename to take over, or to
+mark `own_name`). `build.py` (Python 3, standard library only) stops with an error on anything inconsistent: unknown
+team ids, a player drafted twice, a drop by a team without his rights or an add of a player still owned, a week
+without every team exactly once, odds of a pairing not in the schedule, a budget over the cap, a correction for an
+undrafted player, a keeper price rule that doesn't give the league's examples. It warns about a correction Yahoo no
+longer needs.
 
 ## Hosting
 
-The repo lives at https://github.com/Dziesma/fantasy-lombards. Pages is deployed by GitHub Actions
-(Settings → Pages → Source: **GitHub Actions**). If a deploy ever fails, re-run it from Actions →
-*build-and-deploy* → *Run workflow*. League members can be added as collaborators, or can open issues and
-pull requests with corrections.
+GitHub Actions (`.github/workflows/pages.yml`) builds the site on every push and pull request, and deploys it on
+`main` (Settings → Pages → Source: **GitHub Actions**). The site itself isn't committed. If a deploy fails, re-run it
+from Actions → *build-and-deploy* → *Run workflow*.

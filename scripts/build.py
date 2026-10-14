@@ -1,27 +1,22 @@
 #!/usr/bin/env python3
-"""Build the keeper-rights tables from the raw league data (Python 3 stdlib only).
+"""The site from the data files (Python 3, stdlib only) → _site/: index.html (keeper rights), odds.html (standings and
+matchup odds), rights.csv. Not committed: GitHub Actions builds and deploys it on every push to main.
 
-Inputs (hand-edited):
-  data/teams.csv          id (Yahoo team id), team, manager
-  data/draft_2026.csv     pick, player, nba_team, pos, team, price (Yahoo draft results)
-  data/transactions.csv   date, type, player, from_team, to_team, fab, note
-  data/budget_trades.csv  date, from_team, to_team, amount, note
-  data/weeks_<season>.csv     week, start, end (fantasy weeks, from Yahoo)
-  data/matchups_<season>.csv  week, team1, team2 (Yahoo team ids)
-  data/results_<season>.csv   week, team1, team2, cats1, cats2, ties (finished weeks, team ids)
-  data/odds/<season>/<variant>/  week-NN.json + outlook.json: team-level matchup odds and power ranking, one
-                              folder per projection variant (blend = average of ESPN and Yahoo, espn, yahoo),
-                              exported by the maintainer's h2hcats run (not hand-edited; no player values)
+    data/league/            the league's own facts, kept by hand
+      teams.csv             team_id, name, manager, own_name: the names the site shows (never Yahoo's); own_name 1:
+                            the name differs from Yahoo's on purpose (import.py warns about any other difference)
+      budget_trades.csv     date, from_team, to_team, amount, note: next season's draft dollars traded (team ids)
+      draft_corrections.csv player_id, price, note: draft prices where Yahoo's record is wrong
+    data/yahoo/             the league as Yahoo has it, written by scripts/import.py from yfbb's data; never edited
 
-Outputs (generated, don't edit by hand):
-  rights.csv              one row per player with keeper rights info
-  KEEPERS.md              per-team and A-Z tables
-  _site/                  website: index.html (keeper rights), odds.html (standings, matchup odds);
-                          not committed, deployed by GitHub Actions
+Keeper rights: every drafted player's are with the team that drafted him, then move with each transaction (a drop
+frees them, an add takes them). A player's keeper base is the most paid for him this season (draft price or FAB, 0
+if neither) and stays with him through drops and trades; keeping him costs ceil(max(base × 1.15, base + 5)) the next
+season, and so on. Next season's budget: $200 ± draft dollars traded, at most $215.
 
-Usage:  python3 scripts/build.py           # rebuild
-        python3 scripts/build.py --check   # fail if rights.csv/KEEPERS.md are stale (still builds _site/)
-"""
+Any inconsistency in the data stops the build with an error (nothing is written).
+
+Usage: python3 scripts/build.py"""
 import csv
 import io
 import json
@@ -30,361 +25,270 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-DATA = ROOT / "data"
-SITE = ROOT / "_site"
+DATA = ROOT / 'data'
+SITE = ROOT / '_site'
+TEMPLATES = ROOT / 'templates'
 
-SEASON = "2026-27"
-NEXT = ["2027-28", "2028-29", "2029-30"]
 BUDGET = 200
 BUDGET_CAP = 215
 ROSTER_SPOTS = 13
-TRANSACTION_TYPES = {"trade", "drop", "add"}
-ODDS_ORDER = ["blend", "espn", "yahoo"]   # projection variants on the odds page; the first one present is the default
+KEEPER_SEASONS = 3   # keeper prices shown for this many seasons ahead
+CATEGORIES = [   # id (as in the sims), label, lower wins
+    ('fg', 'FG%', False), ('ft', 'FT%', False), ('tpm', '3PM', False), ('pts', 'PTS', False), ('reb', 'REB', False),
+    ('ast', 'AST', False), ('stl', 'ST', False), ('blk', 'BLK', False), ('to', 'TO', True)]
+SOURCES = {'blend': 'Average (Yahoo + ESPN)', 'yahoo': 'Yahoo (Rotowire)', 'espn': 'ESPN'}
+# the league's examples of the keeper price rule, checked on every build
+EXAMPLES = [[1, 6, 11, 16, 21, 26, 31, 36, 42], [100, 115]]
+
+
+def main():
+    for chain in EXAMPLES:
+        if [escalate(p) for p in chain[:-1]] != chain[1:]:
+            die(f'the keeper price rule doesn\'t give the league\'s example {chain}')
+    league = {name: read(f'league/{name}.csv') for name in ('teams', 'budget_trades', 'draft_corrections')}
+    yahoo = {name: read(f'yahoo/{name}.csv') for name in
+             ('players', 'draft', 'transactions', 'matchups', 'standings', 'sims', 'odds', 'power')}
+    teams = {r['team_id']: r for r in league['teams']}
+    season = season_of(yahoo['matchups'])
+    seasons = [season_after(season, i + 1) for i in range(KEEPER_SEASONS)]
+
+    check_teams(teams, yahoo)
+    weeks, pairs = schedule(teams, yahoo['matchups'])
+    rows = rights(teams, yahoo, league['draft_corrections'], seasons)
+    budgets = next_budgets(teams, league['budget_trades'])
+    odds = sims(teams, yahoo, pairs)
+
+    SITE.mkdir(exist_ok=True)
+    keepers = {'season': season, 'next': seasons, 'slots': len(teams) * ROSTER_SPOTS,
+               'drafted': len(yahoo['draft']), 'teams': [{'team': t['name'], 'manager': t['manager'],
+                                                          'budget': budgets[i]} for i, t in teams.items()],
+               'rows': rows}
+    page('keepers.html', 'index.html', keepers)
+    page('odds.html', 'odds.html', {
+        'season': season,
+        'teams': [{'id': int(i), 'team': t['name'], 'manager': t['manager']} for i, t in teams.items()],
+        'weeks': weeks,
+        'categories': [{'id': c, 'label': label, 'lower': lower} for c, label, lower in CATEGORIES],
+        'sources': [{'id': s, 'label': SOURCES.get(s, s)} for s in odds],
+        'standings': standings(yahoo['standings']),
+        'sims': odds,
+    })
+    (SITE / 'rights.csv').write_text(rights_csv(rows), encoding='utf-8')
+    print(f'{len(rows)} players with keeper rights, {len(yahoo["draft"])} picks, {len(yahoo["transactions"])} '
+          f'transactions; odds of {len({w for w, _, _ in pairs})} weeks by {", ".join(odds)} -> {SITE.relative_to(ROOT)}/')
+
+
+def season_of(matchups):
+    """The season of the schedule's first day (a season starts in July): 2026-27."""
+    first = min(r['first_day'] for r in matchups if r['first_day'])
+    start = int(first[:4]) - (int(first[5:7]) < 7)
+    return f'{start}-{(start + 1) % 100:02d}'
+
+
+def season_after(season, n):
+    """The season n after season: 2026-27, 1 → 2027-28."""
+    start = int(season[:4]) + n
+    return f'{start}-{(start + 1) % 100:02d}'
+
+
+def check_teams(teams, yahoo):
+    """Every team id in Yahoo's data is one of data/league/teams.csv's."""
+    for name, rows in yahoo.items():
+        for r in rows:
+            for k in ('team_id', 'team1', 'team2'):
+                if r.get(k) and r[k] not in teams:
+                    die(f'data/yahoo/{name}.csv: team {r[k]} is not in data/league/teams.csv')
+
+
+def schedule(teams, matchups):
+    """[{week, start, end}] of every week, and {(week, team1, team2)} of its pairings: lower id first, every team once
+    a week (or the week has no pairings yet)."""
+    weeks, pairs, played = {}, set(), {}
+    for r in matchups:
+        week = int(r['week'])
+        weeks[week] = {'week': week, 'start': r['first_day'], 'end': r['last_day']}
+        if r['team1']:
+            if int(r['team1']) >= int(r['team2']):
+                die(f'data/yahoo/matchups.csv: week {week}: {r["team1"]}-{r["team2"]} isn\'t lower id first')
+            pairs.add((week, r['team1'], r['team2']))
+            played.setdefault(week, []).extend((r['team1'], r['team2']))
+    for week, ids in played.items():
+        if sorted(ids, key=int) != sorted(teams, key=int):
+            die(f'data/yahoo/matchups.csv: week {week} doesn\'t have every team exactly once')
+    weeks = [weeks[w] for w in sorted(weeks)]
+    for a, b in zip(weeks, weeks[1:]):
+        if b['week'] != a['week'] + 1 or not a['end'] < b['start']:
+            die(f'data/yahoo/matchups.csv: week {b["week"]} doesn\'t follow week {a["week"]}')
+    return weeks, pairs
+
+
+def rights(teams, yahoo, corrections, seasons):
+    """Every player's keeper rights: drafted, then moved by each transaction in order (drops before adds of the same
+    minute). One row per player, highest keeper base first."""
+    players = {r['player_id']: r for r in yahoo['players']}
+    fixed = {r['player_id']: r for r in corrections}
+    people = {}
+    for r in yahoo['draft']:
+        pid = r['player_id']
+        if pid in people:
+            die(f'data/yahoo/draft.csv: {name(players, pid)} drafted twice')
+        price = int(r['price'])
+        if pid in fixed:
+            if int(fixed[pid]['price']) == price:
+                warn(f'data/league/draft_corrections.csv: Yahoo now has ${price} for {name(players, pid)} too; the '
+                     'correction can go')
+            price = int(fixed[pid]['price'])
+        people[pid] = {'pick': int(r['pick']), 'drafted_by': r['team_id'], 'draft_price': price, 'fab': None,
+                       'team': r['team_id'], 'moves': []}
+    if unknown := fixed.keys() - people.keys():
+        die(f'data/league/draft_corrections.csv: players not drafted {sorted(unknown, key=int)}')
+
+    for r in sorted(yahoo['transactions'], key=lambda r: (r['time'], r['action'] != 'drop')):
+        pid, team, action = r['player_id'], r['team_id'], r['action']
+        who = f'{name(players, pid)} ({r["time"]})'
+        p = people.setdefault(pid, {'pick': None, 'drafted_by': None, 'draft_price': None, 'fab': None, 'team': None,
+                                    'moves': []})
+        if action == 'drop':
+            if p['team'] != team:
+                die(f'data/yahoo/transactions.csv: team {team} drops {who}, whose rights are with '
+                    f'{p["team"] or "nobody"}')
+            p['team'] = None
+        elif action == 'add':
+            if p['team']:
+                die(f'data/yahoo/transactions.csv: team {team} adds {who}, whose rights are still with {p["team"]}')
+            p['team'] = team
+            p['fab'] = max(p['fab'] or 0, int(r['fab'] or 0))
+        else:
+            die(f'data/yahoo/transactions.csv: {who}: no rule for a {action!r} yet')
+        p['moves'].append(f'{r["time"][:10]} {action}')
+
+    rows = []
+    for pid, p in people.items():
+        if pid not in players:
+            die(f'data/yahoo/players.csv: no player {pid}')
+        base = max(p['draft_price'] or 0, p['fab'] or 0)
+        keep = base
+        prices = []
+        for _ in seasons:
+            keep = escalate(keep)
+            prices.append(keep)
+        rows.append({'player': players[pid]['name'], 'nba_team': players[pid]['nba_team'],
+                     'pos': players[pid]['positions'].replace(',', '/'), 'rights': team_name(teams, p['team']),
+                     'pick': p['pick'] or '', 'drafted_by': team_name(teams, p['drafted_by']),
+                     'draft_price': '' if p['draft_price'] is None else p['draft_price'],
+                     'fab_paid': '' if p['fab'] is None else p['fab'], 'keeper_base': base,
+                     **{f'keeper_{s}': k for s, k in zip(seasons, prices)}, 'moves': '; '.join(p['moves'])})
+
+    spent = {}
+    for p in people.values():
+        if p['drafted_by']:
+            spent[p['drafted_by']] = spent.get(p['drafted_by'], 0) + p['draft_price']
+    for team, total in sorted(spent.items(), key=lambda kv: int(kv[0])):
+        if total > BUDGET:
+            warn(f'{team_name(teams, team)} drafted for ${total}, over the ${BUDGET} budget')
+    return sorted(rows, key=lambda r: (-r['keeper_base'], r['player']))
 
 
 def escalate(price):
-    """League rule: +max(15%, $5) per season, rounded up."""
+    """The league's keeper price rule: + max(15%, $5) a season, rounded up."""
     return math.ceil(max(price * 1.15, price + 5) - 1e-9)
 
 
-def chain(base, years):
-    out, p = [], base
-    for _ in range(years):
-        p = escalate(p)
-        out.append(p)
-    return out
-
-
-def read(name):
-    path = DATA / name
-    if not path.exists():
-        return []
-    with open(path, newline="", encoding="utf-8") as f:
-        return [r for r in csv.DictReader(f) if any((v or "").strip() for v in r.values())]
-
-
-def die(msg):
-    sys.exit(f"error: {msg}")
-
-
-def load():
-    teams = read("teams.csv")
-    team_names = {t["team"] for t in teams}
-
-    players = {}
-    for r in read("draft_2026.csv"):
-        name = r["player"].strip()
-        if name in players:
-            die(f"{name} drafted twice")
-        if r["team"] not in team_names:
-            die(f"unknown team {r['team']!r} for {name} in draft_2026.csv")
-        price = int(r["price"])
-        players[name] = {
-            "player": name,
-            "nba_team": r.get("nba_team", ""),
-            "pos": r["pos"],
-            "pick": int(r["pick"]),
-            "drafted_by": r["team"],
-            "draft_price": price,
-            "fab_max": None,
-            "team": r["team"],
-            "history": [],
-        }
-
-    for t in sorted(read("transactions.csv"), key=lambda r: r["date"]):
-        kind = t["type"].strip().lower()
-        name = t["player"].strip()
-        if kind not in TRANSACTION_TYPES:
-            die(f"bad transaction type {kind!r} ({name}, {t['date']})")
-        for col in ("from_team", "to_team"):
-            if t[col] and t[col] not in team_names:
-                die(f"unknown team {t[col]!r} in transactions.csv ({name}, {t['date']})")
-        p = players.get(name)
-        if p is None:
-            if kind != "add":
-                die(f"{name} is not drafted or added yet but has a {kind} on {t['date']}")
-            p = players[name] = {
-                "player": name, "nba_team": "", "pos": "", "pick": None, "drafted_by": None,
-                "draft_price": None, "fab_max": None, "team": None, "history": [],
-            }
-        if kind in ("trade", "drop") and p["team"] != t["from_team"]:
-            die(f"{name} {kind} on {t['date']}: from_team is {t['from_team']!r} "
-                f"but rights are with {p['team']!r}")
-        if kind == "add" and p["team"]:
-            die(f"{name} added on {t['date']} but still owned by {p['team']!r} (log the drop first)")
-        if kind == "drop":
-            p["team"] = None
-        else:
-            p["team"] = t["to_team"]
-        if kind == "add":
-            fab = int(t["fab"] or 0)
-            p["fab_max"] = fab if p["fab_max"] is None else max(p["fab_max"], fab)
-        p["history"].append(f"{t['date']} {kind}")
-
-    budgets = {t["team"]: BUDGET for t in teams}
-    for b in read("budget_trades.csv"):
-        amt = int(b["amount"])
-        for col in ("from_team", "to_team"):
-            if b[col] not in team_names:
-                die(f"unknown team {b[col]!r} in budget_trades.csv")
-        budgets[b["from_team"]] -= amt
-        budgets[b["to_team"]] += amt
+def next_budgets(teams, trades):
+    """Each team's draft budget next season, before keepers: $200 ± the dollars traded; at most $215."""
+    budgets = dict.fromkeys(teams, BUDGET)
+    for r in trades:
+        for k in ('from_team', 'to_team'):
+            if r[k] not in teams:
+                die(f'data/league/budget_trades.csv: unknown team {r[k]!r} ({r["date"]})')
+        budgets[r['from_team']] -= int(r['amount'])
+        budgets[r['to_team']] += int(r['amount'])
     for team, total in budgets.items():
         if total > BUDGET_CAP:
-            die(f"{team} has ${total} next-season budget, over the ${BUDGET_CAP} cap")
-
-    spent = {}
-    for p in players.values():
-        if p["drafted_by"]:
-            spent[p["drafted_by"]] = spent.get(p["drafted_by"], 0) + p["draft_price"]
-    for team, total in sorted(spent.items()):
-        if total > BUDGET:
-            print(f"warning: {team} drafted ${total}, over the ${BUDGET} budget "
-                  "(check data/draft_2026.csv against Yahoo)", file=sys.stderr)
-
-    rows = []
-    for p in players.values():
-        # Keeper base = max(draft price this season, FAB paid). Undrafted $0 pickups
-        # get base $0 (-> $5 keeper); that case is still to be confirmed by the league.
-        base = max(x for x in (p["draft_price"], p["fab_max"], 0) if x is not None)
-        k = chain(base, len(NEXT))
-        rows.append({
-            "player": p["player"],
-            "nba_team": p["nba_team"],
-            "pos": p["pos"],
-            "rights": p["team"] or "",
-            "pick": p["pick"] or "",
-            "drafted_by": p["drafted_by"] or "",
-            "draft_price": "" if p["draft_price"] is None else p["draft_price"],
-            "fab_paid": "" if p["fab_max"] is None else p["fab_max"],
-            "keeper_base": base,
-            **{f"keeper_{s}": v for s, v in zip(NEXT, k)},
-            "moves": "; ".join(p["history"]),
-        })
-    rows.sort(key=lambda r: (-r["keeper_base"], r["player"]))
-    return teams, rows, budgets
+            die(f'data/league/budget_trades.csv: {team_name(teams, team)} would have ${total}, over the '
+                f'${BUDGET_CAP} cap')
+    return budgets
 
 
-def write_csv(rows):
+def standings(rows):
+    """Yahoo's standings, by rank (then team id)."""
+    return [{'id': int(r['team_id']), 'rank': r['rank'], 'w': int(r['w']), 'l': int(r['l']), 't': int(r['t'])}
+            for r in sorted(rows, key=lambda r: (int(r['rank'] or 99), int(r['team_id'])))]
+
+
+def sims(teams, yahoo, pairs):
+    """{source: {week: {version, as_of, projections, matchups, power}}}: each week's odds (pairings in the schedule)
+    and power ranking, and the season's power ranking (week season)."""
+    out = {}
+    for r in yahoo['sims']:
+        out.setdefault(r['source'], {})[r['week']] = {'version': r['version'], 'as_of': r['as_of'],
+                                                      'projections': r['projections'], 'matchups': [], 'power': []}
+    for r in yahoo['odds']:
+        if (int(r['week']), r['team1'], r['team2']) not in pairs:
+            die(f'data/yahoo/odds.csv: week {r["week"]} {r["team1"]}-{r["team2"]} is not in the schedule')
+        sim(out, r)['matchups'].append(
+            {'team1': int(r['team1']), 'team2': int(r['team2']),
+             **{k: float(r[k]) for k in ('win1', 'tie', 'win2', 'cats1', 'cats2')},
+             'games1': int(r['games1']), 'games2': int(r['games2']),
+             'categories': {c: [float(r[f'{c}_{k}']) for k in ('win1', 'tie', 'win2')] for c, _, _ in CATEGORIES}})
+    for r in yahoo['power']:
+        sim(out, r)['power'].append(
+            {'team': int(r['team_id']), 'rank': int(r['rank']),
+             **{k: float(r[k]) for k in ('win', 'tie', 'loss', 'cats')},
+             'games': int(r['games']) if r['games'] else None,
+             'totals': {c: float(r[c]) for c, _, _ in CATEGORIES},
+             'ranks': {c: int(r[f'{c}_rank']) for c, _, _ in CATEGORIES}})
+    for source, weeks in out.items():
+        for week, s in weeks.items():
+            if len(s['power']) != len(teams):
+                die(f'data/yahoo/power.csv: {source} week {week} has {len(s["power"])} teams, not {len(teams)}')
+    return dict(sorted(out.items(), key=lambda kv: list(SOURCES).index(kv[0]) if kv[0] in SOURCES else len(SOURCES)))
+
+
+def sim(out, r):
+    if r['week'] not in out.get(r['source'], {}):
+        die(f'data/yahoo/sims.csv: no {r["source"]} sim of week {r["week"]}')
+    return out[r['source']][r['week']]
+
+
+def page(template, name, payload):
+    """A page: its template with the payload as JSON in place of /*__DATA__*/null."""
+    data = json.dumps(payload, ensure_ascii=False).replace('</', '<\\/')
+    html = (TEMPLATES / template).read_text(encoding='utf-8').replace('/*__DATA__*/null', data)
+    (SITE / name).write_text(html, encoding='utf-8')
+
+
+def rights_csv(rows):
     buf = io.StringIO()
-    w = csv.DictWriter(buf, fieldnames=list(rows[0].keys()) if rows else ["player"], lineterminator="\n")
+    w = csv.DictWriter(buf, list(rows[0]), lineterminator='\n')
     w.writeheader()
     w.writerows(rows)
     return buf.getvalue()
 
 
-def money(v):
-    return "" if v == "" else f"${v}"
+def team_name(teams, team_id):
+    return teams[team_id]['name'] if team_id else ''
 
 
-def md_table(rows, show_team):
-    k1, k2, k3 = (f"keeper_{s}" for s in NEXT)
-    head = ["Player", "NBA", "Pos"] + (["Rights"] if show_team else []) + \
-        [f"Paid {SEASON}", f"Keeper {NEXT[0]}", NEXT[1], NEXT[2], "Notes"]
-    lines = ["| " + " | ".join(head) + " |",
-             "|" + "|".join("---:" if h.startswith(("Paid", "Keeper", "20")) else "---" for h in head) + "|"]
-    for r in rows:
-        notes = []
-        if r["fab_paid"] != "":
-            notes.append(f"FAB ${r['fab_paid']}")
-        if r["drafted_by"] and r["drafted_by"] != r["rights"]:
-            notes.append(f"drafted by {r['drafted_by']}")
-        if r["moves"]:
-            notes.append(r["moves"])
-        paid = money(r["draft_price"]) if r["draft_price"] != "" else "undrafted"
-        cells = [r["player"], r["nba_team"], r["pos"]] + ([r["rights"] or "*free agent*"] if show_team else []) + \
-            [paid, f"**${r[k1]}**", f"${r[k2]}", f"${r[k3]}", ", ".join(notes)]
-        lines.append("| " + " | ".join(str(c).replace("|", "\\|") for c in cells) + " |")
-    return "\n".join(lines)
+def name(players, pid):
+    return players[pid]['name'] if pid in players else pid
 
 
-def build_md(teams, rows, budgets, n_drafted):
-    total_slots = len(teams) * ROSTER_SPOTS
-    by_team = {t["team"]: [] for t in teams}
-    free = []
-    for r in rows:
-        (by_team[r["rights"]] if r["rights"] else free).append(r)
-
-    out = [
-        "# Fantasy Lombards: keeper rights 2026-27",
-        "",
-        "<!-- Generated by scripts/build.py from data/*.csv. Do not edit by hand. -->",
-        "",
-        f"Keeper price = `ceil(max(base × 1.15, base + 5))` per season. Base = max(draft price, FAB paid).",
-        f"Draft picks recorded: **{n_drafted} / {total_slots}**"
-        + (" (draft log is still incomplete)." if n_drafted < total_slots else "."),
-        "",
-        "## Teams",
-        "",
-        f"| Team | Manager | Players with rights | Drafted $ | {NEXT[0]} budget (before keepers) |",
-        "|---|---|---:|---:|---:|",
-    ]
-    for t in sorted(teams, key=lambda t: t["team"].lower()):
-        tr = by_team[t["team"]]
-        spent = sum(r["draft_price"] for r in rows if r["drafted_by"] == t["team"])
-        anchor = slug(t["team"])
-        out.append(f"| [{t['team']}](#{anchor}) | {t['manager']} | {len(tr)} | ${spent} | ${budgets[t['team']]} |")
-    out.append("")
-
-    for t in sorted(teams, key=lambda t: t["team"].lower()):
-        tr = by_team[t["team"]]
-        cost = sum(r[f"keeper_{NEXT[0]}"] for r in tr)
-        out += [f"## {t['team']}", "", f"Manager: {t['manager']} · {len(tr)} players · "
-                f"total {NEXT[0]} keeper cost if all kept: ${cost} (budget ${budgets[t['team']]})", ""]
-        out += [md_table(tr, show_team=False) if tr else "_No players recorded yet._", ""]
-
-    if free:
-        out += ["## Free agents with a keeper base", "",
-                "Drafted players who were dropped. Whoever picks them up inherits at least this base.", "",
-                md_table(free, show_team=False), ""]
-
-    out += ["## All players A–Z", "", md_table(sorted(rows, key=lambda r: r["player"]), show_team=True), ""]
-    return "\n".join(out)
+def read(name):
+    path = DATA / name
+    if not path.exists():
+        die(f'no {path.relative_to(ROOT)}' + ('; run scripts/import.py' if name.startswith('yahoo/') else ''))
+    with path.open(newline='', encoding='utf-8') as f:
+        return list(csv.DictReader(f))
 
 
-def slug(s):
-    # GitHub heading anchors: lowercase, drop punctuation, spaces -> '-'
-    keep = []
-    for ch in s.lower():
-        if ch.isalnum() or ch in "-_":
-            keep.append(ch)
-        elif ch == " ":
-            keep.append("-")
-    return "".join(keep)
+def warn(message):
+    print(f'warning: {message}', file=sys.stderr)
 
 
-def build_html(teams, rows, budgets, n_drafted):
-    tpl = (ROOT / "scripts" / "page_template.html").read_text(encoding="utf-8")
-    payload = {
-        "season": SEASON,
-        "next": NEXT,
-        "slots": len(teams) * ROSTER_SPOTS,
-        "drafted": n_drafted,
-        "teams": [{"team": t["team"], "manager": t["manager"], "budget": budgets[t["team"]]} for t in teams],
-        "rows": rows,
-    }
-    data = json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
-    return tpl.replace("/*__DATA__*/null", data)
+def die(message):
+    sys.exit(f'error: {message}')
 
 
-def load_season(teams):
-    """Schedule, results and exported odds for SEASON, validated against each other."""
-    ids = {int(t["id"]): t["team"] for t in teams}
-    weeks = [{"week": int(w["week"]), "start": w["start"], "end": w["end"]} for w in read(f"weeks_{SEASON}.csv")]
-    for a, b in zip(weeks, weeks[1:]):
-        if b["week"] != a["week"] + 1 or b["start"] <= a["end"]:
-            die(f"weeks_{SEASON}.csv: week {b['week']} doesn't follow week {a['week']}")
-    known = {w["week"] for w in weeks}
-
-    matchups, per_week = [], {}
-    for m in read(f"matchups_{SEASON}.csv"):
-        w, a, b = int(m["week"]), int(m["team1"]), int(m["team2"])
-        if w not in known or a not in ids or b not in ids:
-            die(f"matchups_{SEASON}.csv: bad row week {w}: {a} vs {b}")
-        if a >= b:   # one canonical order (Yahoo lists the viewer's own game first; don't copy that)
-            die(f"matchups_{SEASON}.csv: week {w}: write the lower team id first ({b},{a})")
-        per_week.setdefault(w, []).extend([a, b])
-        matchups.append({"week": w, "team1": a, "team2": b})
-    for w, played in per_week.items():
-        if sorted(played) != sorted(ids):
-            die(f"matchups_{SEASON}.csv: week {w} doesn't have every team exactly once")
-    if matchups != sorted(matchups, key=lambda m: (m["week"], m["team1"])):
-        die(f"matchups_{SEASON}.csv: sort rows by week, then team1")
-    pairs = {(m["week"], frozenset((m["team1"], m["team2"]))) for m in matchups}
-
-    results = []
-    for r in read(f"results_{SEASON}.csv"):
-        w, a, b = int(r["week"]), int(r["team1"]), int(r["team2"])
-        c1, c2, ties = int(r["cats1"]), int(r["cats2"]), int(r["ties"])
-        if a >= b:
-            die(f"results_{SEASON}.csv: week {w}: write the lower team id first ({b},{a},{c2},{c1},{ties})")
-        if (w, frozenset((a, b))) not in pairs:
-            die(f"results_{SEASON}.csv: week {w} {a} vs {b} is not in the schedule")
-        if c1 + c2 + ties != 9:
-            die(f"results_{SEASON}.csv: week {w} {a} vs {b}: categories don't add up to 9")
-        results.append({"week": w, "team1": a, "team2": b, "cats1": c1, "cats2": c2, "ties": ties})
-
-    odds, variants = {}, []
-    root = DATA / "odds" / SEASON
-    if root.exists() and any(root.glob("*.json")):
-        die(f"{root.relative_to(ROOT)}: odds files belong in a projection-variant folder (blend/, espn/, yahoo/)")
-    folders = sorted((d for d in root.iterdir() if d.is_dir()), key=lambda d: (
-        ODDS_ORDER.index(d.name) if d.name in ODDS_ORDER else len(ODDS_ORDER), d.name)) if root.exists() else []
-    for folder in folders:
-        v, docs = folder.name, {}
-        for path in sorted(folder.glob("*.json")):
-            o = json.loads(path.read_text(encoding="utf-8"))   # teams are ids, so renames can't break old weeks
-            bad = {r["team"] for r in o["power"]} - set(ids)
-            if bad:
-                die(f"{path.relative_to(ROOT)}: unknown team ids {sorted(bad)}")
-            if o.get("variant", v) != v:
-                die(f"{path.relative_to(ROOT)}: variant {o['variant']!r} in the {v}/ folder")
-            if o["week"] is not None:
-                for m in o["matchups"]:
-                    if (o["week"], frozenset((m["team1"], m["team2"]))) not in pairs:
-                        die(f"{path.relative_to(ROOT)}: {m['team1']} vs {m['team2']} is not in the schedule")
-            docs["outlook" if o["week"] is None else str(o["week"])] = o
-        if docs:
-            odds[v] = docs
-            variants.append({"id": v, "label": next(iter(docs.values())).get("label", v)})
-    return {"weeks": weeks, "matchups": matchups, "results": results, "odds": odds, "variants": variants}
-
-
-def standings(teams, results):
-    """One-Win standings: W-L-T from each finished week, best first."""
-    st = {int(t["id"]): {"id": int(t["id"]), "w": 0, "l": 0, "t": 0, "cats": 0} for t in teams}
-    for r in results:
-        for me, other, mine, theirs in ((r["team1"], r["team2"], r["cats1"], r["cats2"]),
-                                        (r["team2"], r["team1"], r["cats2"], r["cats1"])):
-            s = st[me]
-            s["cats"] += mine
-            s["w" if mine > theirs else "l" if mine < theirs else "t"] += 1
-    return sorted(st.values(), key=lambda s: (-(s["w"] + s["t"] / 2), -s["cats"], s["id"]))   # ties: team id
-
-
-def build_odds_html(teams, season):
-    tpl = (ROOT / "scripts" / "odds_template.html").read_text(encoding="utf-8")
-    payload = {
-        "season": SEASON,
-        "teams": [{"id": int(t["id"]), "team": t["team"], "manager": t["manager"]} for t in teams],
-        **season,
-        "standings": standings(teams, season["results"]),
-    }
-    data = json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
-    return tpl.replace("/*__DATA__*/null", data)
-
-
-def main():
-    check = "--check" in sys.argv
-    teams, rows, budgets = load()
-    n_drafted = sum(1 for r in rows if r["pick"] != "")
-    csv_text = write_csv(rows)
-    committed = {
-        ROOT / "rights.csv": csv_text,
-        ROOT / "KEEPERS.md": build_md(teams, rows, budgets, n_drafted),
-    }
-    stale = []
-    for path, text in committed.items():
-        old = path.read_text(encoding="utf-8") if path.exists() else None
-        if old != text:
-            stale.append(path.relative_to(ROOT))
-            if not check:
-                path.write_text(text, encoding="utf-8")
-    if check and stale:
-        die("generated files are stale, run scripts/build.py: " + ", ".join(map(str, stale)))
-
-    # The website is not committed; it is always rebuilt (GitHub Actions deploys _site/).
-    SITE.mkdir(exist_ok=True)
-    (SITE / "index.html").write_text(build_html(teams, rows, budgets, n_drafted), encoding="utf-8")
-    (SITE / "rights.csv").write_text(csv_text, encoding="utf-8")
-    season = load_season(teams)
-    (SITE / "odds.html").write_text(build_odds_html(teams, season), encoding="utf-8")
-
-    print(f"{len(rows)} players, {n_drafted} drafted picks; "
-          + ("updated " + ", ".join(map(str, stale)) if stale else "no changes")
-          + f"; {len(season['results'])} results, odds for "
-          + (", ".join(f"{v} {len(d)}" for v, d in season['odds'].items()) or "no") + " weeks"
-          + f"; site written to {SITE.relative_to(ROOT)}/")
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
