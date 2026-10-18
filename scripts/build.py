@@ -169,6 +169,11 @@ def rights(teams, yahoo, corrections, seasons):
                 die(f'data/yahoo/transactions.csv: team {team} adds {who}, whose rights are still with {p["team"]}')
             p['team'] = team
             p['fab'] = max(p['fab'] or 0, int(r['fab'] or 0))
+        elif action == 'trade':
+            if not p['team'] or p['team'] == team:
+                die(f'data/yahoo/transactions.csv: team {team} gets {who} in a trade, whose rights are with '
+                    f'{p["team"] or "nobody"}')
+            p['team'] = team
         else:
             die(f'data/yahoo/transactions.csv: {who}: no rule for a {action!r} yet')
         p['moves'].append(f'{r["time"][:10]} {action}')
