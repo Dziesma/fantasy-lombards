@@ -3,7 +3,7 @@ player_id,name,nba_team,positions,status
 4244,Kevin Durant,HOU,"SG,SF,PF",
 4472,Brook Lopez,LAC,C,
 4563,James Harden,CLE,"PG,SG",
-4612,Stephen Curry,GSW,PG,
+4612,Stephen Curry,GSW,PG,P
 4614,DeMar DeRozan,DEN,"SF,PF",
 4622,Jrue Holiday,POR,"PG,SG",Q
 4725,Paul George,BOS,"SF,PF",
@@ -35,7 +35,7 @@ player_id,name,nba_team,positions,status
 5475,Kelly Oubre Jr.,IND,"SF,PF",
 5482,Bobby Portis Jr.,MIA,"PF,C",
 5506,Norman Powell,CHI,"SG,SF",
-5600,Ben Simmons,SAC,PG,
+5600,Ben Simmons,SAC,PG,OFS
 5601,Brandon Ingram,LAC,"SG,SF,PF",O
 5602,Jaylen Brown,PHI,"SG,SF,PF",
 5636,Kris Dunn,LAC,"PG,SG",
