@@ -51,7 +51,7 @@ player_id,name,nba_team,positions,status
 5767,De'Aaron Fox,SAS,PG,
 5769,Lauri Markkanen,UTA,"SF,PF",
 5826,Donovan Mitchell,CLE,"PG,SG",
-5827,Bam Adebayo,MIA,"PF,C",Q
+5827,Bam Adebayo,MIA,"PF,C",
 5832,John Collins,DET,"PF,C",
 5835,Jarrett Allen,CLE,C,
 5836,OG Anunoby,NYK,"SF,PF",
@@ -79,7 +79,7 @@ player_id,name,nba_team,positions,status
 6164,Ja Morant,POR,PG,
 6165,RJ Barrett,TOR,"SG,SF,PF",
 6167,Darius Garland,LAC,PG,
-6169,Coby White,CHA,"PG,SG",Q
+6169,Coby White,CHA,"PG,SG",O
 6170,Jaxson Hayes,UTA,C,
 6171,Rui Hachimura,LAC,"SF,PF",
 6173,Cameron Johnson,DEN,"SF,PF",
@@ -117,7 +117,7 @@ player_id,name,nba_team,positions,status
 6516,Jalen Suggs,ORL,"PG,SG",
 6548,Josh Giddey,CHI,"PG,SG",
 6549,Jonathan Kuminga,MIN,"SF,PF",
-6550,Franz Wagner,ORL,"SF,PF",P
+6550,Franz Wagner,ORL,"SF,PF",
 6551,Davion Mitchell,MIA,PG,
 6556,Moses Moody,GSW,"SG,SF,PF",O
 6558,Alperen Şengün,HOU,"PF,C",
@@ -184,7 +184,7 @@ player_id,name,nba_team,positions,status
 10294,Alex Sarr,WAS,C,
 10296,Zaccharie Risacher,DAL,"SF,PF",
 10304,Ajay Mitchell,OKC,"PG,SG",
-10312,Pelle Larsson,MIA,"SG,SF",Q
+10312,Pelle Larsson,MIA,"SG,SF",
 10313,Oso Ighodaro,PHX,C,Q
 10315,Kyle Filipowski,UTA,"PF,C",Q
 10316,Daniss Jenkins,DET,"PG,SG",
@@ -195,7 +195,7 @@ player_id,name,nba_team,positions,status
 10444,Derik Queen,NOP,"PF,C",
 10445,Egor Dëmin,BKN,"PG,SG",
 10447,Khaman Maluach,PHX,C,
-10450,Kon Knueppel,CHA,"SG,SF",Q
+10450,Kon Knueppel,CHA,"SG,SF",O
 10454,VJ Edgecombe,PHI,"PG,SG",
 10460,Joan Beringer,MIN,"PF,C",
 10462,Ace Bailey,UTA,"SF,PF",
