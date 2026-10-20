@@ -126,7 +126,7 @@ player_id,name,nba_team,positions,status
 6564,Isaiah Jackson,LAC,C,
 6567,Quentin Grimes,LAL,"SG,SF",
 6571,Day'Ron Sharpe,BKN,C,
-6572,Santi Aldama,DAL,PF,Q
+6572,Santi Aldama,DAL,PF,D
 6577,Herbert Jones,NOP,"SG,SF",
 6578,Miles McBride,NYK,"PG,SG",
 6580,Ayo Dosunmu,MIN,"PG,SG",
@@ -213,7 +213,7 @@ player_id,name,nba_team,positions,status
 10576,Brayden Burries,MIL,SG,
 10577,Hannes Steinbach,CHA,PF,
 10579,Aday Mara,OKC,C,
-10580,Dailyn Swain,CHI,SF,O
+10580,Dailyn Swain,CHI,SF,D
 10581,Nate Ament,MIL,SF,Q
 10582,Darius Acuff Jr.,SAC,PG,
 10585,Keaton Wagler,LAC,SG,
