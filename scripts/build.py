@@ -273,6 +273,7 @@ def sims(teams, yahoo, pairs):
             {'team1': int(r['team1']), 'team2': int(r['team2']),
              **{k: float(r[k]) for k in ('win1', 'tie', 'win2', 'cats1', 'cats2')},
              'games1': int(r['games1']), 'games2': int(r['games2']),
+             **{k: int(r[k]) if r.get(k) else None for k in ('played1', 'played2')},   # older sims: none
              'categories': {c: [float(r[f'{c}_{k}']) for k in ('win1', 'tie', 'win2')] for c, _, _ in CATEGORIES}})
     for r in yahoo['power']:
         sim(out, r)['power'].append(

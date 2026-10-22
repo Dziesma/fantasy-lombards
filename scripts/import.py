@@ -19,7 +19,8 @@ Writes, each file whole (don't edit them by hand):
                       lock), locked (its games being played), finished (the result); played, projected: its
                       starter games so far (empty when the sim doesn't say)
     odds.csv          source, week, version, team1, team2, win1, tie, win2, cats1, cats2, games1, games2,
-                      <cat>_win1, <cat>_tie, <cat>_win2: each pairing
+                      played1, played2, <cat>_win1, <cat>_tie, <cat>_win2: each pairing; games: starter games (a
+                      game a starter sat out isn't one), played: of them with a box score
     power.csv         source, week, version, rank, team_id, win, tie, loss, cats, games, <cat>, <cat>_rank: each
                       team against all others; week season: the season's power ranking (no games)
 
@@ -69,7 +70,7 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     for name, rows in tables.items():
         _write(OUT / f'{name}.csv', COLUMNS[name], rows)
-    _write(OUT / 'odds.csv', list(odds[0]), odds)
+    _write(OUT / 'odds.csv', list(max(odds, key=len)), odds)   # older sims have no played1, played2
     _write(OUT / 'power.csv', list(next(r for r in power if r['week'] != 'season')), power)
     frozen = {r['week'] for r in tables['sims'] if r['version'] != 'live'}
     print(f'{len(players)} players, {len(yahoo["draft"])} picks, {len(yahoo["transactions"])} transactions; odds of '

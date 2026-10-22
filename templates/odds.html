@@ -190,7 +190,10 @@ function card(m, f, totals, frozenTotals, final) {
     bar([m.win1, m.tie, m.win2], f && [f.win1, f.tie, f.win2], ""),
     el("div", { className: "small" },
       el("span", { textContent: (f ? `lock ${pct(f.win1)}–${pct(f.win2)} · ` : "") +
-        `tie ${pct(m.tie)} · cats ${m.cats1.toFixed(1)}–${m.cats2.toFixed(1)} · games ${m.games1}–${m.games2}` }),
+        `tie ${pct(m.tie)} · cats ${m.cats1.toFixed(1)}–${m.cats2.toFixed(1)} · games ${m.games1}–${m.games2}` +
+        (f && (f.games1 !== m.games1 || f.games2 !== m.games2) ? ` (lock ${f.games1}–${f.games2})` : "") +
+        (f && m.played1 !== null ? ` · ${m.played1}–${m.played2} played` : ""),
+        title: "Starter games: those played so far and those still to come. A game a starter sat out drops out; one he's back for (no longer out) comes in." }),
       el("span", {}, ...(final ? [el("span", { className: "result", textContent: "final" }), " "] : []), "details ▾")));
   const rows = D.categories.map(c => {
     const now = m.categories[c.id], then = f && f.categories[c.id];
