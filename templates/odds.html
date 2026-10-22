@@ -43,21 +43,37 @@
   th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; }
   tbody tr:last-child td { border-bottom: 0; }
   tbody tr:hover { background: var(--row-hover); }
-  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+  .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: start; }
+  @media (max-width: 720px) { .cards { grid-template-columns: minmax(0, 1fr); } }
   .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; }
   .card summary { list-style: none; cursor: pointer; }
   .card summary::-webkit-details-marker { display: none; }
-  .teams { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; font-size: 14px; }
+  .teams { display: grid; grid-template-columns: 1fr auto 3.2em; gap: 2px 10px; font-size: 14px; }
+  .delta { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
   .teams .p { font-variant-numeric: tabular-nums; font-weight: 650; text-align: right; }
   .fav { font-weight: 650; }
-  .bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin: 9px 0 6px; background: var(--tie); }
+  .barwrap { position: relative; margin: 9px 0 6px; }
+  .bar { position: relative; display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--tie); }
   .bar span:nth-child(1) { background: var(--win); }
   .bar span:nth-child(2) { background: var(--tie); }
   .bar span:nth-child(3) { background: var(--loss); }
+  /* the shift since the lock: striped in the colour of the team it went to; the tick: where the lock had it */
+  .bar .shift { position: absolute; top: 0; bottom: 0;
+    background: repeating-linear-gradient(135deg, var(--c) 0 3px, color-mix(in srgb, var(--c) 30%, var(--panel)) 3px 6px); }
+  .barwrap .lock { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; border-radius: 1px; background: var(--text); }
+  .cats .barwrap { margin: 0; min-width: 90px; }
+  .cats .bar { height: 6px; border-radius: 3px; }
+  .cats .barwrap .lock { top: -2px; bottom: -2px; }
+  .key { display: flex; flex-wrap: wrap; gap: 4px 16px; align-items: center; font-size: 12px; color: var(--muted); margin: 0 0 10px; }
+  .key i { display: inline-block; vertical-align: -2px; margin-right: 5px; }
+  .key .sw { width: 22px; height: 8px; border-radius: 3px; }
+  .key .tick { width: 2px; height: 12px; background: var(--text); border-radius: 1px; vertical-align: -3px; }
   .small { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+  .small > span:last-child { white-space: nowrap; }
   .result { white-space: nowrap; font-size: 12px; font-weight: 600; padding: 1px 7px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); }
   .cats { margin-top: 10px; font-size: 13px; }
   .cats td, .cats th { padding: 4px 6px; }
+  .cats td.barcell { width: 40%; }
   .edge { font-weight: 650; }
   td.rank { text-align: center; font-variant-numeric: tabular-nums; width: 38px; }
   .empty { color: var(--muted); padding: 14px; background: var(--panel); border: 1px dashed var(--line); border-radius: 8px; }
@@ -69,10 +85,11 @@
 <main>
   <h1>Fantasy Lombards</h1>
   <nav><a class="on" href="index.html">Standings &amp; odds</a><a href="keepers.html">Keeper rights</a><a href="vaimanieki.html">Vaimanieki</a></nav>
-  <p class="sub">Yahoo's One-Win standings and each week's projected matchup odds. The odds simulate every team's
-    lineup over the week's NBA schedule, from player projections: Yahoo's (made by Rotowire), ESPN's, or their average.
-    Before a week locks they use each team's best lineup and change with every update; at each lineup lock (Monday)
-    they're frozen with the lineups that locked. Team-level only.</p>
+  <p class="sub">Yahoo's One-Win standings and each week's matchup odds. The odds simulate every team's lineup over
+    the week's NBA schedule, from player projections: Yahoo's (made by Rotowire), ESPN's, or their average. Before a
+    week locks they use each team's best lineup and change with every update. Once it locks, the odds are live: the
+    games played so far count as played, only the rest is projected, so by the week's end they're the result. Each bar
+    shows them against the odds frozen at the lineup lock (Monday). Team-level only.</p>
 
   <section id="standings-sec" hidden>
     <h2>Standings</h2>
@@ -83,10 +100,17 @@
   <div class="controls"><select id="week" aria-label="Week"></select>
     <select id="source" aria-label="Projections" hidden></select></div>
   <p id="meta" class="meta"></p>
+  <div id="key" class="key" hidden>
+    <span><i class="sw" style="background: var(--win)"></i>top team wins</span>
+    <span><i class="sw" style="background: var(--tie)"></i>tie</span>
+    <span><i class="sw" style="background: var(--loss)"></i>bottom team wins</span>
+    <span><i class="sw" style="--c: var(--win); background: repeating-linear-gradient(135deg, var(--c) 0 3px, color-mix(in srgb, var(--c) 30%, var(--panel)) 3px 6px)"></i>moved since the lock, to the team of its colour</span>
+    <span><i class="tick"></i>where the lock had it</span>
+  </div>
   <div id="cards" class="cards"></div>
 
   <h2 id="power-title">Power ranking</h2>
-  <p class="meta">Average odds against every other team. Category columns: rank 1–16 (1 = best).</p>
+  <p class="meta">Average odds against every other team (± since the lock, in points). Category columns: rank 1–16 (1 = best).</p>
   <div class="wrap"><table id="power"></table></div>
 
   <footer>Built from the league's data files. <a href="keepers.html">Keeper rights</a>.</footer>
@@ -131,60 +155,101 @@ try { saved = localStorage.getItem("odds-source"); } catch (e) {}
 ssel.value = D.sources.some(s => s.id === saved) ? saved : (D.sources[0] || {}).id;
 ssel.addEventListener("change", () => { try { localStorage.setItem("odds-source", ssel.value); } catch (e) {} render(); });
 
-function card(m, totals) {
+const signed = d => (d > 0 ? "▲" : "▼") + Math.abs(Math.round(100 * d));
+// A change under half a point shows as none
+const delta = (now, then) => then === undefined || Math.abs(now - then) < 0.005 ? "" : signed(now - then);
+
+// The odds bar: now (solid win / tie / loss), and if there's a lock to compare with, the shift since: the band between
+// team 1's win share then and now, striped in the colour of the team it went to, and a tick where the lock had it
+function bar(now, then, label) {
+  const [w1, t, w2] = now;
+  const b = el("div", { className: "bar" },
+    el("span", { style: `width:${100 * w1}%` }), el("span", { style: `width:${100 * t}%` }),
+    el("span", { style: `width:${100 * w2}%` }));
+  const wrap = el("div", { className: "barwrap" }, b);
+  let title = `${label}win ${pct(w1)} · tie ${pct(t)} · loss ${pct(w2)}`;
+  if (then) {
+    const f = then[0], lo = Math.min(f, w1), hi = Math.max(f, w1);
+    if (hi - lo >= 0.005)
+      b.append(el("span", { className: "shift", style: `left:${100 * lo}%; width:${100 * (hi - lo)}%; --c: var(${w1 > f ? "--win" : "--loss"})` }));
+    wrap.append(el("span", { className: "lock", style: `left:${100 * f}%` }));
+    title += `\nat the lock: win ${pct(then[0])} · tie ${pct(then[1])} · loss ${pct(then[2])}`;
+  }
+  wrap.title = title;
+  return wrap;
+}
+
+function card(m, f, totals, frozenTotals, final) {
   const fav1 = m.win1 >= m.win2;
   const head = el("summary", {},
     el("div", { className: "teams" },
       el("span", { textContent: name(m.team1), className: fav1 ? "fav" : "" }), el("span", { className: "p", textContent: pct(m.win1) }),
-      el("span", { textContent: name(m.team2), className: fav1 ? "" : "fav" }), el("span", { className: "p", textContent: pct(m.win2) })),
-    el("div", { className: "bar", title: `win ${pct(m.win1)} · tie ${pct(m.tie)} · loss ${pct(m.win2)}` },
-      el("span", { style: `width:${100 * m.win1}%` }), el("span", { style: `width:${100 * m.tie}%` }),
-      el("span", { style: `width:${100 * m.win2}%` })),
+      el("span", { className: "delta", textContent: f ? delta(m.win1, f.win1) : "" }),
+      el("span", { textContent: name(m.team2), className: fav1 ? "" : "fav" }), el("span", { className: "p", textContent: pct(m.win2) }),
+      el("span", { className: "delta", textContent: f ? delta(m.win2, f.win2) : "" })),
+    bar([m.win1, m.tie, m.win2], f && [f.win1, f.tie, f.win2], ""),
     el("div", { className: "small" },
-      el("span", { textContent: `tie ${pct(m.tie)} · expected cats ${m.cats1.toFixed(1)}–${m.cats2.toFixed(1)} · games ${m.games1}–${m.games2}` }),
-      el("span", { textContent: "details ▾" })));
+      el("span", { textContent: (f ? `lock ${pct(f.win1)}–${pct(f.win2)} · ` : "") +
+        `tie ${pct(m.tie)} · cats ${m.cats1.toFixed(1)}–${m.cats2.toFixed(1)} · games ${m.games1}–${m.games2}` }),
+      el("span", {}, ...(final ? [el("span", { className: "result", textContent: "final" }), " "] : []), "details ▾")));
   const rows = D.categories.map(c => {
-    const [w1, , w2] = m.categories[c.id];
+    const now = m.categories[c.id], then = f && f.categories[c.id];
+    const t1 = totals[m.team1][c.id], t2 = totals[m.team2][c.id];
+    const cell = (team, x) => el("td", { className: "num" + ((team === 1 ? now[0] > now[2] : now[2] > now[0]) ? " edge" : ""),
+      textContent: fmt(c.id, x), title: frozenTotals ? `at the lock: ${fmt(c.id, frozenTotals[team === 1 ? m.team1 : m.team2][c.id])}` : "" });
     return el("tr", {},
       el("td", { textContent: c.label }),
-      el("td", { className: "num" + (w1 > w2 ? " edge" : ""), textContent: fmt(c.id, totals[m.team1][c.id]) }),
-      el("td", { className: "num" + (w2 > w1 ? " edge" : ""), textContent: fmt(c.id, totals[m.team2][c.id]) }),
-      el("td", { className: "num", textContent: pct(w1) }), el("td", { className: "num", textContent: pct(w2) }));
+      cell(1, t1),
+      el("td", { className: "num", textContent: pct(now[0]) }),
+      el("td", { className: "barcell" }, bar(now, then, `${c.label}: `)),
+      el("td", { className: "num", textContent: pct(now[2]) }),
+      cell(2, t2));
   });
   const table = el("table", { className: "cats" },
-    el("thead", {}, el("tr", {}, ...["Cat", "Proj. 1", "Proj. 2", "P(1)", "P(2)"].map((h, i) =>
-      el("th", { textContent: h, className: i ? "num" : "" })))), el("tbody", {}, ...rows));
+    el("thead", {}, el("tr", {}, ...["Cat", final ? "Team 1" : "Proj. 1", "P(1)", "", "P(2)", final ? "Team 2" : "Proj. 2"].map((h, i) =>
+      el("th", { textContent: h, className: i && i !== 3 ? "num" : "" })))), el("tbody", {}, ...rows));
   return el("details", { className: "card" }, head, table);
 }
 
 function render() {
   const week = sel.value;
-  const o = (D.sims[ssel.value] || {})[week];
+  const both = (D.sims[ssel.value] || {})[week];
+  const o = both && both.live, fr = both && both.frozen;
   const cards = document.getElementById("cards");
   const meta = document.getElementById("meta");
   const power = document.getElementById("power");
+  document.getElementById("key").hidden = !fr || week === "season";
   if (!o) {
     meta.textContent = "";
     cards.replaceChildren(el("div", { className: "empty", textContent: "No odds for this week yet: its pairings aren't set." }));
     power.replaceChildren();
     return;
   }
-  const state = week === "season" ? "Live" : o.version === "live" ? "Live, until the week locks" :
-    o.version.endsWith("-2") ? "Frozen at the week's second lineup lock" : "Frozen at the lineup lock";
-  meta.textContent = `${state} · as of ${day(o.as_of)}` + (o.projections ? ` · projections of ${o.projections.replace(/T[\d:]+Z/g, "")}` : "");
+  const final = o.state === "finished";
+  const lock = fr ? (fr.version.endsWith("-2") ? "the week's second lineup lock" : "the lineup lock") : "";
+  const state = week === "season" ? "Live" :
+    final ? "Final: every game played" :
+    o.state === "locked" ? "Live" + (o.played !== null ? `: ${o.played} starter games played, ${o.projected} still projected` : "") :
+    "Projected, until the week locks";
+  meta.textContent = `${state} · as of ${day(o.as_of)}` + (o.projections && !final ? ` · projections of ${o.projections.replace(/T[\d:]+Z/g, "")}` : "") +
+    (fr ? ` · against the odds frozen at ${lock} (${day(fr.as_of)})` : "");
   const totals = Object.fromEntries(o.power.map(p => [p.team, p.totals]));
+  const frozenTotals = fr && Object.fromEntries(fr.power.map(p => [p.team, p.totals]));
+  const frozenBy = fr ? Object.fromEntries(fr.matchups.map(m => [`${m.team1}-${m.team2}`, m])) : {};
   cards.replaceChildren(...(week === "season" ?
     [el("div", { className: "empty", textContent: "The season ranking has no matchups: it compares roster strength, every starter playing a typical week's games." })] :
-    o.matchups.map(m => card(m, totals))));
+    o.matchups.map(m => card(m, frozenBy[`${m.team1}-${m.team2}`], totals, frozenTotals, final))));
 
   document.getElementById("power-title").textContent = week === "season" ? "Power ranking (season)" : `Power ranking, week ${week}`;
   const n = o.power.length;
+  const frozenWin = fr ? Object.fromEntries(fr.power.map(p => [p.team, p.win])) : null;
   power.replaceChildren(
-    el("thead", {}, el("tr", {}, ...["#", "Team", "Win%", "Cats", ...(week === "season" ? [] : ["Games"]), ...D.categories.map(c => c.label)].map((h, i) =>
+    el("thead", {}, el("tr", {}, ...["#", "Team", "Win%", ...(frozenWin ? ["±"] : []), "Cats", ...(week === "season" ? [] : ["Games"]), ...D.categories.map(c => c.label)].map((h, i) =>
       el("th", { textContent: h, className: i > 1 ? "num" : "" })))),
     el("tbody", {}, ...o.power.map(r => el("tr", {},
       el("td", { textContent: r.rank }), el("td", { textContent: name(r.team) }),
       el("td", { className: "num", textContent: pct(r.win) }),
+      ...(frozenWin ? [el("td", { className: "num delta", textContent: delta(r.win, frozenWin[r.team]) })] : []),
       el("td", { className: "num", textContent: r.cats.toFixed(2) }),
       ...(week === "season" ? [] : [el("td", { className: "num", textContent: r.games })]),
       ...D.categories.map(c => {

@@ -253,12 +253,19 @@ def standings(rows):
 
 
 def sims(teams, yahoo, pairs):
-    """{source: {week: {version, as_of, projections, matchups, power}}}: each week's odds (pairings in the schedule)
-    and power ranking, and the season's power ranking (week season)."""
+    """{source: {week: {live, frozen}}}: each week's live sim (now: the games played so far actual, the rest projected;
+    the result once over) and its frozen one (at the newest lock passed; None before the lock), each {version, as_of,
+    projections, state, played, projected, matchups, power}: the odds (pairings in the schedule) and power ranking;
+    week season: the season's power ranking (live only)."""
     out = {}
     for r in yahoo['sims']:
-        out.setdefault(r['source'], {})[r['week']] = {'version': r['version'], 'as_of': r['as_of'],
-                                                      'projections': r['projections'], 'matchups': [], 'power': []}
+        kind = 'live' if r['version'] == 'live' else 'frozen'
+        week = out.setdefault(r['source'], {}).setdefault(r['week'], {'live': None, 'frozen': None})
+        if week[kind]:
+            die(f'data/yahoo/sims.csv: two {kind} {r["source"]} sims of week {r["week"]}')
+        week[kind] = {'version': r['version'], 'as_of': r['as_of'], 'projections': r['projections'],
+                      'state': r['state'], 'played': int(r['played']) if r['played'] else None,
+                      'projected': int(r['projected']) if r['projected'] else None, 'matchups': [], 'power': []}
     for r in yahoo['odds']:
         if (int(r['week']), r['team1'], r['team2']) not in pairs:
             die(f'data/yahoo/odds.csv: week {r["week"]} {r["team1"]}-{r["team2"]} is not in the schedule')
@@ -275,16 +282,24 @@ def sims(teams, yahoo, pairs):
              'totals': {c: float(r[c]) for c, _, _ in CATEGORIES},
              'ranks': {c: int(r[f'{c}_rank']) for c, _, _ in CATEGORIES}})
     for source, weeks in out.items():
-        for week, s in weeks.items():
-            if len(s['power']) != len(teams):
-                die(f'data/yahoo/power.csv: {source} week {week} has {len(s["power"])} teams, not {len(teams)}')
+        for week, both in weeks.items():
+            if not both['live']:
+                die(f'data/yahoo/sims.csv: no live {source} sim of week {week}')
+            for kind, s in both.items():
+                if s and len(s['power']) != len(teams):
+                    die(f'data/yahoo/power.csv: {source} week {week} {kind} has {len(s["power"])} teams, not '
+                        f'{len(teams)}')
+                if s and both['frozen'] and len(s['matchups']) != len(both['live']['matchups']):
+                    die(f'data/yahoo/odds.csv: {source} week {week}: live and frozen have different pairings')
     return dict(sorted(out.items(), key=lambda kv: list(SOURCES).index(kv[0]) if kv[0] in SOURCES else len(SOURCES)))
 
 
 def sim(out, r):
-    if r['week'] not in out.get(r['source'], {}):
-        die(f'data/yahoo/sims.csv: no {r["source"]} sim of week {r["week"]}')
-    return out[r['source']][r['week']]
+    both = out.get(r['source'], {}).get(r['week'], {})
+    s = both.get('live' if r['version'] == 'live' else 'frozen')
+    if not s or s['version'] != r['version']:
+        die(f'data/yahoo/sims.csv: no {r["source"]} sim {r["version"]} of week {r["week"]}')
+    return s
 
 
 def page(template, name, payload):

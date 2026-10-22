@@ -40,8 +40,11 @@ Yahoo's injury flag), when each table was last fetched,
 picks and transactions by ids, the weeks and pairings, Yahoo's W-L-T, and per sim (each projection source, each
 week) the pairings' odds and each team's projected category totals. No player projections.
 
-A week's odds are frozen at its lineup lock (Monday; weeks 7 and 17 have a second, on their middle Monday): the
-lineups that locked, the projections of then. Until then they're live, with each team's best lineup.
+Each week has two sims. Live: what is known now; before the week's lineup lock (Monday; weeks 7 and 17 have a
+second, on their middle Monday) each team's best lineup, projected; after it the lineups that locked, the games played
+so far as played and only the rest projected, so once the week is over it's the result. Frozen: the odds at the lock,
+the lineups that locked and the projections of then. The odds page shows live, each bar marked with the shift since
+the lock (per matchup and per category).
 
 ## Updating
 
