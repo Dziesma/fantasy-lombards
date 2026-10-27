@@ -28,9 +28,9 @@ Writes, each file whole (don't edit them by hand):
     h2h.csv           source, week, team1, team2, win1, tie, win2, cats1, cats2: every pair of teams (the power
                       ranking's round robin), of the live sims only; week season: the season's
     totals.csv        source, week, team_id, kind, games, fgm, fga, ftm, fta, tpm, pts, reb, ast, stl, blk, to: each
-                      team's starter stats in a live sim with games played (locked or finished), summed from its
-                      player games; kind: played (the box scores so far) or week (played and projected: the
-                      projected totals, with makes and attempts)
+                      team's starter stats in a live sim with pairings, summed from its player games; kind: week
+                      (played and projected: the projected totals, with makes and attempts) or, once games are
+                      played, played (the box scores so far)
 
 Each week has its live sim (what is known now: the games played so far actual, the rest projected; the result once
 it's over) and, once a lock has passed, the newest frozen one (week-NN, or week-NN-2 in a two-week week: what was
@@ -103,7 +103,7 @@ def fetched(current, names):
 
 def sims(root):
     """(sims, odds, power, h2h, totals) rows of every source's sims: each week's live one and its newest frozen one (a
-    lock passed); and the season's power ranking. h2h: the live ones' only; totals: the live ones' with games played."""
+    lock passed); and the season's power ranking. h2h: the live ones' only; totals: the live ones' with pairings."""
     live, frozen = root / 'sim' / 'live', root / 'sim' / 'frozen'
     if not (live / 'season').is_dir():
         _die(f'no {live / "season"}; run `yfbb sim`')
@@ -122,7 +122,7 @@ def sims(root):
                 power += [{'source': source, 'week': week, 'version': version} | r
                           for r in _read(folder / 'power.csv')]
             h2h += [{'source': source, 'week': week} | r for r in _read(folders['live'] / 'h2h.csv')]
-            if rows[-len(folders)]['state'] in ('locked', 'finished'):
+            if (folders['live'] / 'player_games.csv').exists():
                 totals += _totals(source, week, _read(folders['live'] / 'player_games.csv'))
         rows.append(_sim(source, 'season', 'live', live / 'season' / source))
         power += [{'source': source, 'week': 'season', 'version': 'live'} | r

@@ -265,9 +265,9 @@ def sims(teams, yahoo, pairs):
     """{source: {week: {live, frozen}}}: each week's live sim (now: the games played so far actual, the rest projected;
     the result once over) and its frozen one (at the newest lock passed; None before the lock), each {version, as_of,
     projections, state, played, projected, matchups, power}: the odds (pairings in the schedule) and power ranking;
-    the live one also h2h: every pair of teams, [team1, team2, win1, tie, win2, cats1, cats2], and once games are
-    played totals: {team: {played, week: {games, fgm, fga, ...}}}, the stats so far and the week's (played and
-    projected); week season: the season's power ranking (live only)."""
+    the live one also h2h: every pair of teams, [team1, team2, win1, tie, win2, cats1, cats2], and totals: {team:
+    {week, played: {games, fgm, fga, ...}}}, the week's stats (played and projected) and, once games are played, those
+    so far; week season: the season's power ranking (live only)."""
     out = {}
     for r in yahoo['sims']:
         kind = 'live' if r['version'] == 'live' else 'frozen'

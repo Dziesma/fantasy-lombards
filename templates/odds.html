@@ -45,18 +45,45 @@
   th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; }
   tbody tr:last-child td { border-bottom: 0; }
   tbody tr:hover { background: var(--row-hover); }
-  .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: start; }
-  @media (max-width: 720px) { .cards { grid-template-columns: minmax(0, 1fr); } }
-  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; }
-  .card summary { list-style: none; cursor: pointer; }
+  .cards { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px 12px; }
+  .card summary { list-style: none; cursor: pointer; position: relative; }
   .card summary::-webkit-details-marker { display: none; }
-  .teams { display: grid; grid-template-columns: 1fr auto 3.2em; gap: 2px 10px; font-size: 14px; }
-  .delta { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
-  .teams .p { font-variant-numeric: tabular-nums; font-weight: 650; text-align: right; }
+  /* head to head: team 1 left, team 2 right (mirrored), the tie between */
+  .vs { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 4px 16px; align-items: end; }
+  .vs .s2 { text-align: right; }
+  /* each name with its team's colour dot on the outside, pinned to the edge so a long name wraps without it */
+  .tn { font-size: 15px; position: relative; }
+  .tn::before { content: ""; position: absolute; top: 0.45em; width: 9px; height: 9px; border-radius: 50%; }
+  .s1 .tn { padding-left: 16px; }
+  .s1 .tn::before { left: 0; background: var(--fav); }
+  .s2 .tn { padding-right: 16px; }
+  .s2 .tn::before { right: 0; background: var(--dog); }
+  .big { font-size: 22px; font-weight: 650; font-variant-numeric: tabular-nums; line-height: 1.2; }
+  .big .delta { font-size: 12px; font-weight: 400; margin: 0 6px; }
+  .mid { text-align: center; color: var(--muted); font-size: 12px; line-height: 1.25; padding-bottom: 3px; }
+  .mid .tp { font-size: 15px; color: var(--text); font-variant-numeric: tabular-nums; }
+  .mid .tp .delta { margin-left: 4px; }
+  .mid.result { font-weight: 650; text-transform: uppercase; letter-spacing: 0.06em; }
+  .delta { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
   .fav { font-weight: 650; }
-  .teams .tie, .teams .tie.p { color: var(--muted); font-size: 12px; font-weight: 400; }
-  .barwrap { position: relative; margin: 9px 0 6px; }
-  .bar { position: relative; display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--tie); }
+  /* facts: each a team 1 value, what it is, the team 2 value */
+  .facts { display: flex; justify-content: center; flex-wrap: wrap; gap: 4px 36px; font-size: 13px; padding-right: 70px; padding-left: 70px; }
+  .fact { display: grid; grid-template-columns: auto auto auto; gap: 10px; align-items: baseline; font-variant-numeric: tabular-nums; }
+  .fact .k { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; text-align: center; }
+  .fact .k b { font-weight: 400; text-transform: none; letter-spacing: 0; }
+  .fact .note { color: var(--muted); font-size: 11px; }
+  .more { position: absolute; right: 0; bottom: 0; font-size: 12px; color: var(--muted); }
+  @media (max-width: 700px) {
+    .vs { gap: 2px 8px; }
+    .big { font-size: 19px; }
+    .facts { flex-direction: column; padding: 0; gap: 3px; }
+    .fact { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+    .fact > :last-child { text-align: right; }
+    .more { position: static; display: block; text-align: center; margin-top: 4px; }
+  }
+  .barwrap { position: relative; margin: 10px 0 9px; }
+  .bar { position: relative; display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: var(--tie); }
   .bar span:nth-child(1) { background: var(--fav); }
   .bar span:nth-child(2) { background: var(--tie); }
   .bar span:nth-child(3) { background: var(--dog); }
@@ -74,8 +101,6 @@
   .key i { display: inline-block; vertical-align: -2px; margin-right: 5px; }
   .key .sw { width: 22px; height: 8px; border-radius: 3px; }
   .key .tick { width: 2px; height: 12px; vertical-align: -3px; background: var(--lock); }
-  .small { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
-  .small > span:last-child { white-space: nowrap; }
   /* a finished week's upset (the lock's underdog won) and tie */
   .card.upset { border-color: var(--dog); box-shadow: inset 3px 0 0 var(--dog); }
   .card.tied { border-color: var(--tie-edge); box-shadow: inset 3px 0 0 var(--tie-edge); }
@@ -89,11 +114,24 @@
   .h2h th.num, .h2h td.num { text-align: right; padding: 5px 8px; }
   .h2h td.sum { border-left: 1px solid var(--line); }
   .h2h tbody tr:hover td.tm { background: var(--row-hover); }
-  .cats { margin-top: 10px; font-size: 13px; }
-  .cats td, .cats th { padding: 4px 6px; }
-  .cats td.barcell { width: 40%; }
-  /* under a stat: the box scores so far (FG%, FT%: with makes/attempts) */
-  .cats .now { display: block; font-size: 11px; line-height: 1.2; color: var(--muted); font-weight: 400; }
+  /* the categories, mirrored like the head to head: team 1's columns right-aligned toward the bar, team 2's left */
+  .cats { margin-top: 12px; font-size: 13px; }
+  .cats td, .cats th { padding: 5px 8px; font-variant-numeric: tabular-nums; }
+  .cats .s1 { text-align: right; }
+  .cats .s2 { text-align: left; }
+  .cats td.barcell { width: 34%; min-width: 80px; }
+  .cats .sf { color: var(--muted); }
+  .cats .frac { color: var(--muted); font-size: 12px; }
+  .cats .sfi, .cats th .sfh { display: none; }
+  .cats th.sf, .cats th.pj { width: 1%; }
+  @media (max-width: 700px) {
+    /* no room for the so-far columns: so far goes under each stat, the projections lose their makes/attempts */
+    .cats { font-size: 12px; }
+    .cats td, .cats th { padding: 4px 3px; }
+    .cats td.barcell { min-width: 50px; }
+    .cats .sf, .cats .pj .frac { display: none; }
+    .cats .sfi, .cats th .sfh { display: block; font-size: 11px; color: var(--muted); font-weight: 400; }
+  }
   .edge { font-weight: 650; }
   td.rank { text-align: center; font-variant-numeric: tabular-nums; width: 38px; }
   .empty { color: var(--muted); padding: 14px; background: var(--panel); border: 1px dashed var(--line); border-radius: 8px; }
@@ -109,8 +147,8 @@
     the week's NBA schedule, from player projections: Yahoo's (made by Rotowire), ESPN's, or their average. Before a
     week locks they use each team's best lineup and change with every update. Once it locks, the odds are live: the
     games played so far count as played, only the rest is projected, so by the week's end they're the result. Each bar
-    shows them against the odds frozen at the lineup lock (Monday), the lock's favourite on top in purple, its underdog in
-    teal. Team-level only.</p>
+    shows them against the odds frozen at the lineup lock (Monday), the lock's favourite on the left in purple, its
+    underdog on the right in teal. Team-level only.</p>
 
   <h2>Week</h2>
   <div class="controls"><select id="week" aria-label="Week"></select>
@@ -245,64 +283,106 @@ function made(cat, t, digits = 0) {
   const [m, a] = RATIO[cat];
   return `${t[m].toFixed(digits)}/${t[a].toFixed(digits)}`;
 }
-// A team's line under a stat (s: its {played, week} totals): once final, FG% and FT%'s makes/attempts (the rest says
-// nothing new: null); else the box scores so far, FG% and FT% also with their makes/attempts
-function soFar(cat, s, final) {
-  const t = final ? s.week : s.played || null;
-  if (RATIO[cat]) {
-    const [m, a] = RATIO[cat];
-    if (final) return made(cat, t);
-    return t && t[a] ? `${fmt(cat, t[m] / t[a])} · ${made(cat, t)}` : "0/0";
-  }
-  return final ? null : String(Math.round(t ? t[cat] : 0));
+
+// A stat as shown: FG%, FT% as .481, counts to digits decimals
+const stat = (cat, x, digits) => RATIO[cat] ? fmt(cat, x) : x.toFixed(digits);
+
+// A cell of the category table, side 1 or 2: the value, and FG% and FT%'s makes/attempts on the outside (away from the
+// bar); extra: more children (the so-far line on phones)
+function statCell(cls, side, value, frac, extra = [], title = "") {
+  const v = el("span", { className: "v", textContent: value });
+  const f = frac ? el("span", { className: "frac", textContent: frac }) : null;
+  return el("td", { className: `${cls} s${side}`, title }, ...(f ? (side === 1 ? [f, " ", v] : [v, " ", f]) : [v]), ...extra);
 }
 
-function card(m, f, totals, frozenTotals, final, stats) {
+// A team's stats so far in a category, as [value, makes/attempts or ""] (t: its played totals; none yet: zeros)
+function soFar(cat, t) {
+  if (RATIO[cat]) {
+    const [m, a] = RATIO[cat];
+    return t && t[a] ? [fmt(cat, t[m] / t[a]), made(cat, t)] : ["–", "0/0"];
+  }
+  return [String(Math.round(t ? t[cat] : 0)), ""];
+}
+
+// stage: open (before the lock: projected), live (locked: some played, the rest projected) or final
+function card(m, f, totals, frozenTotals, stage, stats) {
+  const final = stage === "final";
   const out = final ? outcome(m, f) : null;
   // the favourite now; once final, the winner (neither in a tie)
-  const fav = t => (out ? out.won === t : t === 1 ? m.win1 >= m.win2 : m.win2 > m.win1) ? "fav" : "";
+  const fav = t => (out ? out.won === t : t === 1 ? m.win1 >= m.win2 : m.win2 > m.win1) ? " fav" : "";
   const won = t => out && out.won === t ? " won" : "";
-  // once final, each team's categories won–lost–tied; else the odds (team 1, tie, team 2: adding up to 100) and their
-  // move since the lock
   const now = pcts([m.win1, m.tie, m.win2]), lock = f && pcts([f.win1, f.tie, f.win2]);
-  const odds = t => final ? el("span", { className: "p", textContent: t === 1 ? `${m.cats1}–${m.cats2}–${m.catsT}` : `${m.cats2}–${m.cats1}–${m.catsT}`,
-    title: "Categories won–lost–tied, as Yahoo scored them" }) : el("span", { className: "p", textContent: now[t === 1 ? 0 : 2] });
-  const move = k => el("span", { className: "delta", textContent: f && !final ? delta(m[k], f[k]) : "" });
-  const head = el("summary", {},
-    el("div", { className: "teams" },
-      el("span", { textContent: name(m.team1), className: fav(1) + won(1) }), odds(1), move("win1"),
-      el("span", { textContent: name(m.team2), className: fav(2) + won(2) }), odds(2), move("win2"),
-      ...(final ? [] : [el("span", { className: "tie", textContent: "tie" }), el("span", { className: "p tie", textContent: now[1] }), move("tie")])),
-    bar([m.win1, m.tie, m.win2], f && [f.win1, f.tie, f.win2], ""),
-    el("div", { className: "small" },
-      el("span", { textContent: (out && !out.won ? "Tie · " : "") + (f ? `lock: ${lock[0]}, tie ${lock[1]}, ${lock[2]} · ` : "") +
-        (final ? "" : `cats ${m.cats1.toFixed(1)}–${m.cats2.toFixed(1)} · `) + `games ${m.games1}–${m.games2}` +
-        (f && (f.games1 !== m.games1 || f.games2 !== m.games2) ? ` (lock ${f.games1}–${f.games2})` : "") +
-        (f && m.played1 !== null ? ` · ${m.played1}–${m.played2} played` : ""),
-        title: "Starter games: those played so far and those still to come. A game a starter sat out drops out; one he's back for (no longer out) comes in." }),
-      el("span", {}, "details ▾")));
+  const move = k => f && !final ? delta(m[k], f[k]) : "";
+
+  // head to head: names, and the odds (once final: categories won–lost–tied) mirrored, the tie between
+  const big = t => {
+    const v = final ? (t === 1 ? `${m.cats1}–${m.cats2}–${m.catsT}` : `${m.cats2}–${m.cats1}–${m.catsT}`) : now[t === 1 ? 0 : 2];
+    const d = el("span", { className: "delta", textContent: move(`win${t}`) });
+    return el("div", { className: "big", title: final ? "Categories won–lost–tied, as Yahoo scored them" : "" }, ...(t === 1 ? [v, d] : [d, v]));
+  };
+  const mid = final ?
+    el("div", { className: "mid result", textContent: out.won ? "final" : "tie" }) :
+    el("div", { className: "mid" }, "tie", el("div", { className: "tp" }, now[1], el("span", { className: "delta", textContent: move("tie") })));
+  const vs = el("div", { className: "vs" },
+    el("div", { className: "s1" }, el("div", { className: "tn" + fav(1) + won(1), textContent: name(m.team1) }), big(1)),
+    mid,
+    el("div", { className: "s2" }, el("div", { className: "tn" + fav(2) + won(2), textContent: name(m.team2) }), big(2)));
+
+  // facts: the lock's odds; the expected categories (live: games played count as played); starter games
+  const fact = (a, k, b, title = "") => el("div", { className: "fact", title }, el("span", {}, ...[].concat(a)), el("span", { className: "k" }, ...[].concat(k)), el("span", {}, ...[].concat(b)));
+  const note = text => el("span", { className: "note", textContent: text });
+  const facts = [];
+  if (f) facts.push(fact(lock[0], ["at the lock ", el("b", { textContent: `· tie ${lock[1]}` })], lock[2],
+    "The odds frozen at the lineup lock"));
+  if (!final) facts.push(fact(m.cats1.toFixed(1), stage === "live" ? "exp. cats, live" : "exp. cats", m.cats2.toFixed(1),
+    stage === "live" ? "Categories each team is expected to win: the games played so far as played, the rest projected" :
+      "Categories each team is expected to win, projected"));
+  // a team's starter games (live: played/all), and the lock's if they've changed since
+  const games = t => {
+    const g = stage === "live" && m[`played${t}`] !== null ? `${m[`played${t}`]}/${m[`games${t}`]}` : String(m[`games${t}`]);
+    return f && f[`games${t}`] !== m[`games${t}`] ? [g, " ", note(`(lock ${f[`games${t}`]})`)] : [g];
+  };
+  facts.push(fact(games(1), stage === "live" ? "games played" : "starter games", games(2),
+    "Starter games: those played so far and those still to come. A game a starter sat out drops out; one he's back for (no longer out) comes in."));
+  const head = el("summary", {}, vs, bar([m.win1, m.tie, m.win2], f && [f.win1, f.tie, f.win2], ""),
+    el("div", { className: "facts" }, ...facts), el("span", { className: "more", textContent: "details ▾" }));
+
+  // the categories: so far (live), projected or final, P, the bar, mirrored for team 2
+  const live = stage === "live";
   const rows = D.categories.map(c => {
-    const now = m.categories[c.id], then = f && f.categories[c.id], p = pcts(now);
-    const t1 = totals[m.team1][c.id], t2 = totals[m.team2][c.id];
-    const cell = (team, x) => {
-      const id = team === 1 ? m.team1 : m.team2, s = stats && stats[id];
-      const title = [s && made(c.id) ? `${final ? "" : "projected "}${made(c.id, s.week, 1)}` : "",
-        frozenTotals ? `at the lock: ${fmt(c.id, frozenTotals[id][c.id])}` : ""].filter(Boolean).join("\n");
-      return el("td", { className: "num" + ((team === 1 ? now[0] > now[2] : now[2] > now[0]) ? " edge" : ""), title },
-        final && !RATIO[c.id] ? String(Math.round(x)) : fmt(c.id, x), ...(s && soFar(c.id, s, final) !== null ? [el("span", { className: "now", textContent: soFar(c.id, s, final) })] : []));
+    const p_ = m.categories[c.id], then = f && f.categories[c.id], p = pcts(p_);
+    const side = t => {
+      const id = t === 1 ? m.team1 : m.team2, s = stats && stats[id];
+      const edge = (t === 1 ? p_[0] > p_[2] : p_[2] > p_[0]) ? " edge" : "";
+      const week = s && s.week, x = totals[id][c.id];
+      const value = final && !RATIO[c.id] ? String(Math.round(x)) : stat(c.id, x, 1);
+      const frac = week ? made(c.id, week) : null;
+      const lockTitle = frozenTotals ? `at the lock: ${fmt(c.id, frozenTotals[id][c.id])}` : "";
+      const sf = live ? soFar(c.id, s && s.played) : null;
+      // on phones: so far (live), or the final makes/attempts, under the stat
+      const under = sf ? sf[1] || sf[0] : final && frac;
+      const sfi = under ? [el("span", { className: "sfi", textContent: under })] : [];
+      const pj = statCell("pj" + edge, t, value, frac, sfi, lockTitle);
+      if (!live) return [pj];
+      const sfc = statCell("sf", t, sf[0], sf[1]);
+      return t === 1 ? [sfc, pj] : [pj, sfc];
     };
     return el("tr", {},
       el("td", { textContent: c.label }),
-      cell(1, t1),
-      el("td", { className: "num", textContent: p[0] }),
-      el("td", { className: "barcell" }, bar(now, then, `${c.label}: `)),
-      el("td", { className: "num", textContent: p[2] }),
-      cell(2, t2));
+      ...side(1),
+      el("td", { className: "s1", textContent: p[0] }),
+      el("td", { className: "barcell" }, bar(p_, then, `${c.label}: `)),
+      el("td", { className: "s2", textContent: p[2] }),
+      ...side(2));
   });
+  const pjHead = final ? "Final" : "Proj.";
+  const th = (text, cls) => el("th", { className: cls, textContent: text });
+  // on phones, where so far goes under the projections, the header says so too
+  const pjTh = t => el("th", { className: `pj s${t}` }, pjHead, ...(live ? [el("span", { className: "sfh", textContent: "so far" })] : []));
   const table = el("table", { className: "cats" },
-    el("thead", {}, el("tr", {}, ...["Cat", final ? "Team 1" : "Proj. 1", "P(1)", "", "P(2)", final ? "Team 2" : "Proj. 2"].map((h, i) =>
-      el("th", { className: i && i !== 3 ? "num" : "" }, h,
-        ...(stats && !final && (i === 1 || i === 5) ? [el("span", { className: "now", textContent: "so far" })] : []))))),
+    el("thead", {}, el("tr", {}, th("Cat", ""),
+      ...(live ? [th("So far", "sf s1")] : []), pjTh(1), th("P", "s1"), th("", ""), th("P", "s2"),
+      pjTh(2), ...(live ? [th("So far", "sf s2")] : []))),
     el("tbody", {}, ...rows));
   const d = el("details", { className: "card" + (out && out.upset ? " upset" : out && !out.won ? " tied" : "") }, head, table);
   d.addEventListener("toggle", () => d.open && place(d));
@@ -351,7 +431,7 @@ function render() {
   const frozenTotals = fr && Object.fromEntries(fr.power.map(p => [p.team, p.totals]));
   cards.replaceChildren(...(week === "season" ?
     [el("div", { className: "empty", textContent: "The season ranking has no matchups: it compares roster strength, every starter playing a typical week's games." })] :
-    shown.map(([m, f]) => card(m, f, totals, frozenTotals, final, o.totals))));
+    shown.map(([m, f]) => card(m, f, totals, frozenTotals, final ? "final" : o.state === "locked" ? "live" : "open", o.totals))));
 
   document.getElementById("power-title").textContent = week === "season" ? "Power ranking (season)" : `Power ranking, week ${week}`;
   const n = o.power.length;
