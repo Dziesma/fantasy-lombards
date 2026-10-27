@@ -11,7 +11,9 @@ Writes, each file whole (don't edit them by hand):
                       status: Yahoo's injury flag (O, Q, NA, ...; empty: none)
     draft.csv         pick, player_id, team_id, price
     transactions.csv  time, team_id, action, player_id, fab: oldest first
-    matchups.csv      week, first_day, last_day, team1, team2: a week without pairings yet has its teams empty
+    matchups.csv      week, first_day, last_day, team1, team2, score1, score2: a week without pairings yet has its
+                      teams empty; score: the categories each has won on Yahoo, as of the newest fetch (the result
+                      once the week is over; a category tied is neither's)
     standings.csv     team_id, rank, w, l, t: Yahoo's
     fetched.csv       table, fetched: when each of the tables above was last fetched from Yahoo (UTC)
     sims.csv          source, week, version, as_of, projections, state, played, projected: the sims each week's
@@ -45,7 +47,7 @@ COLUMNS = {
     'players': ['player_id', 'name', 'nba_team', 'positions', 'status'],
     'draft': ['pick', 'player_id', 'team_id', 'price'],
     'transactions': ['time', 'team_id', 'action', 'player_id', 'fab'],
-    'matchups': ['week', 'first_day', 'last_day', 'team1', 'team2'],
+    'matchups': ['week', 'first_day', 'last_day', 'team1', 'team2', 'score1', 'score2'],
     'standings': ['team_id', 'rank', 'w', 'l', 't'],
     'sims': ['source', 'week', 'version', 'as_of', 'projections', 'state', 'played', 'projected'],
     'fetched': ['table', 'fetched'],

@@ -112,12 +112,15 @@ def check_teams(teams, yahoo):
 
 
 def schedule(teams, matchups):
-    """[{week, start, end}] of every week, and {(week, team1, team2)} of its pairings: lower id first, every team once
-    a week (or the week has no pairings yet)."""
+    """[{week, start, end, scores}] of every week, and {(week, team1, team2)} of its pairings: lower id first, every
+    team once a week (or the week has no pairings yet). scores: Yahoo's, [team1, team2, score1, score2] of each pairing
+    that has one (categories won)."""
     weeks, pairs, played = {}, set(), {}
     for r in matchups:
         week = int(r['week'])
-        weeks[week] = {'week': week, 'start': r['first_day'], 'end': r['last_day']}
+        weeks.setdefault(week, {'week': week, 'start': r['first_day'], 'end': r['last_day'], 'scores': []})
+        if r['score1'] and r['score2']:
+            weeks[week]['scores'].append([int(r['team1']), int(r['team2']), int(r['score1']), int(r['score2'])])
         if r['team1']:
             if int(r['team1']) >= int(r['team2']):
                 die(f'data/yahoo/matchups.csv: week {week}: {r["team1"]}-{r["team2"]} isn\'t lower id first')

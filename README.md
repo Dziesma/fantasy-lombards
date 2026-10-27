@@ -39,7 +39,7 @@ Everything on the site is built from the files in `data/`, nothing else:
 
 `data/yahoo/` has only what the site shows: the players drafted or in a transaction (name, NBA team, positions,
 Yahoo's injury flag), when each table was last fetched,
-picks and transactions by ids, the weeks and pairings, Yahoo's W-L-T, and per sim (each projection source, each
+picks and transactions by ids, the weeks and pairings with Yahoo's scores (categories won), Yahoo's W-L-T, and per sim (each projection source, each
 week) the pairings' odds and each team's projected category totals, and of the live sims every pair of teams' odds
 (`h2h.csv`; yfbb's sim writes it since it was added there). No player projections.
 
