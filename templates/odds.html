@@ -104,9 +104,9 @@
   .key i { display: inline-block; vertical-align: -2px; margin-right: 5px; }
   .key .sw { width: 22px; height: 8px; border-radius: 3px; }
   .key .tick { width: 2px; height: 12px; vertical-align: -3px; background: var(--lock); }
-  /* a finished week's upset (the lock's underdog won), outlined in its colour, and tie, dashed grey */
+  /* a finished week's upset (the lock's underdog won), outlined in its colour, and tie, in grey */
   .card.upset { border-color: var(--dog); box-shadow: inset 3px 0 0 var(--dog); }
-  .card.tied { border: 1px dashed var(--tie-edge); box-shadow: inset 3px 0 0 var(--tie-edge); }
+  .card.tied { border-color: var(--tie-edge); box-shadow: inset 3px 0 0 var(--tie-edge); }
   .won::after { content: " ✓"; }
   .h2h th, .h2h td { padding: 5px 4px; text-align: center; font-size: 12px; font-variant-numeric: tabular-nums; }
   .h2h th.tm, .h2h td.tm { position: sticky; left: 0; z-index: 1; text-align: left; background: var(--panel); font-size: 13px; padding-right: 10px; }
@@ -428,7 +428,7 @@ function render() {
     const outs = shown.map(([m, f]) => outcome(m, f));
     const upsets = outs.filter(r => r.upset).length, ties = outs.filter(r => !r.won).length;
     meta.textContent += ` · ${upsets} of ${matchups.length} won by the lock's underdog` + (upsets ? " (outlined)" : "") +
-      (ties ? ` · ${ties} tied (dashed outline)` : "");
+      (ties ? ` · ${ties} tied (outlined in grey)` : "");
   }
   const totals = Object.fromEntries(o.power.map(p => [p.team, p.totals]));
   const frozenTotals = fr && Object.fromEntries(fr.power.map(p => [p.team, p.totals]));

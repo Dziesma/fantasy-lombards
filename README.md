@@ -7,7 +7,7 @@ The site of our 16-team Yahoo NBA keeper league, at **https://dziesma.github.io/
   the season's power ranking (roster strength), by Yahoo's projections (Rotowire's, the default), ESPN's or their
   average. Each matchup is a head to head: the lock's favourite on the left in orange, its underdog on the right in
   slate, the tie between, then the lock's odds, the expected categories and the starter games; a finished week shows
-  Yahoo's result (categories won–lost–tied) and outlines an upset (the lock's underdog won) in slate, a tie dashed grey.
+  Yahoo's result (categories won–lost–tied) and outlines an upset (the lock's underdog won) in slate, a tie in grey.
   Its details: every category's stats so far and projected (FG% and FT% with makes and attempts) and odds, mirrored.
   Team-level only. (`odds.html`, its old address, sends you there.)
 - **Standings** (`standings.html`): Yahoo's One-Win standings.
