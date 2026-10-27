@@ -54,6 +54,7 @@
   .delta { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
   .teams .p { font-variant-numeric: tabular-nums; font-weight: 650; text-align: right; }
   .fav { font-weight: 650; }
+  .teams .tie, .teams .tie.p { color: var(--muted); font-size: 12px; font-weight: 400; }
   .barwrap { position: relative; margin: 9px 0 6px; }
   .bar { position: relative; display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--tie); }
   .bar span:nth-child(1) { background: var(--fav); }
@@ -136,7 +137,17 @@
 const D = /*__DATA__*/null;
 const teamById = Object.fromEntries(D.teams.map(t => [t.id, t]));
 const name = id => teamById[id].team;   // the data has team ids; show the site's name
-const pct = x => (100 * x).toFixed(0) + "%";
+// A probability as a percent; one under 1% or over 99% but not certain: <1%, >99%
+const pct = x => x > 0 && x < 0.005 ? "<1%" : x < 1 && x >= 0.995 ? ">99%" : Math.round(100 * x) + "%";
+// Probabilities that add up to 1 (win, tie, loss) as percents that add up to 100 (largest remainder: each rounded down,
+// the points short to the largest remainders); <1%, >99% as in pct
+function pcts(xs) {
+  const n = xs.map(x => Math.floor(100 * x + 1e-9));
+  const order = xs.map((x, i) => i).sort((i, j) => (100 * xs[j] - n[j]) - (100 * xs[i] - n[i]));
+  const short = 100 - n.reduce((a, b) => a + b, 0);
+  for (let k = 0; k < short && k < order.length; k++) n[order[k]]++;
+  return n.map((v, i) => v === 0 && xs[i] > 0 ? "<1%" : v === 100 && xs[i] < 1 ? ">99%" : v + "%");
+}
 const el = (tag, props = {}, ...kids) => { const e = Object.assign(document.createElement(tag), props); e.append(...kids); return e; };
 const fmt = (cat, x) => ["fg", "ft"].includes(cat) ? x.toFixed(3).replace(/^0/, "") : x.toFixed(1);
 const day = t => t.slice(0, 16).replace("T", " ") + " UTC";
@@ -186,7 +197,8 @@ function bar(now, then, label) {
     el("span", { style: `width:${100 * w1}%` }), el("span", { style: `width:${100 * t}%` }),
     el("span", { style: `width:${100 * w2}%` }));
   const wrap = el("div", { className: "barwrap" }, b);
-  let title = `${label}win ${pct(w1)} · tie ${pct(t)} · loss ${pct(w2)}`;
+  const fmtTriple = xs => { const [a, b, c] = pcts(xs); return `win ${a} · tie ${b} · loss ${c}`; };
+  let title = label + fmtTriple(now);
   if (then) {
     const [f1, , f2] = then;
     // [start, end, colour]
@@ -194,7 +206,7 @@ function bar(now, then, label) {
     for (const [lo, hi, c] of gains)
       b.append(el("span", { className: "shift", style: `left:${100 * lo}%; width:${100 * (hi - lo)}%; --c: var(${c})` }));
     wrap.append(lockLine("l1", f1), lockLine("l2", 1 - f2));
-    title += `\nat the lock: win ${pct(then[0])} · tie ${pct(then[1])} · loss ${pct(then[2])}`;
+    title += "\nat the lock: " + fmtTriple(then);
   }
   wrap.title = title;
   return wrap;
@@ -228,33 +240,36 @@ function card(m, f, totals, frozenTotals, final) {
   // the favourite now; once final, the winner (neither in a tie)
   const fav = t => (out ? out.won === t : t === 1 ? m.win1 >= m.win2 : m.win2 > m.win1) ? "fav" : "";
   const won = t => out && out.won === t ? " won" : "";
-  // once final, each team's categories won–lost–tied; else its odds and their move since the lock
+  // once final, each team's categories won–lost–tied; else the odds (team 1, tie, team 2: adding up to 100) and their
+  // move since the lock
+  const now = pcts([m.win1, m.tie, m.win2]), lock = f && pcts([f.win1, f.tie, f.win2]);
   const odds = t => final ? el("span", { className: "p", textContent: t === 1 ? `${m.cats1}–${m.cats2}–${m.catsT}` : `${m.cats2}–${m.cats1}–${m.catsT}`,
-    title: "Categories won–lost–tied, as Yahoo scored them" }) : el("span", { className: "p", textContent: pct(m[`win${t}`]) });
-  const move = t => el("span", { className: "delta", textContent: f && !final ? delta(m[`win${t}`], f[`win${t}`]) : "" });
+    title: "Categories won–lost–tied, as Yahoo scored them" }) : el("span", { className: "p", textContent: now[t === 1 ? 0 : 2] });
+  const move = k => el("span", { className: "delta", textContent: f && !final ? delta(m[k], f[k]) : "" });
   const head = el("summary", {},
     el("div", { className: "teams" },
-      el("span", { textContent: name(m.team1), className: fav(1) + won(1) }), odds(1), move(1),
-      el("span", { textContent: name(m.team2), className: fav(2) + won(2) }), odds(2), move(2)),
+      el("span", { textContent: name(m.team1), className: fav(1) + won(1) }), odds(1), move("win1"),
+      el("span", { textContent: name(m.team2), className: fav(2) + won(2) }), odds(2), move("win2"),
+      ...(final ? [] : [el("span", { className: "tie", textContent: "tie" }), el("span", { className: "p tie", textContent: now[1] }), move("tie")])),
     bar([m.win1, m.tie, m.win2], f && [f.win1, f.tie, f.win2], ""),
     el("div", { className: "small" },
-      el("span", { textContent: (out && !out.won ? "Tie · " : "") + (f ? `lock ${pct(f.win1)}–${pct(f.win2)}` + (final ? ` (tie ${pct(f.tie)}) · ` : " · ") : "") +
-        (final ? "" : `tie ${pct(m.tie)} · cats ${m.cats1.toFixed(1)}–${m.cats2.toFixed(1)} · `) + `games ${m.games1}–${m.games2}` +
+      el("span", { textContent: (out && !out.won ? "Tie · " : "") + (f ? `lock: ${lock[0]}, tie ${lock[1]}, ${lock[2]} · ` : "") +
+        (final ? "" : `cats ${m.cats1.toFixed(1)}–${m.cats2.toFixed(1)} · `) + `games ${m.games1}–${m.games2}` +
         (f && (f.games1 !== m.games1 || f.games2 !== m.games2) ? ` (lock ${f.games1}–${f.games2})` : "") +
         (f && m.played1 !== null ? ` · ${m.played1}–${m.played2} played` : ""),
         title: "Starter games: those played so far and those still to come. A game a starter sat out drops out; one he's back for (no longer out) comes in." }),
       el("span", {}, "details ▾")));
   const rows = D.categories.map(c => {
-    const now = m.categories[c.id], then = f && f.categories[c.id];
+    const now = m.categories[c.id], then = f && f.categories[c.id], p = pcts(now);
     const t1 = totals[m.team1][c.id], t2 = totals[m.team2][c.id];
     const cell = (team, x) => el("td", { className: "num" + ((team === 1 ? now[0] > now[2] : now[2] > now[0]) ? " edge" : ""),
       textContent: fmt(c.id, x), title: frozenTotals ? `at the lock: ${fmt(c.id, frozenTotals[team === 1 ? m.team1 : m.team2][c.id])}` : "" });
     return el("tr", {},
       el("td", { textContent: c.label }),
       cell(1, t1),
-      el("td", { className: "num", textContent: pct(now[0]) }),
+      el("td", { className: "num", textContent: p[0] }),
       el("td", { className: "barcell" }, bar(now, then, `${c.label}: `)),
-      el("td", { className: "num", textContent: pct(now[2]) }),
+      el("td", { className: "num", textContent: p[2] }),
       cell(2, t2));
   });
   const table = el("table", { className: "cats" },
@@ -365,13 +380,13 @@ function h2h(o, week, final, matchups) {
       ...ids.map(b => {
         if (a === b) return el("td", { className: "c self" });
         const [w, t, l, cw, cl] = cell[`${a}-${b}`];
-        const edge = w - l, c = edge > 0 ? "--good" : "--bad";
+        const edge = w - l, c = edge > 0 ? "--good" : "--bad", p = pcts([w, t, l]);
         return el("td", {
           className: "c" + (opp[a] === b ? " vs" : ""),
-          textContent: final ? `${Math.round(cw)}–${Math.round(cl)}` : Math.round(100 * w),
+          textContent: final ? `${Math.round(cw)}–${Math.round(cl)}` : p[0].replace("%", ""),
           title: `${name(a)} vs ${name(b)}` + (opp[a] === b ? " (this week's matchup)" : "") + ": " + (final ?
             `${w ? "won" : l ? "lost" : "tied"} ${Math.round(cw)}–${Math.round(cl)}` :
-            `win ${pct(w)} · tie ${pct(t)} · loss ${pct(l)} · categories ${cw.toFixed(1)}–${cl.toFixed(1)}`),
+            `win ${p[0]} · tie ${p[1]} · loss ${p[2]} · categories ${cw.toFixed(1)}–${cl.toFixed(1)}`),
           style: Math.abs(edge) < 0.005 ? "background: var(--tie)" :
             `background: color-mix(in srgb, var(${c}) ${Math.round(Math.abs(edge) * 45)}%, transparent)` });
       }),
