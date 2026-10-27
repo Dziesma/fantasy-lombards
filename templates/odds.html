@@ -64,15 +64,15 @@
     background: repeating-linear-gradient(135deg, var(--c) 0 3px, color-mix(in srgb, var(--c) 30%, var(--panel)) 3px 6px); }
   /* each team's lock line, black: team 1's ends where its edge was, team 2's starts there, so with no tie at the lock
      they sit side by side */
-  .barwrap .lock { position: absolute; top: -3px; bottom: -3px; width: 1.5px; background: var(--lock); }
-  .barwrap .lock.l1 { margin-left: -1.5px; }
+  .barwrap .lock { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--lock); }
+  .barwrap .lock.l1 { margin-left: -2px; }
   .cats .barwrap { margin: 0; min-width: 90px; }
   .cats .bar { height: 6px; border-radius: 3px; }
   .cats .barwrap .lock { top: -2px; bottom: -2px; }
   .key { display: flex; flex-wrap: wrap; gap: 4px 16px; align-items: center; font-size: 12px; color: var(--muted); margin: 0 0 10px; }
   .key i { display: inline-block; vertical-align: -2px; margin-right: 5px; }
   .key .sw { width: 22px; height: 8px; border-radius: 3px; }
-  .key .tick { width: 1.5px; height: 12px; vertical-align: -3px; background: var(--lock); }
+  .key .tick { width: 2px; height: 12px; vertical-align: -3px; background: var(--lock); }
   .small { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
   .small > span:last-child { white-space: nowrap; }
   /* a finished week's upset (the lock's underdog won) and tie */
@@ -167,6 +167,19 @@ const delta = (now, then) => then === undefined || Math.abs(now - then) < 0.005 
 // The odds bar: now (solid win / tie / loss), and if there's a lock to compare with, the shift since: for each team
 // whose win share grew, the band it gained, inside its own segment (team 1's from the left, team 2's from the right, so
 // the tie between stays visible), striped in its colour; and each team's lock line, where the lock had its edge
+// A lock line at x (0–1) along its bar; place() snaps it to a whole device pixel, so every line draws equally sharp
+// wherever its bar starts
+const lockLine = (cls, x) => { const e = el("span", { className: "lock " + cls, style: `left: ${100 * x}%` }); e.dataset.x = x; return e; };
+function place(root = document) {
+  const dpr = window.devicePixelRatio || 1;
+  for (const e of root.querySelectorAll(".barwrap .lock")) {
+    const r = e.parentElement.getBoundingClientRect();
+    if (!r.width) continue;   // in a closed card: placed when it opens
+    e.style.left = Math.round((r.left + e.dataset.x * r.width) * dpr) / dpr - r.left + "px";
+  }
+}
+window.addEventListener("resize", () => place());
+
 function bar(now, then, label) {
   const [w1, t, w2] = now;
   const b = el("div", { className: "bar" },
@@ -180,8 +193,7 @@ function bar(now, then, label) {
     const gains = [[f1, w1, "--fav"], [1 - w2, 1 - f2, "--dog"]].filter(([lo, hi]) => hi - lo >= 0.005);
     for (const [lo, hi, c] of gains)
       b.append(el("span", { className: "shift", style: `left:${100 * lo}%; width:${100 * (hi - lo)}%; --c: var(${c})` }));
-    wrap.append(el("span", { className: "lock l1", style: `left:${100 * f1}%` }),
-      el("span", { className: "lock l2", style: `left:${100 * (1 - f2)}%` }));
+    wrap.append(lockLine("l1", f1), lockLine("l2", 1 - f2));
     title += `\nat the lock: win ${pct(then[0])} · tie ${pct(then[1])} · loss ${pct(then[2])}`;
   }
   wrap.title = title;
@@ -248,7 +260,9 @@ function card(m, f, totals, frozenTotals, final) {
   const table = el("table", { className: "cats" },
     el("thead", {}, el("tr", {}, ...["Cat", final ? "Team 1" : "Proj. 1", "P(1)", "", "P(2)", final ? "Team 2" : "Proj. 2"].map((h, i) =>
       el("th", { textContent: h, className: i && i !== 3 ? "num" : "" })))), el("tbody", {}, ...rows));
-  return el("details", { className: "card" + (out && out.upset ? " upset" : out && !out.won ? " tied" : "") }, head, table);
+  const d = el("details", { className: "card" + (out && out.upset ? " upset" : out && !out.won ? " tied" : "") }, head, table);
+  d.addEventListener("toggle", () => d.open && place(d));
+  return d;
 }
 
 function render() {
@@ -314,6 +328,7 @@ function render() {
           style: a ? `background: color-mix(in srgb, var(--accent) ${Math.round(a * 35)}%, transparent)` : "" });
       })))));
   h2h(o, week, final, matchups);
+  place();
 }
 
 // Head to head: every team against every other, the row team's side; ranked by wins (a tie counts half). A finished
