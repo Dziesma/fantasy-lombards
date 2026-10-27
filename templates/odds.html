@@ -8,15 +8,15 @@
   :root {
     --bg: #f7f7f5; --panel: #ffffff; --text: #1d1f21; --muted: #6b6f76;
     --line: #e3e3df; --accent: #c2410c; --accent-soft: #fff1e8; --row-hover: #fafaf7;
-    --fav: #6d28d9; --dog: #14b8a6; --tie: #d6d3cd; --tie-edge: #a8a29e; --lock: #000;
     --good: #c2410c; --bad: #64748b;
+    --fav: var(--good); --dog: var(--bad); --tie: #d6d3cd; --tie-edge: #a8a29e; --lock: #000;
   }
   @media (prefers-color-scheme: dark) {
     :root {
       --bg: #141517; --panel: #1c1d20; --text: #e8e8e6; --muted: #9a9ea6;
       --line: #2c2e33; --accent: #fb923c; --accent-soft: #2a1d14; --row-hover: #222327;
-      --fav: #a78bfa; --dog: #2dd4bf; --tie: #3a3c42; --tie-edge: #6b6f76;
       --good: #fb923c; --bad: #94a3b8;
+      --fav: var(--good); --dog: var(--bad); --tie: #3a3c42; --tie-edge: #6b6f76;
     }
   }
   * { box-sizing: border-box; }
@@ -53,11 +53,11 @@
   .vs { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 4px 16px; align-items: end; }
   .vs .s2 { text-align: right; }
   /* each name with its team's colour dot on the outside, pinned to the edge so a long name wraps without it */
-  .tn { font-size: 15px; position: relative; }
-  .tn::before { content: ""; position: absolute; top: 0.45em; width: 9px; height: 9px; border-radius: 50%; }
-  .s1 .tn { padding-left: 16px; }
+  .tn { font-size: 18px; position: relative; }
+  .tn::before { content: ""; position: absolute; top: 0.42em; width: 10px; height: 10px; border-radius: 50%; }
+  .s1 .tn { padding-left: 17px; }
   .s1 .tn::before { left: 0; background: var(--fav); }
-  .s2 .tn { padding-right: 16px; }
+  .s2 .tn { padding-right: 17px; }
   .s2 .tn::before { right: 0; background: var(--dog); }
   .big { font-size: 22px; font-weight: 650; font-variant-numeric: tabular-nums; line-height: 1.2; }
   .big .delta { font-size: 12px; font-weight: 400; margin: 0 6px; }
@@ -68,18 +68,21 @@
   .delta { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
   .fav { font-weight: 650; }
   /* facts: each a team 1 value, what it is, the team 2 value */
-  .facts { display: flex; justify-content: center; flex-wrap: wrap; gap: 4px 36px; font-size: 13px; padding-right: 70px; padding-left: 70px; }
-  .fact { display: grid; grid-template-columns: auto auto auto; gap: 10px; align-items: baseline; font-variant-numeric: tabular-nums; }
+  .facts { display: grid; gap: 3px; max-width: 340px; margin: 0 auto; font-size: 13px; }
+  .fact { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 10px; align-items: baseline; font-variant-numeric: tabular-nums; }
+  .fact > :last-child { text-align: right; }
   .fact .k { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; text-align: center; }
   .fact .k b { font-weight: 400; text-transform: none; letter-spacing: 0; }
   .fact .note { color: var(--muted); font-size: 11px; }
   .more { position: absolute; right: 0; bottom: 0; font-size: 12px; color: var(--muted); }
   @media (max-width: 700px) {
     .vs { gap: 2px 8px; }
+    .tn { font-size: 15px; }
+    .tn::before { width: 9px; height: 9px; }
+    .s1 .tn { padding-left: 15px; }
+    .s2 .tn { padding-right: 15px; }
     .big { font-size: 19px; }
-    .facts { flex-direction: column; padding: 0; gap: 3px; }
-    .fact { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
-    .fact > :last-child { text-align: right; }
+    .facts { max-width: none; }
     .more { position: static; display: block; text-align: center; margin-top: 4px; }
   }
   .barwrap { position: relative; margin: 10px 0 9px; }
@@ -101,9 +104,9 @@
   .key i { display: inline-block; vertical-align: -2px; margin-right: 5px; }
   .key .sw { width: 22px; height: 8px; border-radius: 3px; }
   .key .tick { width: 2px; height: 12px; vertical-align: -3px; background: var(--lock); }
-  /* a finished week's upset (the lock's underdog won) and tie */
+  /* a finished week's upset (the lock's underdog won), outlined in its colour, and tie, dashed grey */
   .card.upset { border-color: var(--dog); box-shadow: inset 3px 0 0 var(--dog); }
-  .card.tied { border-color: var(--tie-edge); box-shadow: inset 3px 0 0 var(--tie-edge); }
+  .card.tied { border: 1px dashed var(--tie-edge); box-shadow: inset 3px 0 0 var(--tie-edge); }
   .won::after { content: " ✓"; }
   .h2h th, .h2h td { padding: 5px 4px; text-align: center; font-size: 12px; font-variant-numeric: tabular-nums; }
   .h2h th.tm, .h2h td.tm { position: sticky; left: 0; z-index: 1; text-align: left; background: var(--panel); font-size: 13px; padding-right: 10px; }
@@ -121,7 +124,7 @@
   .cats .s2 { text-align: left; }
   .cats td.barcell { width: 34%; min-width: 80px; }
   .cats .sf { color: var(--muted); }
-  .cats .frac { color: var(--muted); font-size: 12px; }
+  .cats .frac { display: block; color: var(--muted); font-size: 11px; line-height: 1.2; font-weight: 400; }
   .cats .sfi, .cats th .sfh { display: none; }
   .cats th.sf, .cats th.pj { width: 1%; }
   @media (max-width: 700px) {
@@ -147,8 +150,8 @@
     the week's NBA schedule, from player projections: Yahoo's (made by Rotowire), ESPN's, or their average. Before a
     week locks they use each team's best lineup and change with every update. Once it locks, the odds are live: the
     games played so far count as played, only the rest is projected, so by the week's end they're the result. Each bar
-    shows them against the odds frozen at the lineup lock (Monday), the lock's favourite on the left in purple, its
-    underdog on the right in teal. Team-level only.</p>
+    shows them against the odds frozen at the lineup lock (Monday), the lock's favourite on the left in orange, its
+    underdog on the right in slate. Team-level only.</p>
 
   <h2>Week</h2>
   <div class="controls"><select id="week" aria-label="Week"></select>
@@ -287,12 +290,12 @@ function made(cat, t, digits = 0) {
 // A stat as shown: FG%, FT% as .481, counts to digits decimals
 const stat = (cat, x, digits) => RATIO[cat] ? fmt(cat, x) : x.toFixed(digits);
 
-// A cell of the category table, side 1 or 2: the value, and FG% and FT%'s makes/attempts on the outside (away from the
-// bar); extra: more children (the so-far line on phones)
+// A cell of the category table, side 1 or 2: the value, and FG% and FT%'s makes/attempts under it; extra: more
+// children (the so-far line on phones)
 function statCell(cls, side, value, frac, extra = [], title = "") {
   const v = el("span", { className: "v", textContent: value });
   const f = frac ? el("span", { className: "frac", textContent: frac }) : null;
-  return el("td", { className: `${cls} s${side}`, title }, ...(f ? (side === 1 ? [f, " ", v] : [v, " ", f]) : [v]), ...extra);
+  return el("td", { className: `${cls} s${side}`, title }, v, ...(f ? [f] : []), ...extra);
 }
 
 // A team's stats so far in a category, as [value, makes/attempts or ""] (t: its played totals; none yet: zeros)
@@ -424,8 +427,8 @@ function render() {
   if (final && fr && week !== "season") {
     const outs = shown.map(([m, f]) => outcome(m, f));
     const upsets = outs.filter(r => r.upset).length, ties = outs.filter(r => !r.won).length;
-    meta.textContent += ` · ${upsets} of ${matchups.length} won by the lock's underdog` + (upsets ? " (outlined in teal)" : "") +
-      (ties ? ` · ${ties} tied (outlined in grey)` : "");
+    meta.textContent += ` · ${upsets} of ${matchups.length} won by the lock's underdog` + (upsets ? " (outlined)" : "") +
+      (ties ? ` · ${ties} tied (dashed outline)` : "");
   }
   const totals = Object.fromEntries(o.power.map(p => [p.team, p.totals]));
   const frozenTotals = fr && Object.fromEntries(fr.power.map(p => [p.team, p.totals]));
