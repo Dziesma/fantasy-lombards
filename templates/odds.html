@@ -159,8 +159,9 @@ const signed = d => (d > 0 ? "▲" : "▼") + Math.abs(Math.round(100 * d));
 // A change under half a point shows as none
 const delta = (now, then) => then === undefined || Math.abs(now - then) < 0.005 ? "" : signed(now - then);
 
-// The odds bar: now (solid win / tie / loss), and if there's a lock to compare with, the shift since: the band between
-// team 1's win share then and now, striped in the colour of the team it went to, and a tick where the lock had it
+// The odds bar: now (solid win / tie / loss), and if there's a lock to compare with, the shift since: for each team
+// whose win share grew, the band it gained, inside its own segment (team 1's from the left, team 2's from the right, so
+// the tie between stays visible), striped in its colour, and a tick where the lock had that team's edge
 function bar(now, then, label) {
   const [w1, t, w2] = now;
   const b = el("div", { className: "bar" },
@@ -169,10 +170,13 @@ function bar(now, then, label) {
   const wrap = el("div", { className: "barwrap" }, b);
   let title = `${label}win ${pct(w1)} · tie ${pct(t)} · loss ${pct(w2)}`;
   if (then) {
-    const f = then[0], lo = Math.min(f, w1), hi = Math.max(f, w1);
-    if (hi - lo >= 0.005)
-      b.append(el("span", { className: "shift", style: `left:${100 * lo}%; width:${100 * (hi - lo)}%; --c: var(${w1 > f ? "--win" : "--loss"})` }));
-    wrap.append(el("span", { className: "lock", style: `left:${100 * f}%` }));
+    const [f1, , f2] = then;
+    // [start, end, colour, where the lock had the edge]
+    const gains = [[f1, w1, "--win", f1], [1 - w2, 1 - f2, "--loss", 1 - f2]].filter(([lo, hi]) => hi - lo >= 0.005);
+    for (const [lo, hi, c] of gains)
+      b.append(el("span", { className: "shift", style: `left:${100 * lo}%; width:${100 * (hi - lo)}%; --c: var(${c})` }));
+    for (const x of gains.length ? gains.map(g => g[3]) : [f1])
+      wrap.append(el("span", { className: "lock", style: `left:${100 * x}%` }));
     title += `\nat the lock: win ${pct(then[0])} · tie ${pct(then[1])} · loss ${pct(then[2])}`;
   }
   wrap.title = title;
