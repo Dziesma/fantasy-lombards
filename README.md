@@ -7,6 +7,8 @@ The site of our 16-team Yahoo NBA keeper league, at **https://dziesma.github.io/
   the season's power ranking (roster strength), by Yahoo's projections (Rotowire's, the default), ESPN's or their
   average. Each matchup shows the lock's favourite first, in purple, its underdog in teal; a finished week shows
   Yahoo's result (categories won–lost–tied) and outlines an upset (the lock's underdog won) in teal, a tie in grey.
+  Each matchup's category table shows the projected totals with the stats so far under them (FG% and FT% with makes
+  and attempts).
   Team-level only. (`odds.html`, its old address, sends you there.)
 - **Standings** (`standings.html`): Yahoo's One-Win standings.
 - **Keeper rights** (`keepers.html`): think of it as a pawnshop: every player bought can be bought back next season,
@@ -43,7 +45,9 @@ Everything on the site is built from the files in `data/`, nothing else:
 Yahoo's injury flag), when each table was last fetched,
 picks and transactions by ids, the weeks and pairings with Yahoo's scores (categories won), Yahoo's W-L-T, and per sim (each projection source, each
 week) the pairings' odds and each team's projected category totals, and of the live sims every pair of teams' odds
-(`h2h.csv`; yfbb's sim writes it since it was added there). No player projections.
+(`h2h.csv`; yfbb's sim writes it since it was added there), and once a week's games are being played each team's
+starter stats so far and its projected week totals, makes and attempts included (`totals.csv`, summed from the live
+sim's player games). No player projections.
 
 Each week has two sims. Live: what is known now; before the week's lineup lock (Monday; weeks 7 and 17 have a
 second, on their middle Monday) each team's best lineup, projected; after it the lineups that locked, the games played

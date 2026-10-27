@@ -42,6 +42,7 @@ KEEPER_SEASONS = 3   # keeper prices shown for this many seasons ahead
 CATEGORIES = [   # id (as in the sims), label, lower wins
     ('fg', 'FG%', False), ('ft', 'FT%', False), ('tpm', '3PM', False), ('pts', 'PTS', False), ('reb', 'REB', False),
     ('ast', 'AST', False), ('stl', 'ST', False), ('blk', 'BLK', False), ('to', 'TO', True)]
+STATS = ['fgm', 'fga', 'ftm', 'fta', 'tpm', 'pts', 'reb', 'ast', 'stl', 'blk', 'to']   # totals.csv's
 SOURCES = {'yahoo': 'Yahoo (Rotowire)', 'blend': 'Average (Yahoo + ESPN)', 'espn': 'ESPN'}   # the first: the default
 INJURED = {'O'}   # Yahoo's injury flags that count as injured on the Vaimanieki page
 TOP_INJURED = 10   # injured players listed there
@@ -55,7 +56,8 @@ def main():
             die(f'the keeper price rule doesn\'t give the league\'s example {chain}')
     league = {name: read(f'league/{name}.csv') for name in ('teams', 'budget_trades', 'draft_corrections')}
     yahoo = {name: read(f'yahoo/{name}.csv') for name in
-             ('players', 'draft', 'transactions', 'matchups', 'standings', 'fetched', 'sims', 'odds', 'power', 'h2h')}
+             ('players', 'draft', 'transactions', 'matchups', 'standings', 'fetched', 'sims', 'odds', 'power', 'h2h',
+              'totals')}
     teams = {r['team_id']: r for r in league['teams']}
     season = season_of(yahoo['matchups'])
     seasons = [season_after(season, i + 1) for i in range(KEEPER_SEASONS)]
@@ -263,8 +265,9 @@ def sims(teams, yahoo, pairs):
     """{source: {week: {live, frozen}}}: each week's live sim (now: the games played so far actual, the rest projected;
     the result once over) and its frozen one (at the newest lock passed; None before the lock), each {version, as_of,
     projections, state, played, projected, matchups, power}: the odds (pairings in the schedule) and power ranking;
-    the live one also h2h: every pair of teams, [team1, team2, win1, tie, win2, cats1, cats2]; week season: the
-    season's power ranking (live only)."""
+    the live one also h2h: every pair of teams, [team1, team2, win1, tie, win2, cats1, cats2], and once games are
+    played totals: {team: {played, week: {games, fgm, fga, ...}}}, the stats so far and the week's (played and
+    projected); week season: the season's power ranking (live only)."""
     out = {}
     for r in yahoo['sims']:
         kind = 'live' if r['version'] == 'live' else 'frozen'
@@ -298,6 +301,13 @@ def sims(teams, yahoo, pairs):
             die(f'data/yahoo/h2h.csv: {r["source"]} week {r["week"]}: no pair {r["team1"]}-{r["team2"]}')
         live.setdefault('h2h', []).append([int(r['team1']), int(r['team2']), *(
             float(r[k]) for k in ('win1', 'tie', 'win2', 'cats1', 'cats2'))])
+    for r in yahoo['totals']:
+        live = out.get(r['source'], {}).get(r['week'], {}).get('live')
+        if not live or r['team_id'] not in teams or r['kind'] not in ('played', 'week'):
+            die(f'data/yahoo/totals.csv: {r["source"]} week {r["week"]} team {r["team_id"]} {r["kind"]}: no such live sim, '
+                'team or kind')
+        live.setdefault('totals', {}).setdefault(int(r['team_id']), {})[r['kind']] = \
+            {'games': int(r['games'])} | {k: float(r[k]) for k in STATS}
     for source, weeks in out.items():
         for week, both in weeks.items():
             if not both['live']:

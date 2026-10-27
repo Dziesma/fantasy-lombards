@@ -92,6 +92,8 @@
   .cats { margin-top: 10px; font-size: 13px; }
   .cats td, .cats th { padding: 4px 6px; }
   .cats td.barcell { width: 40%; }
+  /* under a stat: the box scores so far (FG%, FT%: with makes/attempts) */
+  .cats .now { display: block; font-size: 11px; line-height: 1.2; color: var(--muted); font-weight: 400; }
   .edge { font-weight: 650; }
   td.rank { text-align: center; font-variant-numeric: tabular-nums; width: 38px; }
   .empty { color: var(--muted); padding: 14px; background: var(--panel); border: 1px dashed var(--line); border-radius: 8px; }
@@ -235,7 +237,27 @@ function outcome(m, f) {
   return { won, upset: !!f && won > 0 && f[`win${won}`] < f[`win${3 - won}`] };
 }
 
-function card(m, f, totals, frozenTotals, final) {
+// A percentage category's makes/attempts ("fg": fgm, fga), else null; made(cat, t, digits): t's as "made/attempted"
+const RATIO = { fg: ["fgm", "fga"], ft: ["ftm", "fta"] };
+function made(cat, t, digits = 0) {
+  if (!RATIO[cat]) return null;
+  if (!t) return "";
+  const [m, a] = RATIO[cat];
+  return `${t[m].toFixed(digits)}/${t[a].toFixed(digits)}`;
+}
+// A team's line under a stat (s: its {played, week} totals): once final, FG% and FT%'s makes/attempts (the rest says
+// nothing new: null); else the box scores so far, FG% and FT% also with their makes/attempts
+function soFar(cat, s, final) {
+  const t = final ? s.week : s.played || null;
+  if (RATIO[cat]) {
+    const [m, a] = RATIO[cat];
+    if (final) return made(cat, t);
+    return t && t[a] ? `${fmt(cat, t[m] / t[a])} · ${made(cat, t)}` : "0/0";
+  }
+  return final ? null : String(Math.round(t ? t[cat] : 0));
+}
+
+function card(m, f, totals, frozenTotals, final, stats) {
   const out = final ? outcome(m, f) : null;
   // the favourite now; once final, the winner (neither in a tie)
   const fav = t => (out ? out.won === t : t === 1 ? m.win1 >= m.win2 : m.win2 > m.win1) ? "fav" : "";
@@ -262,8 +284,13 @@ function card(m, f, totals, frozenTotals, final) {
   const rows = D.categories.map(c => {
     const now = m.categories[c.id], then = f && f.categories[c.id], p = pcts(now);
     const t1 = totals[m.team1][c.id], t2 = totals[m.team2][c.id];
-    const cell = (team, x) => el("td", { className: "num" + ((team === 1 ? now[0] > now[2] : now[2] > now[0]) ? " edge" : ""),
-      textContent: fmt(c.id, x), title: frozenTotals ? `at the lock: ${fmt(c.id, frozenTotals[team === 1 ? m.team1 : m.team2][c.id])}` : "" });
+    const cell = (team, x) => {
+      const id = team === 1 ? m.team1 : m.team2, s = stats && stats[id];
+      const title = [s && made(c.id) ? `${final ? "" : "projected "}${made(c.id, s.week, 1)}` : "",
+        frozenTotals ? `at the lock: ${fmt(c.id, frozenTotals[id][c.id])}` : ""].filter(Boolean).join("\n");
+      return el("td", { className: "num" + ((team === 1 ? now[0] > now[2] : now[2] > now[0]) ? " edge" : ""), title },
+        final && !RATIO[c.id] ? String(Math.round(x)) : fmt(c.id, x), ...(s && soFar(c.id, s, final) !== null ? [el("span", { className: "now", textContent: soFar(c.id, s, final) })] : []));
+    };
     return el("tr", {},
       el("td", { textContent: c.label }),
       cell(1, t1),
@@ -274,7 +301,9 @@ function card(m, f, totals, frozenTotals, final) {
   });
   const table = el("table", { className: "cats" },
     el("thead", {}, el("tr", {}, ...["Cat", final ? "Team 1" : "Proj. 1", "P(1)", "", "P(2)", final ? "Team 2" : "Proj. 2"].map((h, i) =>
-      el("th", { textContent: h, className: i && i !== 3 ? "num" : "" })))), el("tbody", {}, ...rows));
+      el("th", { className: i && i !== 3 ? "num" : "" }, h,
+        ...(stats && !final && (i === 1 || i === 5) ? [el("span", { className: "now", textContent: "so far" })] : []))))),
+    el("tbody", {}, ...rows));
   const d = el("details", { className: "card" + (out && out.upset ? " upset" : out && !out.won ? " tied" : "") }, head, table);
   d.addEventListener("toggle", () => d.open && place(d));
   return d;
@@ -322,7 +351,7 @@ function render() {
   const frozenTotals = fr && Object.fromEntries(fr.power.map(p => [p.team, p.totals]));
   cards.replaceChildren(...(week === "season" ?
     [el("div", { className: "empty", textContent: "The season ranking has no matchups: it compares roster strength, every starter playing a typical week's games." })] :
-    shown.map(([m, f]) => card(m, f, totals, frozenTotals, final))));
+    shown.map(([m, f]) => card(m, f, totals, frozenTotals, final, o.totals))));
 
   document.getElementById("power-title").textContent = week === "season" ? "Power ranking (season)" : `Power ranking, week ${week}`;
   const n = o.power.length;

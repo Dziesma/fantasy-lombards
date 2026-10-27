@@ -27,6 +27,10 @@ Writes, each file whole (don't edit them by hand):
                       team against all others; week season: the season's power ranking (no games)
     h2h.csv           source, week, team1, team2, win1, tie, win2, cats1, cats2: every pair of teams (the power
                       ranking's round robin), of the live sims only; week season: the season's
+    totals.csv        source, week, team_id, kind, games, fgm, fga, ftm, fta, tpm, pts, reb, ast, stl, blk, to: each
+                      team's starter stats in a live sim with games played (locked or finished), summed from its
+                      player games; kind: played (the box scores so far) or week (played and projected: the
+                      projected totals, with makes and attempts)
 
 Each week has its live sim (what is known now: the games played so far actual, the rest projected; the result once
 it's over) and, once a lock has passed, the newest frozen one (week-NN, or week-NN-2 in a two-week week: what was
@@ -43,6 +47,7 @@ OUT = ROOT / 'data' / 'yahoo'
 YFBB_CONFIG = Path('~/.config/yfbb/config.toml').expanduser()
 YFBB_DIR = '~/.local/share/yfbb'
 LINEUP = 'locked'
+STATS = ['fgm', 'fga', 'ftm', 'fta', 'tpm', 'pts', 'reb', 'ast', 'stl', 'blk', 'to']
 COLUMNS = {
     'players': ['player_id', 'name', 'nba_team', 'positions', 'status'],
     'draft': ['pick', 'player_id', 'team_id', 'price'],
@@ -69,7 +74,7 @@ def main():
         _die(f'curated players has no {sorted(missing, key=int)}, who are drafted or in a transaction')
     tables = {'players': players} | {name: yahoo[name] for name in ('draft', 'transactions', 'matchups', 'standings')}
     tables['fetched'] = fetched(current, list(tables))
-    tables['sims'], odds, power, h2h = sims(root)
+    tables['sims'], odds, power, h2h, totals = sims(root)
 
     OUT.mkdir(parents=True, exist_ok=True)
     for name, rows in tables.items():
@@ -77,6 +82,7 @@ def main():
     _write(OUT / 'odds.csv', list(max(odds, key=len)), odds)   # older sims have no played1, played2
     _write(OUT / 'power.csv', list(next(r for r in power if r['week'] != 'season')), power)
     _write(OUT / 'h2h.csv', list(h2h[0]), h2h)
+    _write(OUT / 'totals.csv', ['source', 'week', 'team_id', 'kind', 'games', *STATS], totals)
     frozen = {r['week'] for r in tables['sims'] if r['version'] != 'live'}
     print(f'{len(players)} players, {len(yahoo["draft"])} picks, {len(yahoo["transactions"])} transactions; odds of '
           f'{len({r["week"] for r in tables["sims"]}) - 1} weeks ({len(frozen)} also frozen) by '
@@ -96,14 +102,14 @@ def fetched(current, names):
 
 
 def sims(root):
-    """(sims, odds, power, h2h) rows of every source's sims: each week's live one and its newest frozen one (a lock
-    passed); and the season's power ranking. h2h: the live ones' only."""
+    """(sims, odds, power, h2h, totals) rows of every source's sims: each week's live one and its newest frozen one (a
+    lock passed); and the season's power ranking. h2h: the live ones' only; totals: the live ones' with games played."""
     live, frozen = root / 'sim' / 'live', root / 'sim' / 'frozen'
     if not (live / 'season').is_dir():
         _die(f'no {live / "season"}; run `yfbb sim`')
     sources = sorted((d.name for d in (live / 'season').iterdir() if d.is_dir()), key=lambda s: (s != 'blend', s))
     weeks = sorted(int(d.name.removeprefix('week-')) for d in live.glob('week-*'))
-    rows, odds, power, h2h = [], [], [], []
+    rows, odds, power, h2h, totals = [], [], [], [], []
     for source in sources:
         for week in weeks:
             locks = sorted(d.name for d in frozen.glob(f'week-{week:02d}*') if (d / source / LINEUP).is_dir())
@@ -116,11 +122,26 @@ def sims(root):
                 power += [{'source': source, 'week': week, 'version': version} | r
                           for r in _read(folder / 'power.csv')]
             h2h += [{'source': source, 'week': week} | r for r in _read(folders['live'] / 'h2h.csv')]
+            if rows[-len(folders)]['state'] in ('locked', 'finished'):
+                totals += _totals(source, week, _read(folders['live'] / 'player_games.csv'))
         rows.append(_sim(source, 'season', 'live', live / 'season' / source))
         power += [{'source': source, 'week': 'season', 'version': 'live'} | r
                   for r in _read(live / 'season' / source / 'power.csv')]
         h2h += [{'source': source, 'week': 'season'} | r for r in _read(live / 'season' / source / 'h2h.csv')]
-    return rows, odds, power, h2h
+    return rows, odds, power, h2h, totals
+
+
+def _totals(source, week, games):
+    """A live sim's totals rows: each team's player games summed, those played and all (played and projected)."""
+    sums = {}
+    for g in games:
+        for kind in ('played', 'week') if g['played'] == '1' else ('week',):
+            t = sums.setdefault((int(g['team_id']), kind), {'games': 0} | dict.fromkeys(STATS, 0.0))
+            t['games'] += 1
+            for k in STATS:
+                t[k] += float(g[k])
+    return [{'source': source, 'week': week, 'team_id': team, 'kind': kind, 'games': t['games']} |
+            {k: f'{t[k]:.4f}'.rstrip('0').rstrip('.') for k in STATS} for (team, kind), t in sorted(sums.items())]
 
 
 def _sim(source, week, version, folder):
