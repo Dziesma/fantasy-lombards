@@ -23,6 +23,8 @@ Writes, each file whole (don't edit them by hand):
                       game a starter sat out isn't one), played: of them with a box score
     power.csv         source, week, version, rank, team_id, win, tie, loss, cats, games, <cat>, <cat>_rank: each
                       team against all others; week season: the season's power ranking (no games)
+    h2h.csv           source, week, team1, team2, win1, tie, win2, cats1, cats2: every pair of teams (the power
+                      ranking's round robin), of the live sims only; week season: the season's
 
 Each week has its live sim (what is known now: the games played so far actual, the rest projected; the result once
 it's over) and, once a lock has passed, the newest frozen one (week-NN, or week-NN-2 in a two-week week: what was
@@ -65,13 +67,14 @@ def main():
         _die(f'curated players has no {sorted(missing, key=int)}, who are drafted or in a transaction')
     tables = {'players': players} | {name: yahoo[name] for name in ('draft', 'transactions', 'matchups', 'standings')}
     tables['fetched'] = fetched(current, list(tables))
-    tables['sims'], odds, power = sims(root)
+    tables['sims'], odds, power, h2h = sims(root)
 
     OUT.mkdir(parents=True, exist_ok=True)
     for name, rows in tables.items():
         _write(OUT / f'{name}.csv', COLUMNS[name], rows)
     _write(OUT / 'odds.csv', list(max(odds, key=len)), odds)   # older sims have no played1, played2
     _write(OUT / 'power.csv', list(next(r for r in power if r['week'] != 'season')), power)
+    _write(OUT / 'h2h.csv', list(h2h[0]), h2h)
     frozen = {r['week'] for r in tables['sims'] if r['version'] != 'live'}
     print(f'{len(players)} players, {len(yahoo["draft"])} picks, {len(yahoo["transactions"])} transactions; odds of '
           f'{len({r["week"] for r in tables["sims"]}) - 1} weeks ({len(frozen)} also frozen) by '
@@ -91,14 +94,14 @@ def fetched(current, names):
 
 
 def sims(root):
-    """(sims, odds, power) rows of every source's sims: each week's live one and its newest frozen one (a lock
-    passed); and the season's power ranking."""
+    """(sims, odds, power, h2h) rows of every source's sims: each week's live one and its newest frozen one (a lock
+    passed); and the season's power ranking. h2h: the live ones' only."""
     live, frozen = root / 'sim' / 'live', root / 'sim' / 'frozen'
     if not (live / 'season').is_dir():
         _die(f'no {live / "season"}; run `yfbb sim`')
     sources = sorted((d.name for d in (live / 'season').iterdir() if d.is_dir()), key=lambda s: (s != 'blend', s))
     weeks = sorted(int(d.name.removeprefix('week-')) for d in live.glob('week-*'))
-    rows, odds, power = [], [], []
+    rows, odds, power, h2h = [], [], [], []
     for source in sources:
         for week in weeks:
             locks = sorted(d.name for d in frozen.glob(f'week-{week:02d}*') if (d / source / LINEUP).is_dir())
@@ -110,10 +113,12 @@ def sims(root):
                 odds += [{'source': source, 'version': version} | r for r in _read(folder / 'odds.csv')]
                 power += [{'source': source, 'week': week, 'version': version} | r
                           for r in _read(folder / 'power.csv')]
+            h2h += [{'source': source, 'week': week} | r for r in _read(folders['live'] / 'h2h.csv')]
         rows.append(_sim(source, 'season', 'live', live / 'season' / source))
         power += [{'source': source, 'week': 'season', 'version': 'live'} | r
                   for r in _read(live / 'season' / source / 'power.csv')]
-    return rows, odds, power
+        h2h += [{'source': source, 'week': 'season'} | r for r in _read(live / 'season' / source / 'h2h.csv')]
+    return rows, odds, power, h2h
 
 
 def _sim(source, week, version, folder):

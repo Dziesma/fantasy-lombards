@@ -3,8 +3,10 @@
 The site of our 16-team Yahoo NBA keeper league, at **https://dziesma.github.io/fantasy-lombards/**:
 
 - **Standings & odds** (`index.html`, the front page): Yahoo's One-Win standings, every week's projected matchup
-  odds and power ranking, and the season's power ranking (roster strength), by Yahoo's projections (Rotowire's),
-  ESPN's or their average. Team-level only. (`odds.html`, its old address, sends you there.)
+  odds and power ranking, a head-to-head matrix of every team against every other (the odds; a finished week's,
+  who'd have won with the final totals), and the season's power ranking (roster strength), by Yahoo's projections
+  (Rotowire's), ESPN's or their average. A finished week marks each result as expected or an upset (the lock's
+  underdog won). Team-level only. (`odds.html`, its old address, sends you there.)
 - **Keeper rights** (`keepers.html`): think of it as a pawnshop: every player bought can be bought back next season,
   with interest. For every player drafted or picked up: what was paid for him this season, what keeping him costs
   the next three seasons, and which team holds his rights now. Searchable, sortable, filterable by team; also as
@@ -38,13 +40,14 @@ Everything on the site is built from the files in `data/`, nothing else:
 `data/yahoo/` has only what the site shows: the players drafted or in a transaction (name, NBA team, positions,
 Yahoo's injury flag), when each table was last fetched,
 picks and transactions by ids, the weeks and pairings, Yahoo's W-L-T, and per sim (each projection source, each
-week) the pairings' odds and each team's projected category totals. No player projections.
+week) the pairings' odds and each team's projected category totals, and of the live sims every pair of teams' odds
+(`h2h.csv`; yfbb's sim writes it since it was added there). No player projections.
 
 Each week has two sims. Live: what is known now; before the week's lineup lock (Monday; weeks 7 and 17 have a
 second, on their middle Monday) each team's best lineup, projected; after it the lineups that locked, the games played
 so far as played and only the rest projected, so once the week is over it's the result. Frozen: the odds at the lock,
 the lineups that locked and the projections of then. The odds page shows live, each bar marked with the shift since
-the lock (per matchup and per category).
+the lock and each team's lock line (per matchup and per category).
 
 ## Updating
 

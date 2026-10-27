@@ -54,7 +54,7 @@ def main():
             die(f'the keeper price rule doesn\'t give the league\'s example {chain}')
     league = {name: read(f'league/{name}.csv') for name in ('teams', 'budget_trades', 'draft_corrections')}
     yahoo = {name: read(f'yahoo/{name}.csv') for name in
-             ('players', 'draft', 'transactions', 'matchups', 'standings', 'fetched', 'sims', 'odds', 'power')}
+             ('players', 'draft', 'transactions', 'matchups', 'standings', 'fetched', 'sims', 'odds', 'power', 'h2h')}
     teams = {r['team_id']: r for r in league['teams']}
     season = season_of(yahoo['matchups'])
     seasons = [season_after(season, i + 1) for i in range(KEEPER_SEASONS)]
@@ -256,7 +256,8 @@ def sims(teams, yahoo, pairs):
     """{source: {week: {live, frozen}}}: each week's live sim (now: the games played so far actual, the rest projected;
     the result once over) and its frozen one (at the newest lock passed; None before the lock), each {version, as_of,
     projections, state, played, projected, matchups, power}: the odds (pairings in the schedule) and power ranking;
-    week season: the season's power ranking (live only)."""
+    the live one also h2h: every pair of teams, [team1, team2, win1, tie, win2, cats1, cats2]; week season: the
+    season's power ranking (live only)."""
     out = {}
     for r in yahoo['sims']:
         kind = 'live' if r['version'] == 'live' else 'frozen'
@@ -282,6 +283,14 @@ def sims(teams, yahoo, pairs):
              'games': int(r['games']) if r['games'] else None,
              'totals': {c: float(r[c]) for c, _, _ in CATEGORIES},
              'ranks': {c: int(r[f'{c}_rank']) for c, _, _ in CATEGORIES}})
+    for r in yahoo['h2h']:
+        live = out.get(r['source'], {}).get(r['week'], {}).get('live')
+        if not live:
+            die(f'data/yahoo/h2h.csv: no live {r["source"]} sim of week {r["week"]}')
+        if r['team1'] not in teams or r['team2'] not in teams or r['team1'] == r['team2']:
+            die(f'data/yahoo/h2h.csv: {r["source"]} week {r["week"]}: no pair {r["team1"]}-{r["team2"]}')
+        live.setdefault('h2h', []).append([int(r['team1']), int(r['team2']), *(
+            float(r[k]) for k in ('win1', 'tie', 'win2', 'cats1', 'cats2'))])
     for source, weeks in out.items():
         for week, both in weeks.items():
             if not both['live']:
@@ -290,6 +299,10 @@ def sims(teams, yahoo, pairs):
                 if s and len(s['power']) != len(teams):
                     die(f'data/yahoo/power.csv: {source} week {week} {kind} has {len(s["power"])} teams, not '
                         f'{len(teams)}')
+                if kind == 'live':
+                    h2h = [frozenset(h[:2]) for h in s.get('h2h', [])]
+                    if not len(h2h) == len(set(h2h)) == len(teams) * (len(teams) - 1) // 2:
+                        die(f'data/yahoo/h2h.csv: {source} week {week} doesn\'t have every pair of teams exactly once')
                 if s and both['frozen'] and len(s['matchups']) != len(both['live']['matchups']):
                     die(f'data/yahoo/odds.csv: {source} week {week}: live and frozen have different pairings')
     return dict(sorted(out.items(), key=lambda kv: list(SOURCES).index(kv[0]) if kv[0] in SOURCES else len(SOURCES)))
