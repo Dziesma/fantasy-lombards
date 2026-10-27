@@ -2,11 +2,13 @@
 
 The site of our 16-team Yahoo NBA keeper league, at **https://dziesma.github.io/fantasy-lombards/**:
 
-- **Standings & odds** (`index.html`, the front page): Yahoo's One-Win standings, every week's projected matchup
-  odds and power ranking, a head-to-head matrix of every team against every other (the odds; a finished week's,
-  who'd have won with the final totals), and the season's power ranking (roster strength), by Yahoo's projections
-  (Rotowire's), ESPN's or their average. A finished week marks each result as expected or an upset (the lock's
-  underdog won). Team-level only. (`odds.html`, its old address, sends you there.)
+- **Week** (`index.html`, the front page): every week's projected matchup odds and power ranking, a head-to-head
+  matrix of every team against every other (the odds; a finished week's, who'd have won with the final totals), and
+  the season's power ranking (roster strength), by Yahoo's projections (Rotowire's, the default), ESPN's or their
+  average. Each matchup shows the lock's favourite first, in purple, its underdog in teal; a finished week shows
+  Yahoo's result (categories won–lost–tied) and outlines an upset (the lock's underdog won) in teal, a tie in grey.
+  Team-level only. (`odds.html`, its old address, sends you there.)
+- **Standings** (`standings.html`): Yahoo's One-Win standings.
 - **Keeper rights** (`keepers.html`): think of it as a pawnshop: every player bought can be bought back next season,
   with interest. For every player drafted or picked up: what was paid for him this season, what keeping him costs
   the next three seasons, and which team holds his rights now. Searchable, sortable, filterable by team; also as
@@ -75,7 +77,7 @@ cd ~/workspace/fantasy-lombards
 python3 scripts/import.py   # yfbb's data -> data/yahoo/ (finds it through yfbb's config; --data DIR otherwise)
 python3 scripts/build.py    # validates everything, builds the site in _site/
 
-# 3. check the preview: _site/index.html, keepers.html, vaimanieki.html (e.g. xdg-open _site/index.html)
+# 3. check the preview: _site/index.html, standings.html, keepers.html, vaimanieki.html (e.g. xdg-open _site/index.html)
 
 # 4. publish: the push makes GitHub Actions build and deploy the site (about a minute)
 git add data && git commit -m "Update $(date +%F)" && git push

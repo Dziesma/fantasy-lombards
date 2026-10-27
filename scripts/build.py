@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""The site from the data files (Python 3, stdlib only) → _site/: index.html (standings and matchup odds), keepers.html
-(keeper rights), vaimanieki.html (injured players' dollars), rights.csv; odds.html sends old links to index.html. Not
+"""The site from the data files (Python 3, stdlib only) → _site/: index.html (the week: matchup odds), standings.html,
+keepers.html (keeper rights), vaimanieki.html (injured players' dollars), rights.csv; odds.html sends old links to
+index.html. Not
 committed: GitHub Actions builds and deploys it on every push to main.
 
     data/league/            the league's own facts, kept by hand
@@ -41,7 +42,7 @@ KEEPER_SEASONS = 3   # keeper prices shown for this many seasons ahead
 CATEGORIES = [   # id (as in the sims), label, lower wins
     ('fg', 'FG%', False), ('ft', 'FT%', False), ('tpm', '3PM', False), ('pts', 'PTS', False), ('reb', 'REB', False),
     ('ast', 'AST', False), ('stl', 'ST', False), ('blk', 'BLK', False), ('to', 'TO', True)]
-SOURCES = {'blend': 'Average (Yahoo + ESPN)', 'yahoo': 'Yahoo (Rotowire)', 'espn': 'ESPN'}
+SOURCES = {'yahoo': 'Yahoo (Rotowire)', 'blend': 'Average (Yahoo + ESPN)', 'espn': 'ESPN'}   # the first: the default
 INJURED = {'O'}   # Yahoo's injury flags that count as injured on the Vaimanieki page
 TOP_INJURED = 10   # injured players listed there
 # the league's examples of the keeper price rule, checked on every build
@@ -75,13 +76,16 @@ def main():
     page('keepers.html', 'keepers.html', keepers)
     page('vaimanieki.html', 'vaimanieki.html', hurt)
     page('redirect.html', 'odds.html', {})
+    page('standings.html', 'standings.html', {
+        'teams': [{'id': int(i), 'team': t['name'], 'manager': t['manager']} for i, t in teams.items()],
+        'standings': standings(yahoo['standings']),
+    })
     page('odds.html', 'index.html', {
         'season': season,
         'teams': [{'id': int(i), 'team': t['name'], 'manager': t['manager']} for i, t in teams.items()],
         'weeks': weeks,
         'categories': [{'id': c, 'label': label, 'lower': lower} for c, label, lower in CATEGORIES],
         'sources': [{'id': s, 'label': SOURCES.get(s, s)} for s in odds],
-        'standings': standings(yahoo['standings']),
         'sims': odds,
     })
     (SITE / 'rights.csv').write_text(rights_csv(rows), encoding='utf-8')

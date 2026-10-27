@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fantasy Lombards: Standings</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --panel: #ffffff; --text: #1d1f21; --muted: #6b6f76;
+    --line: #e3e3df; --accent: #c2410c; --row-hover: #fafaf7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141517; --panel: #1c1d20; --text: #e8e8e6; --muted: #9a9ea6;
+      --line: #2c2e33; --accent: #fb923c; --row-hover: #222327;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 1100px; margin: 0 auto; padding: 28px 16px 60px; }
+  h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  nav { margin: 0 0 18px; display: flex; gap: 16px; font-size: 14px; }
+  nav a { color: var(--muted); text-decoration: none; }
+  nav a.on { color: var(--accent); font-weight: 600; }
+  .sub, .meta { color: var(--muted); }
+  .sub { margin: 0 0 20px; }
+  .wrap { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); background: var(--panel); }
+  th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: var(--row-hover); }
+  .empty { color: var(--muted); padding: 14px; background: var(--panel); border: 1px dashed var(--line); border-radius: 8px; }
+  footer { margin-top: 26px; color: var(--muted); font-size: 13px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Fantasy Lombards</h1>
+  <nav><a href="index.html">Week</a><a class="on" href="standings.html">Standings</a><a href="keepers.html">Keeper rights</a><a href="vaimanieki.html">Vaimanieki</a></nav>
+  <p class="sub">Yahoo's One-Win standings: each week's matchup a win, loss or tie.</p>
+  <div id="out"></div>
+  <footer>Built from the league's data files. <a href="index.html">The week's odds</a>.</footer>
+</main>
+<script>
+const D = /*__DATA__*/null;
+const teamById = Object.fromEntries(D.teams.map(t => [t.id, t]));
+const el = (tag, props = {}, ...kids) => { const e = Object.assign(document.createElement(tag), props); e.append(...kids); return e; };
+
+// once a week has been played
+const out = document.getElementById("out");
+if (!D.standings.some(s => s.w + s.l + s.t))
+  out.append(el("div", { className: "empty", textContent: "No standings yet: no week has been played." }));
+else
+  out.append(el("div", { className: "wrap" }, el("table", {},
+    el("thead", {}, el("tr", {}, ...["#", "Team", "Manager", "W", "L", "T"].map((h, i) =>
+      el("th", { textContent: h, className: i > 2 ? "num" : "" })))),
+    el("tbody", {}, ...D.standings.map(s => el("tr", {},
+      el("td", { textContent: s.rank }), el("td", { textContent: teamById[s.id].team }),
+      el("td", { textContent: teamById[s.id].manager, className: "meta" }),
+      ...[s.w, s.l, s.t].map(v => el("td", { textContent: v, className: "num" }))))))));
+</script>
+</body>
+</html>

@@ -3,20 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fantasy Lombards: Odds</title>
+<title>Fantasy Lombards: Week</title>
 <style>
   :root {
     --bg: #f7f7f5; --panel: #ffffff; --text: #1d1f21; --muted: #6b6f76;
     --line: #e3e3df; --accent: #c2410c; --accent-soft: #fff1e8; --row-hover: #fafaf7;
-    --win: #2563eb; --loss: #14b8a6; --tie: #d6d3cd; --win-lock: #1e40af; --loss-lock: #0f766e;
-    --good: #c2410c; --bad: #64748b; --upset: #7c3aed;
+    --fav: #6d28d9; --dog: #14b8a6; --tie: #d6d3cd; --fav-lock: #c4b5fd; --dog-lock: #99f6e4; --tie-edge: #a8a29e;
+    --good: #c2410c; --bad: #64748b;
   }
   @media (prefers-color-scheme: dark) {
     :root {
       --bg: #141517; --panel: #1c1d20; --text: #e8e8e6; --muted: #9a9ea6;
       --line: #2c2e33; --accent: #fb923c; --accent-soft: #2a1d14; --row-hover: #222327;
-      --win: #60a5fa; --loss: #2dd4bf; --tie: #3a3c42; --win-lock: #bfdbfe; --loss-lock: #99f6e4;
-      --good: #fb923c; --bad: #94a3b8; --upset: #a78bfa;
+      --fav: #a78bfa; --dog: #2dd4bf; --tie: #3a3c42; --fav-lock: #ede9fe; --dog-lock: #ccfbf1; --tie-edge: #6b6f76;
+      --good: #fb923c; --bad: #94a3b8;
     }
   }
   * { box-sizing: border-box; }
@@ -56,17 +56,17 @@
   .fav { font-weight: 650; }
   .barwrap { position: relative; margin: 9px 0 6px; }
   .bar { position: relative; display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--tie); }
-  .bar span:nth-child(1) { background: var(--win); }
+  .bar span:nth-child(1) { background: var(--fav); }
   .bar span:nth-child(2) { background: var(--tie); }
-  .bar span:nth-child(3) { background: var(--loss); }
+  .bar span:nth-child(3) { background: var(--dog); }
   /* the shift since the lock: striped in the colour of the team it went to; the tick: where the lock had it */
   .bar .shift { position: absolute; top: 0; bottom: 0;
     background: repeating-linear-gradient(135deg, var(--c) 0 3px, color-mix(in srgb, var(--c) 30%, var(--panel)) 3px 6px); }
-  /* each team's lock line, another shade of its colour: team 1's ends where its edge was, team 2's starts there, so
+  /* each team's lock line, a lighter shade of its colour: team 1's ends where its edge was, team 2's starts there, so
      with no tie at the lock they sit side by side */
   .barwrap .lock { position: absolute; top: -3px; bottom: -3px; width: 2px; border-radius: 1px; }
-  .barwrap .lock.l1 { margin-left: -2px; background: var(--win-lock); box-shadow: -1px 0 0 var(--panel); }
-  .barwrap .lock.l2 { background: var(--loss-lock); box-shadow: 1px 0 0 var(--panel); }
+  .barwrap .lock.l1 { margin-left: -2px; background: var(--fav-lock); box-shadow: -1px 0 0 var(--panel); }
+  .barwrap .lock.l2 { background: var(--dog-lock); box-shadow: 1px 0 0 var(--panel); }
   .cats .barwrap { margin: 0; min-width: 90px; }
   .cats .bar { height: 6px; border-radius: 3px; }
   .cats .barwrap .lock { top: -2px; bottom: -2px; }
@@ -77,7 +77,9 @@
   .key .tick + .tick { margin-left: -5px; }
   .small { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
   .small > span:last-child { white-space: nowrap; }
-  .card.upset { border-color: var(--upset); box-shadow: inset 3px 0 0 var(--upset); }
+  /* a finished week's upset (the lock's underdog won) and tie */
+  .card.upset { border-color: var(--dog); box-shadow: inset 3px 0 0 var(--dog); }
+  .card.tied { border-color: var(--tie-edge); box-shadow: inset 3px 0 0 var(--tie-edge); }
   .won::after { content: " ✓"; }
   .h2h th, .h2h td { padding: 5px 4px; text-align: center; font-size: 12px; font-variant-numeric: tabular-nums; }
   .h2h th.tm, .h2h td.tm { position: sticky; left: 0; z-index: 1; text-align: left; background: var(--panel); font-size: 13px; padding-right: 10px; }
@@ -101,28 +103,24 @@
 <body>
 <main>
   <h1>Fantasy Lombards</h1>
-  <nav><a class="on" href="index.html">Standings &amp; odds</a><a href="keepers.html">Keeper rights</a><a href="vaimanieki.html">Vaimanieki</a></nav>
-  <p class="sub">Yahoo's One-Win standings and each week's matchup odds. The odds simulate every team's lineup over
+  <nav><a class="on" href="index.html">Week</a><a href="standings.html">Standings</a><a href="keepers.html">Keeper rights</a><a href="vaimanieki.html">Vaimanieki</a></nav>
+  <p class="sub">Each week's matchup odds. The odds simulate every team's lineup over
     the week's NBA schedule, from player projections: Yahoo's (made by Rotowire), ESPN's, or their average. Before a
     week locks they use each team's best lineup and change with every update. Once it locks, the odds are live: the
     games played so far count as played, only the rest is projected, so by the week's end they're the result. Each bar
-    shows them against the odds frozen at the lineup lock (Monday). Team-level only.</p>
-
-  <section id="standings-sec" hidden>
-    <h2>Standings</h2>
-    <div class="wrap"><table id="standings"></table></div>
-  </section>
+    shows them against the odds frozen at the lineup lock (Monday), the lock's favourite on top in purple, its underdog in
+    teal. Team-level only.</p>
 
   <h2>Week</h2>
   <div class="controls"><select id="week" aria-label="Week"></select>
     <select id="source" aria-label="Projections" hidden></select></div>
   <p id="meta" class="meta"></p>
   <div id="key" class="key" hidden>
-    <span><i class="sw" style="background: var(--win)"></i>top team wins</span>
+    <span><i class="sw" style="background: var(--fav)"></i>the lock's favourite wins</span>
     <span><i class="sw" style="background: var(--tie)"></i>tie</span>
-    <span><i class="sw" style="background: var(--loss)"></i>bottom team wins</span>
-    <span><i class="sw" style="--c: var(--win); background: repeating-linear-gradient(135deg, var(--c) 0 3px, color-mix(in srgb, var(--c) 30%, var(--panel)) 3px 6px)"></i>moved since the lock, to the team of its colour</span>
-    <span><i class="tick" style="background: var(--win-lock)"></i><i class="tick" style="background: var(--loss-lock)"></i>where the lock had each team's edge, in its colour</span>
+    <span><i class="sw" style="background: var(--dog)"></i>its underdog wins</span>
+    <span><i class="sw" style="--c: var(--fav); background: repeating-linear-gradient(135deg, var(--c) 0 3px, color-mix(in srgb, var(--c) 30%, var(--panel)) 3px 6px)"></i>moved since the lock, to the team of its colour</span>
+    <span><i class="tick" style="background: var(--fav-lock)"></i><i class="tick" style="background: var(--dog-lock)"></i>where the lock had each team's edge, in its colour</span>
   </div>
   <div id="cards" class="cards"></div>
 
@@ -145,18 +143,6 @@ const el = (tag, props = {}, ...kids) => { const e = Object.assign(document.crea
 const fmt = (cat, x) => ["fg", "ft"].includes(cat) ? x.toFixed(3).replace(/^0/, "") : x.toFixed(1);
 const day = t => t.slice(0, 16).replace("T", " ") + " UTC";
 
-// Standings, once a week has been played
-if (D.standings.some(s => s.w + s.l + s.t)) {
-  document.getElementById("standings-sec").hidden = false;
-  const t = document.getElementById("standings");
-  t.append(el("thead", {}, el("tr", {}, ...["#", "Team", "Manager", "W", "L", "T"].map((h, i) =>
-    el("th", { textContent: h, className: i > 2 ? "num" : "" })))));
-  t.append(el("tbody", {}, ...D.standings.map(s => el("tr", {},
-    el("td", { textContent: s.rank }), el("td", { textContent: name(s.id) }),
-    el("td", { textContent: teamById[s.id].manager, className: "meta" }),
-    ...[s.w, s.l, s.t].map(v => el("td", { textContent: v, className: "num" }))))));
-}
-
 // Week: default the week in progress, else the next one, else the last
 const today = new Date().toISOString().slice(0, 10);
 const sel = document.getElementById("week");
@@ -167,7 +153,7 @@ sel.append(el("option", { value: "season", textContent: "Season (roster strength
 sel.value = cur.week;
 sel.addEventListener("change", render);
 
-// Projections: the average of all sources (default) or one; remembered per browser
+// Projections: the first source (default) or another; remembered per browser
 const ssel = document.getElementById("source");
 D.sources.forEach(s => ssel.append(el("option", { value: s.id, textContent: "Projections: " + s.label })));
 ssel.hidden = D.sources.length < 2;
@@ -193,7 +179,7 @@ function bar(now, then, label) {
   if (then) {
     const [f1, , f2] = then;
     // [start, end, colour]
-    const gains = [[f1, w1, "--win"], [1 - w2, 1 - f2, "--loss"]].filter(([lo, hi]) => hi - lo >= 0.005);
+    const gains = [[f1, w1, "--fav"], [1 - w2, 1 - f2, "--dog"]].filter(([lo, hi]) => hi - lo >= 0.005);
     for (const [lo, hi, c] of gains)
       b.append(el("span", { className: "shift", style: `left:${100 * lo}%; width:${100 * (hi - lo)}%; --c: var(${c})` }));
     wrap.append(el("span", { className: "lock l1", style: `left:${100 * f1}%` }),
@@ -209,6 +195,16 @@ function bar(now, then, label) {
 function result(m, score) {
   const [c1, c2] = score ? score : [Math.round(m.cats1), Math.round(m.cats2)];
   return { ...m, cats1: c1, cats2: c2, catsT: D.categories.length - c1 - c2, win1: +(c1 > c2), tie: +(c1 === c2), win2: +(c2 > c1) };
+}
+
+// The matchup the other way round, team2 first
+function flip(m) {
+  if (!m) return m;
+  const s = { ...m };
+  for (const [a, b] of [["team1", "team2"], ["win1", "win2"], ["cats1", "cats2"], ["games1", "games2"], ["played1", "played2"]])
+    [s[a], s[b]] = [m[b], m[a]];
+  s.categories = Object.fromEntries(Object.entries(m.categories).map(([c, [w1, t, w2]]) => [c, [w2, t, w1]]));
+  return s;
 }
 
 // A finished matchup against the lock's odds: {won: 1, 2 or 0 (a tie), upset: the winner was the lock's underdog}
@@ -254,7 +250,7 @@ function card(m, f, totals, frozenTotals, final) {
   const table = el("table", { className: "cats" },
     el("thead", {}, el("tr", {}, ...["Cat", final ? "Team 1" : "Proj. 1", "P(1)", "", "P(2)", final ? "Team 2" : "Proj. 2"].map((h, i) =>
       el("th", { textContent: h, className: i && i !== 3 ? "num" : "" })))), el("tbody", {}, ...rows));
-  return el("details", { className: "card" + (out && out.upset ? " upset" : "") }, head, table);
+  return el("details", { className: "card" + (out && out.upset ? " upset" : out && !out.won ? " tied" : "") }, head, table);
 }
 
 function render() {
@@ -274,9 +270,14 @@ function render() {
     return;
   }
   const final = o.state === "finished";
+  const frozenBy = fr ? Object.fromEntries(fr.matchups.map(m => [`${m.team1}-${m.team2}`, m])) : {};
   const scores = Object.fromEntries((D.weeks.find(w => String(w.week) === week) || { scores: [] }).scores.map(([a, b, s1, s2]) => [`${a}-${b}`, [s1, s2]]));
   const matchups = final ? o.matchups.map(m => result(m, scores[`${m.team1}-${m.team2}`])) : o.matchups;
-  const frozenBy = fr ? Object.fromEntries(fr.matchups.map(m => [`${m.team1}-${m.team2}`, m])) : {};
+  // each card [live, frozen], the favourite at the lock (before it: now) first
+  const shown = matchups.map(m => {
+    const f = frozenBy[`${m.team1}-${m.team2}`], by = f || m;
+    return by.win2 > by.win1 ? [flip(m), flip(f)] : [m, f];
+  });
   const lock = fr ? (fr.version.endsWith("-2") ? "the week's second lineup lock" : "the lineup lock") : "";
   const state = week === "season" ? "Live" :
     final ? "Final: every game played" :
@@ -285,14 +286,16 @@ function render() {
   meta.textContent = `${state} · as of ${day(o.as_of)}` + (o.projections && !final ? ` · projections of ${o.projections.replace(/T[\d:]+Z/g, "")}` : "") +
     (fr ? ` · against the odds frozen at ${lock} (${day(fr.as_of)})` : "");
   if (final && fr && week !== "season") {
-    const upsets = matchups.filter(m => outcome(m, frozenBy[`${m.team1}-${m.team2}`]).upset).length;
-    meta.textContent += ` · ${upsets} of ${matchups.length} won by the lock's underdog` + (upsets ? " (outlined)" : "");
+    const outs = shown.map(([m, f]) => outcome(m, f));
+    const upsets = outs.filter(r => r.upset).length, ties = outs.filter(r => !r.won).length;
+    meta.textContent += ` · ${upsets} of ${matchups.length} won by the lock's underdog` + (upsets ? " (outlined in teal)" : "") +
+      (ties ? ` · ${ties} tied (outlined in grey)` : "");
   }
   const totals = Object.fromEntries(o.power.map(p => [p.team, p.totals]));
   const frozenTotals = fr && Object.fromEntries(fr.power.map(p => [p.team, p.totals]));
   cards.replaceChildren(...(week === "season" ?
     [el("div", { className: "empty", textContent: "The season ranking has no matchups: it compares roster strength, every starter playing a typical week's games." })] :
-    matchups.map(m => card(m, frozenBy[`${m.team1}-${m.team2}`], totals, frozenTotals, final))));
+    shown.map(([m, f]) => card(m, f, totals, frozenTotals, final))));
 
   document.getElementById("power-title").textContent = week === "season" ? "Power ranking (season)" : `Power ranking, week ${week}`;
   const n = o.power.length;
