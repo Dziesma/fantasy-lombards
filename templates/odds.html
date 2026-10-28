@@ -126,12 +126,18 @@
   .cats .sf { color: var(--muted); }
   .cats .frac { display: block; color: var(--muted); font-size: 11px; line-height: 1.2; font-weight: 400; }
   .cats .sfi, .cats th .sfh { display: none; }
-  .cats th.sf, .cats th.pj { width: 1%; }
+  /* the mirrored columns equally wide (the table's spare width split between the two P columns), so the odds bar and
+     a category's players under it sit at the middle */
+  .cats th.cat, .cats th.sf, .cats th.pj { width: 1%; }
+  .cats th.p { width: 12%; }
+  .cats td.sf, .cats td.pj { min-width: 5.2em; }
+  .cats td.p { min-width: 3.4em; }
   @media (max-width: 700px) {
     /* no room for the so-far columns: so far goes under each stat, the projections lose their makes/attempts */
     .cats { font-size: 12px; }
     .cats td, .cats th { padding: 4px 3px; }
     .cats td.barcell { min-width: 50px; }
+    .cats td.pj { min-width: 3.6em; }
     .cats .sf, .cats .pj .frac { display: none; }
     .cats .sfi, .cats th .sfh { display: block; font-size: 11px; color: var(--muted); font-weight: 400; }
   }
@@ -400,7 +406,8 @@ function playersRow(c, m, starters, stage, span) {
   const key = RATIO[c.id] ?
     `Each starter's makes above the matchup's combined ${c.label} ${final ? "final" : "projected now"} (${fmt(c.id, rate)}): his makes less that share of his attempts, so the team whose starters add up to more ${final ? "won it" : "is ahead"}. ` :
     c.lower ? `${c.label}: fewer wins. ` : "";
-  return el("tr", { className: "players" }, el("td", { colSpan: span },
+  // under the category's name an empty cell, so the halves meet under the odds bar (the columns either side mirror)
+  return el("tr", { className: "players" }, el("td"), el("td", { colSpan: span - 1 },
     el("div", { className: "pp" }, half(1, sides[0]), half(2, sides[1])),
     el("p", { className: "pp-key", textContent: key + (final ?
       "Solid: the week's final; tick: projected at the lock. Games: played." :
@@ -477,9 +484,9 @@ function card(m, f, totals, frozenTotals, stage, stats, starters) {
     const tr = el("tr", {},
       el("td", {}, label),
       ...side(1),
-      el("td", { className: "s1", textContent: p[0] }),
+      el("td", { className: "p s1", textContent: p[0] }),
       el("td", { className: "barcell" }, bar(p_, then, `${c.label}: `)),
-      el("td", { className: "s2", textContent: p[2] }),
+      el("td", { className: "p s2", textContent: p[2] }),
       ...side(2));
     if (starters) label.addEventListener("click", () => {
       const open = label.getAttribute("aria-expanded") === "true";
@@ -494,8 +501,8 @@ function card(m, f, totals, frozenTotals, stage, stats, starters) {
   // on phones, where so far goes under the projections, the header says so too
   const pjTh = t => el("th", { className: `pj s${t}` }, pjHead, ...(live ? [el("span", { className: "sfh", textContent: "so far" })] : []));
   const table = el("table", { className: "cats" },
-    el("thead", {}, el("tr", {}, th("Cat", ""),
-      ...(live ? [th("So far", "sf s1")] : []), pjTh(1), th("P", "s1"), th("", ""), th("P", "s2"),
+    el("thead", {}, el("tr", {}, th("Cat", "cat"),
+      ...(live ? [th("So far", "sf s1")] : []), pjTh(1), th("P", "p s1"), th("", ""), th("P", "p s2"),
       pjTh(2), ...(live ? [th("So far", "sf s2")] : []))),
     el("tbody", {}, ...rows));
   const d = el("details", { className: "card" + (out && out.upset ? " upset" : out && !out.won ? " tied" : "") }, head, table);
