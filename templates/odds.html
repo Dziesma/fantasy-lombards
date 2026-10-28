@@ -98,7 +98,8 @@
   .barwrap .lock { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--lock); }
   .barwrap .lock.l1 { margin-left: -2px; }
   .cats .barwrap { margin: 0; min-width: 90px; }
-  .cats .bar { height: 6px; border-radius: 3px; }
+  /* bar heights in three steps: the matchup 12px, a category 9px, a player 6px */
+  .cats .bar { height: 9px; border-radius: 4.5px; }
   .cats .barwrap .lock { top: -2px; bottom: -2px; }
   .key { display: flex; flex-wrap: wrap; gap: 4px 16px; align-items: center; font-size: 12px; color: var(--muted); margin: 0 0 10px; }
   .key i { display: inline-block; vertical-align: -2px; margin-right: 5px; }
@@ -126,9 +127,11 @@
   .cats .sf { color: var(--muted); }
   .cats .frac { display: block; color: var(--muted); font-size: 11px; line-height: 1.2; font-weight: 400; }
   .cats .sfi, .cats th .sfh { display: none; }
-  /* the mirrored columns equally wide (the table's spare width split between the two P columns), so the odds bar and
-     a category's players under it sit at the middle */
-  .cats th.cat, .cats th.sf, .cats th.pj { width: 1%; }
+  /* the mirrored columns equally wide (the table's spare width split between the two P columns) and an empty column
+     as wide as Cat at the end, so the odds bar and a category's players under it sit at the middle, under the
+     matchup's bar */
+  .cats th.cat, .cats th.end, .cats th.sf, .cats th.pj { width: 1%; }
+  .cats tr > :first-child, .cats tr > :last-child { min-width: 4.2em; }
   .cats th.p { width: 12%; }
   .cats td.sf, .cats td.pj { min-width: 5.2em; }
   .cats td.p { min-width: 3.4em; }
@@ -136,18 +139,32 @@
     /* no room for the so-far columns: so far goes under each stat, the projections lose their makes/attempts */
     .cats { font-size: 12px; }
     .cats td, .cats th { padding: 4px 3px; }
-    .cats td.barcell { min-width: 50px; }
-    .cats td.pj { min-width: 3.6em; }
+    /* no percentage widths: the bar takes what's left, so the table fits the card */
+    .cats td.barcell { width: auto; min-width: 40px; }
+    .cats .barwrap { min-width: 40px; }
+    .cats th.p { width: 1%; }
+    .cats td.pj { min-width: 4.2em; }   /* a finished week's makes/attempts (158/336) under the stat */
+    .cats tr > :first-child, .cats tr > :last-child { min-width: 3.4em; }
+    .cats td.p { min-width: 2.8em; }
     .cats .sf, .cats .pj .frac { display: none; }
     .cats .sfi, .cats th .sfh { display: block; font-size: 11px; color: var(--muted); font-weight: 400; }
+  }
+  @media (max-width: 380px) {
+    /* small phones: a little less padding, so the category table still fits */
+    .card { padding: 12px 12px 10px; }
+    .cats td, .cats th { padding: 4px 2px; }
+    .cats td.p { min-width: 2.6em; }
+    .cats td.pj { min-width: 3.8em; }
   }
   /* a category's players, opened from its name: team 1's half mirrored (bars grow left), team 2's to the right */
   .cats button.cat { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; white-space: nowrap; }
   .cats button.cat::after { content: " ▸"; color: var(--muted); font-size: 11px; }
   .cats button.cat[aria-expanded="true"]::after { content: " ▾"; }
   .cats tr.players > td { padding: 4px 8px 12px; white-space: normal; }
-  .pp { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 12px; }
-  .pp > .s2 { border-left: 1px solid var(--line); padding-left: 12px; }
+  .pp { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .pp::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px solid var(--line); }
+  .pp > .s1 { padding-right: 12px; }
+  .pp > .s2 { padding-left: 12px; }
   .pp .pl { display: grid; gap: 8px; align-items: center; padding: 2px 0; font-size: 12px; }
   .pp .s1 .pl { grid-template-columns: minmax(0, 1fr) auto 42%; text-align: right; }
   .pp .s2 .pl { grid-template-columns: 42% auto minmax(0, 1fr); text-align: left; }
@@ -156,21 +173,21 @@
   .pp .val { font-variant-numeric: tabular-nums; min-width: 3.2em; }
   .pp .pl.total { font-weight: 650; border-bottom: 1px solid var(--line); padding-bottom: 4px; margin-bottom: 2px; }
   /* each bar on a faint track; FG%, FT%: the average a dashed axis through every row, labelled in the total row */
-  .pbar { position: relative; height: 8px; border-radius: 2px; background: color-mix(in srgb, var(--line) 55%, transparent); }
+  .pbar { position: relative; height: 6px; border-radius: 2px; background: color-mix(in srgb, var(--line) 55%, transparent); }
   .s1 .pbar { transform: scaleX(-1); }
   .pbar span { position: absolute; top: 0; bottom: 0; }
   .pbar .now { background: color-mix(in srgb, var(--c) 35%, var(--panel)); border-radius: 2px; }
   .pbar .sofar { background: var(--c); border-radius: 2px; }
   .pbar .lk { top: -2px; bottom: -2px; width: 2px; margin-left: -1px; background: var(--lock); }
-  .pbar .zero { top: -7px; bottom: -7px; width: 0; border-left: 1px dashed var(--muted); }
+  .pbar .zero { top: -8px; bottom: -8px; width: 0; border-left: 1px dashed var(--muted); }
   .pp .axis { position: relative; height: 1em; }
   .pp .axis span { position: absolute; transform: translateX(-50%); font-size: 10px; font-weight: 400; color: var(--muted); white-space: nowrap; }
   .s1 .pbar { --c: var(--fav); }
   .s2 .pbar { --c: var(--dog); }
   .pp-key { margin: 8px 0 0; font-size: 11px; color: var(--muted); }
   @media (max-width: 700px) {
-    .pp { gap: 0 10px; }
-    .pp > .s2 { padding-left: 8px; }
+    .pp > .s1 { padding-right: 6px; }
+    .pp > .s2 { padding-left: 6px; }
     .pp .s1 .pl { grid-template-columns: minmax(0, 1fr) auto 30%; gap: 4px; }
     .pp .s2 .pl { grid-template-columns: 30% auto minmax(0, 1fr); gap: 4px; }
     .pp .val { min-width: 2.4em; font-size: 11px; }
@@ -406,8 +423,7 @@ function playersRow(c, m, starters, stage, span) {
   const key = RATIO[c.id] ?
     `Each starter's makes above the matchup's combined ${c.label} ${final ? "final" : "projected now"} (${fmt(c.id, rate)}): his makes less that share of his attempts, so the team whose starters add up to more ${final ? "won it" : "is ahead"}. ` :
     c.lower ? `${c.label}: fewer wins. ` : "";
-  // under the category's name an empty cell, so the halves meet under the odds bar (the columns either side mirror)
-  return el("tr", { className: "players" }, el("td"), el("td", { colSpan: span - 1 },
+  return el("tr", { className: "players" }, el("td", { colSpan: span },
     el("div", { className: "pp" }, half(1, sides[0]), half(2, sides[1])),
     el("p", { className: "pp-key", textContent: key + (final ?
       "Solid: the week's final; tick: projected at the lock. Games: played." :
@@ -487,7 +503,8 @@ function card(m, f, totals, frozenTotals, stage, stats, starters) {
       el("td", { className: "p s1", textContent: p[0] }),
       el("td", { className: "barcell" }, bar(p_, then, `${c.label}: `)),
       el("td", { className: "p s2", textContent: p[2] }),
-      ...side(2));
+      ...side(2),
+      el("td"));
     if (starters) label.addEventListener("click", () => {
       const open = label.getAttribute("aria-expanded") === "true";
       label.setAttribute("aria-expanded", String(!open));
@@ -503,7 +520,7 @@ function card(m, f, totals, frozenTotals, stage, stats, starters) {
   const table = el("table", { className: "cats" },
     el("thead", {}, el("tr", {}, th("Cat", "cat"),
       ...(live ? [th("So far", "sf s1")] : []), pjTh(1), th("P", "p s1"), th("", ""), th("P", "p s2"),
-      pjTh(2), ...(live ? [th("So far", "sf s2")] : []))),
+      pjTh(2), ...(live ? [th("So far", "sf s2")] : []), th("", "end"))),
     el("tbody", {}, ...rows));
   const d = el("details", { className: "card" + (out && out.upset ? " upset" : out && !out.won ? " tied" : "") }, head, table);
   d.addEventListener("toggle", () => d.open && place(d));
