@@ -45,7 +45,7 @@ CATEGORIES = [   # id (as in the sims), label, lower wins
 STATS = ['fgm', 'fga', 'ftm', 'fta', 'tpm', 'pts', 'reb', 'ast', 'stl', 'blk', 'to']   # totals.csv's
 SOURCES = {'yahoo': 'Yahoo (Rotowire)', 'blend': 'Average (Yahoo + ESPN)', 'espn': 'ESPN'}   # the first: the default
 INJURED = {'O'}   # Yahoo's injury flags that count as injured on the Vaimanieki page
-TOP_INJURED = 10   # injured players listed there
+MIN_INJURED = 1   # injured players listed there: worth at least this many dollars
 # the league's examples of the keeper price rule, checked on every build
 EXAMPLES = [[1, 6, 11, 16, 21, 26, 31, 36, 42], [100, 115]]
 
@@ -216,8 +216,8 @@ def rights(teams, yahoo, corrections, seasons):
 
 def injuries(teams, rows, yahoo):
     """The Vaimanieki page: per team, its players flagged injured now and their dollars (keeper bases), most first,
-    against all its players' dollars; and the TOP_INJURED most expensive injured players. Only players whose rights a
-    team holds."""
+    against all its players' dollars; and every injured player worth at least $MIN_INJURED, most expensive first. Only
+    players whose rights a team holds."""
     status = {r['player_id']: r['status'] for r in yahoo['players']}
     hurt = [r for r in rows if r['rights'] and status[r['player_id']] in INJURED]
     table = []
@@ -227,7 +227,7 @@ def injuries(teams, rows, yahoo):
         table.append({'team': t['name'], 'manager': t['manager'], 'injured': len(out),
                       'value': sum(r['keeper_base'] for r in out), 'total': sum(r['keeper_base'] for r in mine)})
     table.sort(key=lambda r: (-r['value'], -r['injured'], r['team'].lower()))
-    top = sorted(hurt, key=lambda r: (-r['keeper_base'], r['player']))[:TOP_INJURED]
+    top = sorted((r for r in hurt if r['keeper_base'] >= MIN_INJURED), key=lambda r: (-r['keeper_base'], r['player']))
     fetched = {r['table']: r['fetched'] for r in yahoo['fetched']}
     return {'as_of': fetched.get('players', ''), 'flags': sorted(INJURED), 'teams': table,
             'players': [{'player': r['player'], 'nba_team': r['nba_team'], 'team': r['rights'],

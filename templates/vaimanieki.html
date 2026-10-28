@@ -57,6 +57,13 @@
   td.rank { width: 38px; color: var(--muted); font-variant-numeric: tabular-nums; }
   tr.zero td { color: var(--muted); }
   .empty { color: var(--muted); padding: 14px; background: var(--panel); border: 1px dashed var(--line); border-radius: 8px; }
+  .pager { display: flex; align-items: center; gap: 10px; margin-top: 10px; font-size: 14px; color: var(--muted); }
+  .pager[hidden] { display: none; }
+  .pager button {
+    font: inherit; color: var(--text); background: var(--panel); cursor: pointer;
+    border: 1px solid var(--line); border-radius: 6px; padding: 5px 12px;
+  }
+  .pager button:disabled { color: var(--muted); cursor: default; opacity: 0.5; }
 </style>
 </head>
 <body>
@@ -68,12 +75,15 @@
     <span id="flags"></span> flag.</p>
   <p id="meta" class="summary"></p>
 
-  <h2>Vaimanieku tabula</h2>
+  <h2>Injured dollars by team</h2>
   <div class="wrap"><table id="teams"></table></div>
 
-  <h2>Dārgākie savainotie</h2>
-  <p class="summary">The most expensive injured players.</p>
+  <h2>Most expensive injured players</h2>
+  <p class="summary">Every injured player worth at least $1, most expensive first.</p>
   <div id="players-wrap" class="wrap"><table id="players"></table></div>
+  <div id="pager" class="pager" hidden>
+    <button id="prev" type="button">‹ Prev</button><span id="range"></span><button id="next" type="button">Next ›</button>
+  </div>
 
   <footer>Built from the league's data files. <a href="keepers.html">Keeper rights</a>.</footer>
 </main>
@@ -93,12 +103,26 @@ document.getElementById("teams").append(
     td("$" + t.value, "num" + (t.value ? " k1" : "")), td("$" + t.total, "num"),
     td(t.total ? Math.round(100 * t.value / t.total) + "%" : "–", "num")))));
 
+const PER_PAGE = 25;
 if (D.players.length) {
-  document.getElementById("players").append(
-    head([["#"], ["Player"], ["NBA"], ["Team"], ["Status"], ["$", 1]]),
-    el("tbody", {}, ...D.players.map((p, i) => el("tr", {},
-      td(i + 1, "rank"), td(p.player), td(p.nba_team, "muted"), td(p.team), td(p.status, "muted"),
-      td("$" + p.value, "num k1")))));
+  const body = el("tbody");
+  document.getElementById("players").append(head([["#"], ["Player"], ["NBA"], ["Team"], ["Status"], ["$", 1]]), body);
+  const pages = Math.ceil(D.players.length / PER_PAGE);
+  const prev = document.getElementById("prev"), next = document.getElementById("next");
+  let at = 0;
+  const show = () => {
+    const from = at * PER_PAGE, to = Math.min(from + PER_PAGE, D.players.length);
+    body.replaceChildren(...D.players.slice(from, to).map((p, i) => el("tr", {},
+      td(from + i + 1, "rank"), td(p.player), td(p.nba_team, "muted"), td(p.team), td(p.status, "muted"),
+      td("$" + p.value, "num k1"))));
+    document.getElementById("range").textContent = `${from + 1}–${to} of ${D.players.length}`;
+    prev.disabled = at === 0;
+    next.disabled = at === pages - 1;
+  };
+  prev.onclick = () => { at--; show(); };
+  next.onclick = () => { at++; show(); };
+  document.getElementById("pager").hidden = pages < 2;
+  show();
 } else {
   document.getElementById("players-wrap").replaceWith(el("div", { className: "empty", textContent: "Nobody is injured. Nothing to wail about." }));
 }

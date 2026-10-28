@@ -16,7 +16,7 @@ The site of our 16-team Yahoo NBA keeper league, at **https://dziesma.github.io/
   the next three seasons, and which team holds his rights now. Searchable, sortable, filterable by team; also as
   `rights.csv`.
 - **Vaimanieki** (`vaimanieki.html`): who has the most to wail about. The dollars each team has on players Yahoo
-  flags as out (`O`) right now, against all its players' dollars, and the ten most expensive injured players. A
+  flags as out (`O`) right now, against all its players' dollars, and every injured player worth at least $1 (25 a page). A
   player's dollars are his keeper base; only players whose rights a team holds count.
 
 ## Keeper rules
