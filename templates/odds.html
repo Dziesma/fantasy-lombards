@@ -362,8 +362,8 @@ function card(m, f, totals, frozenTotals, stage, stats) {
       const frac = week ? made(c.id, week) : null;
       const lockTitle = frozenTotals ? `at the lock: ${fmt(c.id, frozenTotals[id][c.id])}` : "";
       const sf = live ? soFar(c.id, s && s.played) : null;
-      // on phones: so far (live), or the final makes/attempts, under the stat
-      const under = sf ? sf[1] || sf[0] : final && frac;
+      // on phones: so far (live, FG% and FT% as .481 like the projection), or the final makes/attempts, under the stat
+      const under = sf ? sf[0] : final && frac;
       const sfi = under ? [el("span", { className: "sfi", textContent: under })] : [];
       const pj = statCell("pj" + edge, t, value, frac, sfi, lockTitle);
       if (!live) return [pj];
