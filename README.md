@@ -9,7 +9,9 @@ The site of our 16-team Yahoo NBA keeper league, at **https://dziesma.github.io/
   slate, the tie between, then the lock's odds, the expected categories and the starter games; a finished week shows
   Yahoo's result (categories won–lost–tied) and outlines an upset (the lock's underdog won) in slate, a tie in grey.
   Its details: every category's stats so far and projected (FG% and FT% with makes and attempts) and odds, mirrored.
-  Team-level only. (`odds.html`, its old address, sends you there.)
+  Once the week has locked (live or finished), each category opens to both teams' starters, mirrored, a bar each on
+  one scale: so far (solid), projected now (light, to the bar's end) and projected at the lock (a tick); FG% and FT%
+  as makes above the matchup's combined percentage, so a team's starters add up to above 0 exactly when it's ahead. (`odds.html`, its old address, sends you there.)
 - **Standings** (`standings.html`): Yahoo's One-Win standings.
 - **Keeper rights** (`keepers.html`): think of it as a pawnshop: every player bought can be bought back next season,
   with interest. For every player drafted or picked up: what was paid for him this season, what keeping him costs
@@ -47,7 +49,8 @@ picks and transactions by ids, the weeks and pairings with Yahoo's scores (categ
 week) the pairings' odds and each team's projected category totals, and of the live sims every pair of teams' odds
 (`h2h.csv`; yfbb's sim writes it since it was added there), and once a week's games are being played each team's
 starter stats so far and its projected week totals, makes and attempts included (`totals.csv`, summed from the live
-sim's player games). No player projections.
+sim's player games), and of each locked week every starter's: projected at the lock, so far and projected now
+(`players_week.csv`, from the frozen and live sims' player games).
 
 Each week has two sims. Live: what is known now; before the week's lineup lock (Monday; weeks 7 and 17 have a
 second, on their middle Monday) each team's best lineup, projected; after it the lineups that locked, the games played

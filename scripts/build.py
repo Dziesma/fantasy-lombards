@@ -57,7 +57,7 @@ def main():
     league = {name: read(f'league/{name}.csv') for name in ('teams', 'budget_trades', 'draft_corrections')}
     yahoo = {name: read(f'yahoo/{name}.csv') for name in
              ('players', 'draft', 'transactions', 'matchups', 'standings', 'fetched', 'sims', 'odds', 'power', 'h2h',
-              'totals')}
+              'totals', 'players_week')}
     teams = {r['team_id']: r for r in league['teams']}
     season = season_of(yahoo['matchups'])
     seasons = [season_after(season, i + 1) for i in range(KEEPER_SEASONS)]
@@ -67,6 +67,7 @@ def main():
     rows = rights(teams, yahoo, league['draft_corrections'], seasons)
     budgets = next_budgets(teams, league['budget_trades'])
     odds = sims(teams, yahoo, pairs)
+    starters, names = starter_weeks(teams, yahoo, odds)
     hurt = injuries(teams, rows, yahoo)
 
     shutil.rmtree(SITE, ignore_errors=True)
@@ -89,6 +90,8 @@ def main():
         'categories': [{'id': c, 'label': label, 'lower': lower} for c, label, lower in CATEGORIES],
         'sources': [{'id': s, 'label': SOURCES.get(s, s)} for s in odds],
         'sims': odds,
+        'starters': starters,
+        'names': names,
     })
     (SITE / 'rights.csv').write_text(rights_csv(rows), encoding='utf-8')
     print(f'{len(rows)} players with keeper rights, {len(yahoo["draft"])} picks, {len(yahoo["transactions"])} '
@@ -323,6 +326,29 @@ def sims(teams, yahoo, pairs):
                 if s and both['frozen'] and len(s['matchups']) != len(both['live']['matchups']):
                     die(f'data/yahoo/odds.csv: {source} week {week}: live and frozen have different pairings')
     return dict(sorted(out.items(), key=lambda kv: list(SOURCES).index(kv[0]) if kv[0] in SOURCES else len(SOURCES)))
+
+
+def starter_weeks(teams, yahoo, odds):
+    """({source: {week: {team: [[player_id, lock, played, week]]}}}, {player_id: short name}): each locked week's
+    starters (with a frozen sim), their stats at the lock, so far and for the week (played and projected), each [games,
+    fgm, fga, ...] or None (no games of that kind); short name: the first name's initial and the rest (S.
+    Gilgeous-Alexander)."""
+    players = {r['player_id']: r['name'] for r in yahoo['players']}
+    out, names = {}, {}
+    for r in yahoo['players_week']:
+        sim = odds.get(r['source'], {}).get(r['week'], {})
+        if not sim.get('frozen') or r['team_id'] not in teams or r['kind'] not in ('lock', 'played', 'week'):
+            die(f'data/yahoo/players_week.csv: {r["source"]} week {r["week"]} team {r["team_id"]} {r["kind"]}: no such '
+                'locked week, team or kind')
+        if r['player_id'] not in players:
+            die(f'data/yahoo/players_week.csv: no player {r["player_id"]} in data/yahoo/players.csv')
+        first, _, rest = players[r['player_id']].partition(' ')
+        names[int(r['player_id'])] = f'{first[0]}. {rest}' if rest else first
+        team = out.setdefault(r['source'], {}).setdefault(r['week'], {}).setdefault(int(r['team_id']), {})
+        row = team.setdefault(int(r['player_id']), [int(r['player_id']), None, None, None])
+        row[1 + ['lock', 'played', 'week'].index(r['kind'])] = [int(r['games'])] + [round(float(r[k]), 2) for k in STATS]
+    return ({s: {w: {t: list(ps.values()) for t, ps in ts.items()} for w, ts in ws.items()} for s, ws in out.items()},
+            names)
 
 
 def sim(out, r):

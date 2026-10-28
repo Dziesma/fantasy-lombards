@@ -4,7 +4,7 @@
 Run by hand after `yfbb data sync` and `yfbb sim`, then build and commit what it writes. Reads <dir>/curated/current/
 and <dir>/sim/, dir: --data, else [data] dir in ~/.config/yfbb/config.toml, else ~/.local/share/yfbb (yfbb's own
 default). Takes no team names (the site's are data/league/teams.csv; Yahoo's are only compared with them, to warn)
-and nothing below team level from the sims.
+and from the sims nothing below team level, except the starters' week totals of locked weeks.
 
 Writes, each file whole (don't edit them by hand):
     players.csv       player_id, name, nba_team, positions, status: every player drafted or in a transaction;
@@ -31,6 +31,10 @@ Writes, each file whole (don't edit them by hand):
                       team's starter stats in a live sim with pairings, summed from its player games; kind: week
                       (played and projected: the projected totals, with makes and attempts) or, once games are
                       played, played (the box scores so far)
+    players_week.csv  source, week, team_id, player_id, kind, games, fgm, ..., to: each starter's stats in a week
+                      whose lineups have locked (a frozen sim), summed from the sims' player games; kind: lock (the
+                      frozen sim's: projected at the lock), played (the live one's box scores so far) or week (the
+                      live one's: played and projected); a kind the player has no games in has no row
 
 Each week has its live sim (what is known now: the games played so far actual, the rest projected; the result once
 it's over) and, once a lock has passed, the newest frozen one (week-NN, or week-NN-2 in a two-week week: what was
@@ -74,7 +78,7 @@ def main():
         _die(f'curated players has no {sorted(missing, key=int)}, who are drafted or in a transaction')
     tables = {'players': players} | {name: yahoo[name] for name in ('draft', 'transactions', 'matchups', 'standings')}
     tables['fetched'] = fetched(current, list(tables))
-    tables['sims'], odds, power, h2h, totals = sims(root)
+    tables['sims'], odds, power, h2h, totals, starters = sims(root)
 
     OUT.mkdir(parents=True, exist_ok=True)
     for name, rows in tables.items():
@@ -83,6 +87,7 @@ def main():
     _write(OUT / 'power.csv', list(next(r for r in power if r['week'] != 'season')), power)
     _write(OUT / 'h2h.csv', list(h2h[0]), h2h)
     _write(OUT / 'totals.csv', ['source', 'week', 'team_id', 'kind', 'games', *STATS], totals)
+    _write(OUT / 'players_week.csv', ['source', 'week', 'team_id', 'player_id', 'kind', 'games', *STATS], starters)
     frozen = {r['week'] for r in tables['sims'] if r['version'] != 'live'}
     print(f'{len(players)} players, {len(yahoo["draft"])} picks, {len(yahoo["transactions"])} transactions; odds of '
           f'{len({r["week"] for r in tables["sims"]}) - 1} weeks ({len(frozen)} also frozen) by '
@@ -102,14 +107,15 @@ def fetched(current, names):
 
 
 def sims(root):
-    """(sims, odds, power, h2h, totals) rows of every source's sims: each week's live one and its newest frozen one (a
-    lock passed); and the season's power ranking. h2h: the live ones' only; totals: the live ones' with pairings."""
+    """(sims, odds, power, h2h, totals, starters) rows of every source's sims: each week's live one and its newest
+    frozen one (a lock passed); and the season's power ranking. h2h: the live ones' only; totals: the live ones' with
+    pairings; starters: the weeks' with a frozen one."""
     live, frozen = root / 'sim' / 'live', root / 'sim' / 'frozen'
     if not (live / 'season').is_dir():
         _die(f'no {live / "season"}; run `yfbb sim`')
     sources = sorted((d.name for d in (live / 'season').iterdir() if d.is_dir()), key=lambda s: (s != 'blend', s))
     weeks = sorted(int(d.name.removeprefix('week-')) for d in live.glob('week-*'))
-    rows, odds, power, h2h, totals = [], [], [], [], []
+    rows, odds, power, h2h, totals, starters = [], [], [], [], [], []
     for source in sources:
         for week in weeks:
             locks = sorted(d.name for d in frozen.glob(f'week-{week:02d}*') if (d / source / LINEUP).is_dir())
@@ -124,11 +130,14 @@ def sims(root):
             h2h += [{'source': source, 'week': week} | r for r in _read(folders['live'] / 'h2h.csv')]
             if (folders['live'] / 'player_games.csv').exists():
                 totals += _totals(source, week, _read(folders['live'] / 'player_games.csv'))
+            if locks:
+                starters += _starters(source, week, _read(folders[locks[-1]] / 'player_games.csv'),
+                                      _read(folders['live'] / 'player_games.csv'))
         rows.append(_sim(source, 'season', 'live', live / 'season' / source))
         power += [{'source': source, 'week': 'season', 'version': 'live'} | r
                   for r in _read(live / 'season' / source / 'power.csv')]
         h2h += [{'source': source, 'week': 'season'} | r for r in _read(live / 'season' / source / 'h2h.csv')]
-    return rows, odds, power, h2h, totals
+    return rows, odds, power, h2h, totals, starters
 
 
 def _totals(source, week, games):
@@ -142,6 +151,21 @@ def _totals(source, week, games):
                 t[k] += float(g[k])
     return [{'source': source, 'week': week, 'team_id': team, 'kind': kind, 'games': t['games']} |
             {k: f'{t[k]:.4f}'.rstrip('0').rstrip('.') for k in STATS} for (team, kind), t in sorted(sums.items())]
+
+
+def _starters(source, week, frozen, live):
+    """A locked week's players_week rows: each starter's player games summed, the frozen sim's (lock) and the live
+    one's, those played and all (week)."""
+    sums = {}
+    games = [(g, ('lock',)) for g in frozen] + [(g, ('played', 'week') if g['played'] == '1' else ('week',)) for g in live]
+    for g, kinds in games:
+        for kind in kinds:
+            t = sums.setdefault((int(g['team_id']), int(g['player_id']), kind), {'games': 0} | dict.fromkeys(STATS, 0.0))
+            t['games'] += 1
+            for k in STATS:
+                t[k] += float(g[k])
+    return [{'source': source, 'week': week, 'team_id': team, 'player_id': player, 'kind': kind, 'games': t['games']} |
+            {k: f'{t[k]:.4f}'.rstrip('0').rstrip('.') for k in STATS} for (team, player, kind), t in sorted(sums.items())]
 
 
 def _sim(source, week, version, folder):
