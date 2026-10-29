@@ -389,7 +389,8 @@ function startersIn(cat, ids, starters) {
 }
 
 // The players row under a category's row: each team's starters, a bar each on one scale: solid so far, light the rest
-// projected (its end: the projection now), a tick where the lock had him; team 1's half mirrored
+// projected (its end: the projection now; FG%, FT%: solid past it where so far is above it), a tick where the lock had
+// him; team 1's half mirrored
 function playersRow(c, m, starters, stage, span) {
   const { rate, sides } = startersIn(c.id, [m.team1, m.team2], starters);
   const all = sides.flat().flatMap(p => [p.lock, p.sofar, p.now]);
@@ -400,7 +401,10 @@ function playersRow(c, m, starters, stage, span) {
   const range = (cls, a, b) => el("span", { className: cls, style: `left:${x(Math.min(a, b))}%; width:${Math.abs(x(b) - x(a))}%` });
   const pbar = p => el("div", { className: "pbar" },
     ...(lo < 0 ? [el("span", { className: "zero", style: `left:${x(0)}%` })] : []),
-    range("now", 0, p.now), range("sofar", 0, p.sofar), el("span", { className: "lk", style: `left:${x(p.lock)}%` }));
+    // the shorter on top: the light one where the projection now is under so far (FG%, FT%)
+    ...(Math.abs(p.now) < Math.abs(p.sofar) ? [range("sofar", 0, p.sofar), range("now", 0, p.now)] :
+      [range("now", 0, p.now), range("sofar", 0, p.sofar)]),
+    el("span", { className: "lk", style: `left:${x(p.lock)}%` }));
   // the average's label above its axis (team 1's half mirrored); none where the bars start at the edge
   const axis = t => el("div", { className: "axis" }, ...(lo < 0 ? [el("span", { textContent: "avg " + fmt(c.id, rate),
     style: `left:${t === 1 ? 100 - x(0) : x(0)}%` })] : []));
@@ -429,7 +433,9 @@ function playersRow(c, m, starters, stage, span) {
     el("div", { className: "pp" }, half(1, sides[0]), half(2, sides[1])),
     el("p", { className: "pp-key", textContent: key + (final ?
       "Solid: the week's final; tick: projected at the lock. Games: played." :
-      "Solid: so far; light: the rest projected, the bar's end the projection now; tick: projected at the lock. Games: played/now.") })));
+      "Solid: so far; light: the rest projected, the bar's end the projection now" +
+        (RATIO[c.id] ? " (solid past the light: so far is above the projection now)" : "") +
+        "; tick: projected at the lock. Games: played/now.") })));
 }
 
 // stage: open (before the lock: projected), live (locked: some played, the rest projected) or final; starters: the
