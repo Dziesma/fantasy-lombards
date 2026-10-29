@@ -156,10 +156,9 @@
     .cats td.p { min-width: 2.6em; }
     .cats td.pj { min-width: 3.8em; }
   }
-  /* a category's players, opened from its name: team 1's half mirrored (bars grow left), team 2's to the right */
+  /* a category's players, opened from anywhere on its row: team 1's half mirrored (bars grow left), team 2's to the right */
   .cats button.cat { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; white-space: nowrap; }
-  .cats button.cat::after { content: " ▸"; color: var(--muted); font-size: 11px; }
-  .cats button.cat[aria-expanded="true"]::after { content: " ▾"; }
+  .cats tr.opens { cursor: pointer; }
   .cats tr.players > td { padding: 4px 8px 12px; white-space: normal; }
   .pp { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .pp::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px solid var(--line); }
@@ -513,7 +512,9 @@ function card(m, f, totals, frozenTotals, stage, stats, starters) {
       el("td", { className: "p s2", textContent: p[2] }),
       ...side(2),
       el("td"));
-    if (starters) label.addEventListener("click", () => {
+    if (starters) tr.className = "opens";
+    // the whole row toggles; a click on the label button bubbles up here too
+    if (starters) tr.addEventListener("click", () => {
       const open = label.getAttribute("aria-expanded") === "true";
       label.setAttribute("aria-expanded", String(!open));
       if (open) tr.nextSibling.remove();
