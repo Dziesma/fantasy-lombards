@@ -20,6 +20,12 @@ The site of our 16-team Yahoo NBA keeper league, at **https://dziesma.github.io/
 - **Vaimanieki** (`vaimanieki.html`): who has the most to wail about. The dollars each team has on players Yahoo
   flags as out (`O`) right now, against all its players' dollars, and every injured player worth at least $1 (25 a page). A
   player's dollars are his keeper base; only players whose rights a team holds count.
+- **Accuracy** (`accuracy.html`): how right the odds were, in plain words and pictures, per projection source and
+  week, once Yahoo has scored a week: whether favourites won as often as the odds said (within luck or not, for
+  matchups and categories), a calibration chart (when the odds say 80%, did it happen 80% of the time?), how much
+  better than a coin flip each source's odds were (against what exactly right odds would reach) and in which
+  categories, how teams' weekly totals landed against their projections (against a bell curve), and which teams
+  have been luckier than the odds. A week with two lineup locks is graded on each half as predicted at its own lock.
 
 ## Keeper rules
 
@@ -49,13 +55,14 @@ picks and transactions by ids, the weeks and pairings with Yahoo's scores (categ
 week) the pairings' odds and each team's projected category totals, and of the live sims every pair of teams' odds
 (`h2h.csv`; yfbb's sim writes it since it was added there), and once a week's games are being played each team's
 starter stats so far and its projected week totals, makes and attempts included (`totals.csv`, summed from the live
-sim's player games), and of each locked week every starter's: projected at the lock, so far and projected now
-(`players_week.csv`, from the frozen and live sims' player games).
+sim's player games), and of each locked week every starter's: projected at the lock (with the projection's variance,
+for the accuracy page), so far and projected now (`players_week.csv`, from the frozen and live sims' player games).
 
 Each week has two sims. Live: what is known now; before the week's lineup lock (Monday; weeks 7 and 17 have a
 second, on their middle Monday) each team's best lineup, projected; after it the lineups that locked, the games played
 so far as played and only the rest projected, so once the week is over it's the result. Frozen: the odds at the lock,
-the lineups that locked and the projections of then. The odds page shows live, each bar marked with the shift since
+the lineups that locked and the projections of then; in weeks 7 and 17, once both locks have passed, each half as
+predicted at its own lock (yfbb's `week-NN-combined`). The odds page shows live, each bar marked with the shift since
 the lock and each team's lock line (per matchup and per category).
 
 ## Updating

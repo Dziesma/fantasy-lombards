@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fantasy Lombards: Accuracy</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --panel: #ffffff; --text: #1d1f21; --muted: #6b6f76;
+    --line: #e3e3df; --accent: #c2410c; --row-hover: #fafaf7;
+    /* chart series (validated pair) and status (always with a label) */
+    --cats: #eb6834; --games: #2a78d6; --ok: #0ca30c; --no: #d03b3b; --curve: #6b6f76;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141517; --panel: #1c1d20; --text: #e8e8e6; --muted: #9a9ea6;
+      --line: #2c2e33; --accent: #fb923c; --row-hover: #222327;
+      --cats: #d95926; --games: #3987e5; --curve: #9a9ea6;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 1100px; margin: 0 auto; padding: 28px 16px 60px; }
+  h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  h2 { font-size: 18px; margin: 34px 0 6px; }
+  nav { margin: 0 0 18px; display: flex; gap: 16px; font-size: 14px; flex-wrap: wrap; }
+  nav a { color: var(--muted); text-decoration: none; }
+  nav a.on { color: var(--accent); font-weight: 600; }
+  .sub, .meta { color: var(--muted); }
+  .sub { margin: 0 0 20px; max-width: 760px; }
+  .meta { font-size: 13px; margin: 0 0 12px; }
+  .lead { margin: 0 0 12px; max-width: 760px; }
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  select {
+    font: inherit; color: var(--text); background: var(--panel);
+    border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px; max-width: 100%;
+  }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+  .panel + .panel { margin-top: 10px; }
+  svg { display: block; width: 100%; height: auto; overflow: visible; }
+  svg text { fill: var(--muted); font: 12px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  svg text.strong { fill: var(--text); font-weight: 600; }
+  .axis { stroke: var(--line); stroke-width: 1; }
+  /* the trust meter */
+  .meter-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+  .meter-head b { font-weight: 600; }
+  .verdict { font-weight: 600; }
+  .verdict.ok { color: var(--text); }
+  .verdict .icon { display: inline-block; width: 1.3em; text-align: center; border-radius: 50%; margin-right: 6px;
+    color: #fff; font-size: 12px; line-height: 1.3em; }
+  .verdict.ok .icon { background: var(--ok); }
+  .verdict.no .icon { background: var(--no); }
+  /* bars in rows */
+  .rows { display: grid; grid-template-columns: minmax(70px, max-content) minmax(0, 1fr) minmax(0, 1fr); gap: 8px 18px; align-items: center; }
+  .rows.one { grid-template-columns: minmax(60px, max-content) minmax(0, 1fr); }
+  @media (max-width: 640px) {
+    .rows { grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr) minmax(0, 1fr); gap: 8px 10px; }
+    .rows.one { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
+    .rows > span { font-size: 13px; overflow-wrap: anywhere; }
+  }
+  .rows .h { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+  .bar { position: relative; height: 22px; }
+  .bar .track { position: absolute; inset: 9px 0; background: var(--line); border-radius: 2px; }
+  .bar .fill { position: absolute; top: 4px; height: 14px; border-radius: 4px; }
+  .bar .zero { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--muted); }
+  .bar .goal { position: absolute; top: 0; height: 22px; width: 2px; background: var(--text); border-radius: 1px; }
+  .bar .val { position: absolute; top: 1px; font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--muted); margin: 0 0 8px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+  .legend i.goal { width: 2px; height: 14px; border-radius: 1px; background: var(--text); vertical-align: -3px; }
+  .wrap { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; margin-top: 10px; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); background: var(--panel); }
+  th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  th.grp { text-align: center; }
+  td.first, th.first { border-left: 1px solid var(--line); }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: var(--row-hover); }
+  td.n { color: var(--muted); }
+  .empty { color: var(--muted); padding: 14px; background: var(--panel); border: 1px dashed var(--line); border-radius: 8px; }
+  #tip { position: fixed; z-index: 10; pointer-events: none; background: var(--panel); color: var(--text);
+    border: 1px solid var(--line); border-radius: 6px; padding: 6px 9px; font-size: 13px; max-width: 280px;
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.12); }
+  details { margin-top: 34px; }
+  summary { cursor: pointer; font-weight: 600; }
+  details p { color: var(--muted); font-size: 14px; max-width: 760px; }
+  footer { margin-top: 26px; color: var(--muted); font-size: 13px; }
+  a { color: var(--accent); }
+</style>
+<script data-goatcounter="https://fantasy-lombards.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<main>
+  <h1>Fantasy Lombards</h1>
+  <nav><a href="index.html">Week</a><a href="standings.html">Standings</a><a href="keepers.html">Keeper rights</a><a href="vaimanieki.html">Vaimanieki</a><a class="on" href="accuracy.html">Accuracy</a></nav>
+  <p class="sub">How right were the odds? Each week's odds, as they stood at the lineup lock, against what happened.
+    A single week is mostly luck; the picture sharpens as the weeks add up.</p>
+
+  <div class="controls">
+    <select id="week" aria-label="Week"></select>
+    <select id="source" aria-label="Projections"></select>
+  </div>
+  <p id="meta" class="meta"></p>
+  <div id="out"></div>
+
+  <details>
+    <summary>How it's worked out</summary>
+    <p><b>Favourites.</b> Each matchup's (or category's) favourite is the team the odds gave the better chance. Its
+      expected result is its chance of winning plus half its chance of a tie; it gets 1 for a win, ½ for a tie, 0 for
+      a loss. Luck alone moves the total a little either way; the green band is the range luck explains (two
+      standard deviations). Outside it, the odds were too sure (favourites lost more often than they said) or too
+      timid.</p>
+    <p><b>Better than a coin flip.</b> Every forecast is scored by the ranked probability score: how far its win, tie
+      and loss chances were from what happened (a tie counts as close to both a win and a loss). "Beats a coin flip by
+      30%" means its score was 30% better than calling every one 50:50. Perfect odds can't reach 100%: games are
+      random. The black tick is what the odds would reach if they were exactly right, so a bar short of its tick means
+      the odds claimed more than they delivered.</p>
+    <p><b>Team totals.</b> For every team, week and category: how far the actual total was from the projection, in
+      units of the projection's own uncertainty (from each player's game-to-game variation). If the projections were
+      right, these would follow the grey bell curve.</p>
+    <p><b>Luck.</b> Each team's matchup results (a win 1, a tie ½) minus what the odds expected of it, added up over
+      the weeks.</p>
+    <p>A week with two lineup locks (7, 17) is graded on each half as predicted at its own lock.</p>
+  </details>
+  <footer>Built from the league's data files. <a href="index.html">The week's odds</a>.</footer>
+</main>
+<div id="tip" hidden></div>
+<script>
+const D = /*__DATA__*/null;
+const G = D.graded;
+const SVGNS = "http://www.w3.org/2000/svg";
+const el = (tag, { dataset = {}, ...props } = {}, ...kids) => {
+  const e = Object.assign(document.createElement(tag), props);
+  Object.assign(e.dataset, dataset);
+  e.append(...kids);
+  return e;
+};
+const sv = (tag, attrs = {}, ...kids) => {
+  const e = document.createElementNS(SVGNS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  e.append(...kids);
+  return e;
+};
+const teamById = Object.fromEntries(D.teams.map(t => [t.id, t]));
+const wsel = document.getElementById("week"), ssel = document.getElementById("source");
+wsel.append(el("option", { value: "", textContent: "All weeks" }),
+  ...G.weeks.map(w => el("option", { value: w.week, textContent: `Week ${w.week}` })));
+ssel.append(...D.sources.map(s => el("option", { value: s.id, textContent: "Projections: " + s.label })));
+
+const sum = xs => xs.reduce((a, b) => a + b, 0);
+const mean = xs => xs.length ? sum(xs) / xs.length : NaN;
+const clamp = (x, lo, hi) => Math.min(hi, Math.max(lo, x));
+const pct = v => Number.isFinite(v) ? Math.round(v * 100) + "%" : "–";
+const one = v => (Math.round(v * 10) / 10).toLocaleString("en", { maximumFractionDigits: 1 });
+const signed = v => (v > 0.05 ? "+" : v < -0.05 ? "−" : "") + one(Math.abs(v));
+
+// tooltips: any element with a tip
+const tipBox = document.getElementById("tip");
+function tip(node, text) {
+  node.addEventListener("mouseenter", () => { tipBox.textContent = text; tipBox.hidden = false; });
+  node.addEventListener("mousemove", e => {
+    const x = Math.min(e.clientX + 14, innerWidth - tipBox.offsetWidth - 8);
+    tipBox.style.left = x + "px"; tipBox.style.top = (e.clientY + 14) + "px";
+  });
+  node.addEventListener("mouseleave", () => { tipBox.hidden = true; });
+  if (node.namespaceURI === SVGNS) node.append(sv("title", {}, text));
+  return node;
+}
+
+// the favourites: [expected, variance, got] rows → totals and z (luck in standard deviations)
+const favourites = rows => {
+  const e = sum(rows.map(r => r[0])), v = sum(rows.map(r => r[1])), g = sum(rows.map(r => r[2]));
+  return { n: rows.length, e, g, z: v > 0 ? (g - e) / Math.sqrt(v) : 0 };
+};
+// skill against a coin flip (whose score is 0.25), and what exactly right odds would reach
+const skill = rows => ({ got: 1 - mean(rows.map(r => r[0])) / 0.25, ideal: 1 - mean(rows.map(r => r[1])) / 0.25 });
+
+function meter(title, f, W) {
+  // z from −4 to 4: green within ±2 (luck), red beyond
+  const H = 66, x = z => 2 + (clamp(z, -4, 4) + 4) / 8 * (W - 4);
+  const sure = f.z < -2, timid = f.z > 2;
+  const svg = sv("svg", { viewBox: `0 0 ${W} ${H}`, role: "img",
+    "aria-label": `${title}: ${one(f.g)} of ${f.n} won, the odds expected ${one(f.e)}` },
+    sv("rect", { x: x(-4), y: 8, width: x(-2) - x(-4) - 1, height: 22, rx: 4, fill: "var(--no)", "fill-opacity": 0.16 }),
+    sv("rect", { x: x(-2) + 1, y: 8, width: x(2) - x(-2) - 2, height: 22, rx: 4, fill: "var(--ok)", "fill-opacity": 0.18 }),
+    sv("rect", { x: x(2) + 1, y: 8, width: x(4) - x(2) - 1, height: 22, rx: 4, fill: "var(--no)", "fill-opacity": 0.16 }),
+    sv("line", { x1: x(0), x2: x(0), y1: 8, y2: 30, stroke: "var(--muted)", "stroke-width": 1 }),
+    sv("text", { x: (x(-4) + x(-2)) / 2, y: 46, "text-anchor": "middle", class: "strong" }, "too sure"),
+    sv("text", { x: x(0), y: 46, "text-anchor": "middle", class: "strong" }, "normal luck"),
+    sv("text", { x: (x(2) + x(4)) / 2, y: 46, "text-anchor": "middle", class: "strong" }, "too timid"),
+    sv("text", { x: (x(-4) + x(-2)) / 2, y: 61, "text-anchor": "middle" }, "favourites won less"),
+    sv("text", { x: x(0), y: 61, "text-anchor": "middle" }, "as the odds said"),
+    sv("text", { x: (x(2) + x(4)) / 2, y: 61, "text-anchor": "middle" }, "favourites won more"));
+  const m = tip(sv("g", {},
+    sv("line", { x1: x(f.z), x2: x(f.z), y1: 3, y2: 35, stroke: "var(--text)", "stroke-width": 2 }),
+    sv("circle", { cx: x(f.z), cy: 19, r: 7, fill: "var(--text)", stroke: "var(--panel)", "stroke-width": 2 })),
+    `${one(f.g)} won of ${f.n}; the odds expected ${one(f.e)}`);
+  svg.append(m);
+  const word = sure ? "The odds were too sure: favourites won less often than they said, by more than luck explains." :
+    timid ? "The odds were too timid: favourites won more often than they said, by more than luck explains." :
+    "Within normal luck: the odds were about right.";
+  return el("div", { className: "panel" },
+    el("div", { className: "meter-head" },
+      el("span", {}, el("b", { textContent: title }), ` · favourites won ${one(f.g)} of ${f.n}; the odds expected ${one(f.e)}`)),
+    svg,
+    el("div", { className: `verdict ${sure || timid ? "no" : "ok"}` },
+      el("span", { className: "icon", textContent: sure || timid ? "!" : "✓", "aria-hidden": "true" }), word));
+}
+
+function calibration(M, C, W) {
+  const bins = [[0.5, 0.6], [0.6, 0.7], [0.7, 0.8], [0.8, 0.9], [0.9, 1.01]];
+  const series = [
+    { label: "Categories", color: "var(--cats)", rows: C.map(r => [r[7], r[9]]) },
+    { label: "Matchups", color: "var(--games)", rows: M.map(r => [r[6], r[8]]) },
+  ].map(s => ({ ...s, bins: bins.map(([lo, hi]) => {
+    const r = s.rows.filter(x => x[0] >= lo && x[0] < hi);
+    return { lo, hi, n: r.length, e: mean(r.map(x => x[0])), g: mean(r.map(x => x[1])) };
+  }) }));
+  const H = Math.round(clamp(W * 0.42, 240, 340)), L = 50, R = 20, T = 14, B = 46;
+  const x = p => L + (p - 0.5) / 0.5 * (W - L - R), y = p => T + (1 - p) * (H - T - B);
+  const svg = sv("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Calibration: how often favourites won, by their odds" });
+  // the bins, as faint alternating columns: each dot sits in its bin at the bin's average odds
+  bins.forEach(([lo, hi], i) => {
+    if (i % 2 === 0) svg.append(sv("rect", { x: x(lo), y: T, width: x(Math.min(hi, 1)) - x(lo), height: H - T - B,
+                                             fill: "var(--line)", "fill-opacity": 0.45 }));
+  });
+  for (const p of [0, 0.25, 0.5, 0.75, 1]) {
+    svg.append(sv("line", { x1: L, x2: W - R, y1: y(p), y2: y(p), class: "axis" }),
+      sv("text", { x: L - 8, y: y(p) + 4, "text-anchor": "end" }, pct(p)));
+  }
+  for (const p of [0.5, 0.6, 0.7, 0.8, 0.9, 1]) svg.append(sv("text", { x: x(p), y: H - B + 18, "text-anchor": "middle" }, pct(p)));
+  svg.append(sv("text", { x: (L + W - R) / 2, y: H - 6, "text-anchor": "middle" }, "the odds gave the favourite"),
+    sv("text", { x: 14, y: (T + H - B) / 2, transform: `rotate(-90 14 ${(T + H - B) / 2})`, "text-anchor": "middle" }, "the favourite won"),
+    sv("line", { x1: x(0.5), y1: y(0.5), x2: x(1), y2: y(1), stroke: "var(--curve)", "stroke-width": 1.5 }),
+    sv("text", { x: x(0.675), y: y(0.675) + 16, transform: `rotate(${Math.atan2(y(1) - y(0.5), x(1) - x(0.5)) * 180 / Math.PI} ${x(0.675)} ${y(0.675)})` }, "perfect odds"));
+  const most = Math.max(1, ...series.flatMap(s => s.bins.map(b => b.n)));
+  for (const s of series) {
+    for (const b of s.bins.filter(b => b.n)) {
+      svg.append(tip(sv("circle", { cx: x(b.e), cy: y(b.g), r: 4 + 9 * Math.sqrt(b.n / most), fill: s.color,
+        stroke: "var(--panel)", "stroke-width": 2 }),
+        `${s.label}, odds ${pct(b.lo)}–${pct(Math.min(b.hi, 1))}: ${b.n} favourites, expected to win ${pct(b.e)}, won ${pct(b.g)}`));
+    }
+  }
+  const table = el("div", { className: "wrap" }, el("table", {},
+    el("thead", {}, el("tr", {}, el("th", {}), ...series.map(s => el("th", { textContent: s.label, colSpan: 3, className: "grp first" }))),
+      el("tr", {}, el("th", { textContent: "Favourite's odds" }), ...series.flatMap(() =>
+        ["n", "Expected", "Won"].map((h, i) => el("th", { textContent: h, className: "num" + (i ? "" : " first") }))))),
+    el("tbody", {}, ...bins.map(([lo, hi], i) => el("tr", {}, el("td", { textContent: `${pct(lo)}–${pct(Math.min(hi, 1))}` }),
+      ...series.flatMap(s => [el("td", { className: "num n first", textContent: s.bins[i].n }),
+        el("td", { className: "num", textContent: pct(s.bins[i].e) }), el("td", { className: "num", textContent: pct(s.bins[i].g) })]))))));
+  return [el("div", { className: "panel" },
+    el("div", { className: "legend" }, ...series.map(s => el("span", {}, el("i", { style: `background: ${s.color}` }), s.label)),
+      el("span", { textContent: "dot size: how many" })), svg), table];
+}
+
+// a horizontal bar on a scale from lo to hi, zero marked; goal: a tick
+function bar(v, goal, color, lo, hi, text, tipText) {
+  const at = p => (clamp(p, lo, hi) - lo) / (hi - lo) * 100;
+  const z = at(0), end = at(v);
+  const b = el("div", { className: "bar" }, el("div", { className: "track" }),
+    el("div", { className: "fill", style: `left: ${Math.min(z, end)}%; width: ${Math.abs(end - z)}%; background: ${color}` }),
+    ...(lo < 0 ? [el("div", { className: "zero", style: `left: ${z}%`, dataset: { at: z } })] : []),
+    ...(Number.isFinite(goal) ? [el("div", { className: "goal", style: `left: calc(${at(goal)}% - 1px)`, dataset: { at: at(goal) } })] : []),
+    el("div", { className: "val", textContent: text, style: v >= 0 ? `left: calc(${Math.max(end, Number.isFinite(goal) ? at(goal) : 0)}% + 8px)` : `right: calc(${100 - end}% + 8px)` }));
+  return tip(b, tipText);
+}
+// the bars' ticks and zero lines on whole device pixels (a line between two pixels blurs into both, so ticks at
+// different places would look unequally thick); after layout, so they land where the page puts them
+function snap() {
+  const px = devicePixelRatio || 1;
+  for (const line of document.querySelectorAll(".bar .goal, .bar .zero")) {
+    line.style.width = "";
+    const box = line.parentElement.getBoundingClientRect();
+    const wide = Math.max(1, Math.round(line.offsetWidth * px)) / px;   // its CSS width, in whole device pixels
+    const page = Math.round((box.left + box.width * line.dataset.at / 100 - wide / 2) * px) / px;
+    line.style.width = `${wide}px`;
+    line.style.left = `${page - box.left}px`;
+  }
+}
+const beats = v => v >= 0 ? `beats a coin flip by ${pct(v)}` : `${pct(-v)} worse than a coin flip`;
+
+function bell(T, W) {
+  const H = Math.round(clamp(W * 0.36, 200, 280)), L = 16, R = 16, Tp = 10, B = 36, lo = -4, hi = 4, step = 0.5;
+  const x = z => L + (z - lo) / (hi - lo) * (W - L - R);
+  const counts = Array.from({ length: (hi - lo) / step }, () => 0);
+  for (const z of T) counts[clamp(Math.floor((z - lo) / step), 0, counts.length - 1)]++;
+  const density = counts.map(c => c / T.length / step);
+  const pdf = z => Math.exp(-z * z / 2) / Math.sqrt(2 * Math.PI);
+  const top = Math.max(0.45, ...density);
+  const y = d => Tp + (1 - d / top) * (H - Tp - B);
+  const svg = sv("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "How far team totals landed from their projections" },
+    sv("line", { x1: L, x2: W - R, y1: y(0), y2: y(0), class: "axis" }));
+  density.forEach((d, i) => {
+    const z0 = lo + i * step;
+    if (!counts[i]) return;
+    svg.append(tip(sv("rect", { x: x(z0) + 1, y: y(d), width: x(z0 + step) - x(z0) - 2, height: y(0) - y(d), rx: 3,
+      fill: "var(--cats)", "fill-opacity": 0.85 }),
+      `${counts[i]} team totals ${z0 <= lo ? "below " + (z0 + step) : z0 + step >= hi ? "above " + z0 : `between ${z0} and ${z0 + step}`} standard deviations from the projection`));
+  });
+  const pts = [];
+  for (let z = lo; z <= hi + 1e-9; z += 0.05) pts.push(`${x(z)},${y(pdf(z))}`);
+  svg.append(sv("polyline", { points: pts.join(" "), fill: "none", stroke: "var(--curve)", "stroke-width": 2 }));
+  for (const z of [-3, -2, -1, 0, 1, 2, 3]) svg.append(sv("text", { x: x(z), y: H - B + 18, "text-anchor": "middle" }, z ? (z > 0 ? "+" : "−") + Math.abs(z) : "0"));
+  svg.append(sv("text", { x: x(lo), y: H - 4 }, "← below the projection"), sv("text", { x: x(hi), y: H - 4, "text-anchor": "end" }, "above →"));
+  return svg;
+}
+
+let cat = "";
+function render() {
+  const week = wsel.value ? +wsel.value : null, src = D.sources.find(s => s.id === ssel.value);
+  const inWeek = rows => rows.filter(r => week === null || r[1] === week);
+  const all = { M: inWeek(G.matchups), C: inWeek(G.categories), T: inWeek(G.totals) };
+  const mine = rows => rows.filter(r => r[0] === src.id);
+  const M = mine(all.M), C = mine(all.C), T = mine(all.T);
+  const out = document.getElementById("out");
+  out.replaceChildren();
+  const weeks = G.weeks.filter(w => week === null || w.week === week);
+  document.getElementById("meta").textContent = weeks.length ?
+    `${weeks.length === 1 ? "Week" : "Weeks"} ${weeks.map(w => w.week).join(", ")}, ${src.label} projections` : "";
+  if (!M.length) {
+    out.append(el("div", { className: "empty", textContent: "Nothing to show yet: no week has been played and scored since the odds were recorded." }));
+    return;
+  }
+
+  const W = Math.max(280, out.clientWidth - 34);   // a panel's inside: 1:1 with the page's pixels
+  out.append(el("h2", { textContent: "Can you trust the odds?" }),
+    el("p", { className: "lead meta", textContent: "If the odds are right, favourites win about as often as the odds say, give or take luck. The dot shows where they ended up." }),
+    meter("Matchups", favourites(M.map(r => r.slice(6, 9))), W),
+    meter("Categories", favourites(C.map(r => r.slice(7, 10))), W));
+
+  out.append(el("h2", { textContent: "When the odds say 80%, does it happen 80% of the time?" }),
+    el("p", { className: "lead meta", textContent: "Favourites grouped by how sure the odds were (the shaded columns: 50–60%, 60–70%, …), each dot at its group's average odds. On the line: the odds were right. Below it: favourites won less often than the odds said." }),
+    ...calibration(M, C, W));
+
+  out.append(el("h2", { textContent: "Which projections are best?" }),
+    el("p", { className: "lead meta", textContent: "How much better than a coin flip each source's odds were. The black tick: what exactly right odds would reach, since games are random." }));
+  const rows = el("div", { className: "rows" }, el("span"), el("span", { className: "h", textContent: "Matchups" }), el("span", { className: "h", textContent: "Categories" }));
+  for (const s of D.sources) {
+    const m = skill(all.M.filter(r => r[0] === s.id).map(r => [r[4], r[5]])), c = skill(all.C.filter(r => r[0] === s.id).map(r => [r[5], r[6]]));
+    rows.append(el("span", { textContent: s.label, style: s.id === src.id ? "font-weight: 600" : "" }),
+      bar(m.got, m.ideal, "var(--games)", 0, 1, pct(m.got), `${s.label}, matchups: ${beats(m.got)}; exactly right odds would reach ${pct(m.ideal)}`),
+      bar(c.got, c.ideal, "var(--cats)", 0, 1, pct(c.got), `${s.label}, categories: ${beats(c.got)}; exactly right odds would reach ${pct(c.ideal)}`));
+  }
+  out.append(el("div", { className: "panel" },
+    el("div", { className: "legend" }, el("span", {}, el("i", { className: "goal" }), "exactly right odds")), rows));
+
+  out.append(el("h2", { textContent: "Where are the odds weakest?" }),
+    el("p", { className: "lead meta", textContent: `Each category's odds against a coin flip, ${src.label} projections. A bar left of the line: worse than a coin flip.` }));
+  const cats = el("div", { className: "rows one" });
+  for (const c of D.categories) {
+    const k = skill(C.filter(r => r[4] === c.id).map(r => [r[5], r[6]]));
+    cats.append(el("span", { textContent: c.label }),
+      bar(k.got, k.ideal, "var(--cats)", -0.5, 1, pct(k.got), `${c.label}: ${beats(k.got)}; exactly right odds would reach ${pct(k.ideal)}`));
+  }
+  out.append(el("div", { className: "panel" }, cats));
+
+  out.append(el("h2", { textContent: "Did teams score what was projected?" }));
+  const csel = el("select", { "aria-label": "Category" }, el("option", { value: "", textContent: "All categories" }),
+    ...D.categories.map(c => el("option", { value: c.id, textContent: c.label })));
+  csel.value = cat;
+  csel.addEventListener("change", () => { cat = csel.value; draw(); });
+  const z = T.filter(r => !cat || r[3] === cat).map(r => r[4]);
+  const shift = mean(z), spread = Math.sqrt(mean(z.map(v => (v - shift) ** 2))), inside = mean(z.map(v => Math.abs(v) < 1.6449));
+  const label = cat ? D.categories.find(c => c.id === cat).label : "all categories";
+  out.append(el("p", { className: "lead meta", textContent: "Every team's weekly total in each category, by how far it landed from its projection, in units of the projection's own uncertainty. If the projections were right, the bars would follow the grey curve." }),
+    el("div", { className: "controls" }, csel),
+    el("div", { className: "panel" },
+      el("p", { className: "lead", textContent: `${label[0].toUpperCase() + label.slice(1)}: teams ended up ` +
+        (Math.abs(shift) < 0.15 ? "about as projected on average" : `${shift < 0 ? "below" : "above"} their projections on average`) +
+        `, and results were ${spread > 1.1 ? `${pct(spread - 1)} more spread out than the projections allowed` : spread < 0.9 ? `${pct(1 - spread)} less spread out than the projections allowed` : "about as spread out as projected"}: ` +
+        `${pct(inside)} landed inside the range the projections gave a 90% chance (${z.length} team totals).` }),
+      bell(z, W)));
+
+  out.append(el("h2", { textContent: "Who's been lucky?" }),
+    el("p", { className: "lead meta", textContent: "Matchup results (a win 1, a tie ½) minus what the odds expected, added up. Right: won more than the odds said." }));
+  const luck = {};
+  for (const r of M) {
+    const [a, b, e1, g1] = [r[2], r[3], r[9], r[10]];
+    for (const [t, e, g] of [[a, e1, g1], [b, 1 - e1, 1 - g1]]) {
+      const l = luck[t] ??= { e: 0, g: 0, n: 0 };
+      l.e += e; l.g += g; l.n++;
+    }
+  }
+  const ranked = Object.entries(luck).map(([t, l]) => ({ t: +t, ...l, d: l.g - l.e })).sort((p, q) => q.d - p.d);
+  const span = 1.2 * Math.max(1, ...ranked.map(r => Math.abs(r.d)));   // room for the labels
+  const lucky = el("div", { className: "rows one" });
+  for (const r of ranked) {
+    lucky.append(el("span", { textContent: teamById[r.t].team }),
+      bar(r.d, NaN, r.d >= 0 ? "var(--cats)" : "var(--games)", -span, span, signed(r.d),
+        `${teamById[r.t].team}: won ${one(r.g)} of ${r.n} matchups; the odds expected ${one(r.e)}`));
+  }
+  out.append(el("div", { className: "panel" },
+    el("div", { className: "legend" }, el("span", {}, el("i", { style: "background: var(--cats)" }), "luckier than the odds"),
+      el("span", {}, el("i", { style: "background: var(--games)" }), "unluckier")), lucky));
+}
+const draw = () => { render(); snap(); };
+wsel.addEventListener("change", draw);
+ssel.addEventListener("change", draw);
+let width = innerWidth;
+addEventListener("resize", () => { if (innerWidth !== width) { width = innerWidth; draw(); } });
+draw();
+</script>
+</body>
+</html>

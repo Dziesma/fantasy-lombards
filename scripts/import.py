@@ -32,14 +32,15 @@ Writes, each file whole (don't edit them by hand):
                       team's starter stats in a live sim with pairings, summed from its player games; kind: week
                       (played and projected: the projected totals, with makes and attempts) or, once games are
                       played, played (the box scores so far)
-    players_week.csv  source, week, team_id, player_id, kind, games, fgm, ..., to: each starter's stats in a week
-                      whose lineups have locked (a frozen sim), summed from the sims' player games; kind: lock (the
-                      frozen sim's: projected at the lock), played (the live one's box scores so far) or week (the
-                      live one's: played and projected); a kind the player has no games in has no row
+    players_week.csv  source, week, team_id, player_id, kind, games, fgm, ..., to, tpm_var, ..., to_var, fg_var,
+                      ft_var: each starter's stats in a week whose lineups have locked (a frozen sim), summed from the
+                      sims' player games; kind: lock (the frozen sim's: projected at the lock, with the variances),
+                      played (the live one's box scores so far) or week (the live one's: played and projected); a kind
+                      the player has no games in has no row; the variances only for lock
 
 Each week has its live sim (what is known now: the games played so far actual, the rest projected; the result once
 it's over) and, once a lock has passed, the newest frozen one (week-NN, or week-NN-2 in a two-week week: what was
-expected at the lock). The locked lineups (those that locked, the best where none has yet)."""
+expected at the lock; once yfbb has it, week-NN-combined in its place: each half as predicted at its own lock). The locked lineups (those that locked, the best where none has yet)."""
 import argparse
 import csv
 import re
@@ -53,6 +54,7 @@ YFBB_CONFIG = Path('~/.config/yfbb/config.toml').expanduser()
 YFBB_DIR = '~/.local/share/yfbb'
 LINEUP = 'locked'
 STATS = ['fgm', 'fga', 'ftm', 'fta', 'tpm', 'pts', 'reb', 'ast', 'stl', 'blk', 'to']
+VARS = [f'{c}_var' for c in ('tpm', 'pts', 'reb', 'ast', 'stl', 'blk', 'to', 'fg', 'ft')]   # the frozen sims' variances
 COLUMNS = {
     'players': ['player_id', 'name', 'nba_team', 'positions', 'status'],
     'draft': ['pick', 'player_id', 'team_id', 'price'],
@@ -88,7 +90,8 @@ def main():
     _write(OUT / 'power.csv', list(next(r for r in power if r['week'] != 'season')), power)
     _write(OUT / 'h2h.csv', list(h2h[0]), h2h)
     _write(OUT / 'totals.csv', ['source', 'week', 'team_id', 'kind', 'games', *STATS], totals)
-    _write(OUT / 'players_week.csv', ['source', 'week', 'team_id', 'player_id', 'kind', 'games', *STATS], starters)
+    _write(OUT / 'players_week.csv', ['source', 'week', 'team_id', 'player_id', 'kind', 'games', *STATS, *VARS],
+           starters)
     frozen = {r['week'] for r in tables['sims'] if r['version'] != 'live'}
     print(f'{len(players)} players, {len(yahoo["draft"])} picks, {len(yahoo["transactions"])} transactions; odds of '
           f'{len({r["week"] for r in tables["sims"]}) - 1} weeks ({len(frozen)} also frozen) by '
@@ -114,7 +117,7 @@ def scored(standings):
 
 def sims(root, weeks_scored):
     """(sims, odds, power, h2h, totals, starters) rows of every source's sims: each week's live one and its newest
-    frozen one (a lock passed); and the season's power ranking. h2h: the live ones' only; totals: the live ones' with
+    frozen one (a lock passed; a two-lock week's combined one once yfbb has it); and the season's power ranking. h2h: the live ones' only; totals: the live ones' with
     pairings; starters: the weeks' with a frozen one. A live sim's state is finished if its week is one of the
     weeks_scored, else yfbb's, but locked for yfbb's finished (Yahoo hasn't scored it yet)."""
     live, frozen = root / 'sim' / 'live', root / 'sim' / 'frozen'
@@ -126,6 +129,9 @@ def sims(root, weeks_scored):
     for source in sources:
         for week in weeks:
             locks = sorted(d.name for d in frozen.glob(f'week-{week:02d}*') if (d / source / LINEUP).is_dir())
+            if f'week-{week:02d}-combined' in locks:
+                locks.remove(f'week-{week:02d}-combined')
+                locks.append(f'week-{week:02d}-combined')
             folders = {'live': live / f'week-{week:02d}' / source / LINEUP}
             if locks:
                 folders[locks[-1]] = frozen / locks[-1] / source / LINEUP
@@ -164,18 +170,19 @@ def _totals(source, week, games):
 
 
 def _starters(source, week, frozen, live):
-    """A locked week's players_week rows: each starter's player games summed, the frozen sim's (lock) and the live
-    one's, those played and all (week)."""
+    """A locked week's players_week rows: each starter's player games summed, the frozen sim's (lock, with the
+    variances) and the live one's, those played and all (week)."""
     sums = {}
     games = [(g, ('lock',)) for g in frozen] + [(g, ('played', 'week') if g['played'] == '1' else ('week',)) for g in live]
     for g, kinds in games:
         for kind in kinds:
-            t = sums.setdefault((int(g['team_id']), int(g['player_id']), kind), {'games': 0} | dict.fromkeys(STATS, 0.0))
+            keys = STATS + VARS if kind == 'lock' else STATS
+            t = sums.setdefault((int(g['team_id']), int(g['player_id']), kind), {'games': 0} | dict.fromkeys(keys, 0.0))
             t['games'] += 1
-            for k in STATS:
+            for k in keys:
                 t[k] += float(g[k])
-    return [{'source': source, 'week': week, 'team_id': team, 'player_id': player, 'kind': kind, 'games': t['games']} |
-            {k: f'{t[k]:.4f}'.rstrip('0').rstrip('.') for k in STATS} for (team, player, kind), t in sorted(sums.items())]
+    return [{'source': source, 'week': week, 'team_id': team, 'player_id': player, 'kind': kind, 'games': t.pop('games')} |
+            {k: f'{v:.4f}'.rstrip('0').rstrip('.') for k, v in t.items()} for (team, player, kind), t in sorted(sums.items())]
 
 
 def _sim(source, week, version, folder):

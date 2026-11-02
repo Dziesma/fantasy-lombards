@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """The site from the data files (Python 3, stdlib only) → _site/: index.html (the week: matchup odds), standings.html,
-keepers.html (keeper rights), vaimanieki.html (injured players' dollars), rights.csv; odds.html sends old links to
-index.html. Not
+keepers.html (keeper rights), vaimanieki.html (injured players' dollars), accuracy.html (how the odds frozen at the
+locks fared), rights.csv; odds.html sends old links to index.html. Not
 committed: GitHub Actions builds and deploys it on every push to main.
 
     data/league/            the league's own facts, kept by hand
@@ -18,6 +18,19 @@ season, and so on. Next season's budget: $200 ± draft dollars traded, at most $
 
 Vaimanieki: the players whose rights a team holds and whom Yahoo flags injured (INJURED) now; a player's dollars are
 his keeper base.
+
+Accuracy: every finished week (Yahoo has scored it) with a frozen sim that has no result in it (the lock's; in a
+two-lock week the combined one, not the second lock's), graded against the result, per source:
+  matchups      the frozen odds (win, tie, loss) against Yahoo's result: the ranked probability score (RPS: the
+                squared distance between the forecast's and the result's cumulative distributions over loss < tie <
+                win, ÷ 2, so 0 to 1), against a coin flip's (50:50, no tie: 0.25 whatever happens) and against the
+                RPS expected if the odds were the truth (Σ over the cuts of P(1 − P), ÷ 2); the favourite's
+                expected points (P(win) + P(tie)/2, a win 1, a tie ½) against its points; each team's
+  categories    each pairing's nine categories the same way, against the live sim's result (box scores; a pairing
+                whose count isn't Yahoo's score is left out, with a warning)
+  team totals   each team's week total per category: z, its distance from the frozen sim's mean in standard
+                deviations (the starters' summed; FG%, FT%: Σ makes / Σ attempts, Σ var / (Σ attempts)²)
+The page sums these by source and week, in plain words and pictures.
 
 Any inconsistency in the data stops the build with an error (nothing is written).
 
@@ -43,6 +56,7 @@ CATEGORIES = [   # id (as in the sims), label, lower wins
     ('fg', 'FG%', False), ('ft', 'FT%', False), ('tpm', '3PM', False), ('pts', 'PTS', False), ('reb', 'REB', False),
     ('ast', 'AST', False), ('stl', 'ST', False), ('blk', 'BLK', False), ('to', 'TO', True)]
 STATS = ['fgm', 'fga', 'ftm', 'fta', 'tpm', 'pts', 'reb', 'ast', 'stl', 'blk', 'to']   # totals.csv's
+VARS = [f'{c}_var' for c in ('tpm', 'pts', 'reb', 'ast', 'stl', 'blk', 'to', 'fg', 'ft')]   # players_week.csv's (lock)
 SOURCES = {'yahoo': 'Yahoo (Rotowire)', 'blend': 'Average (Yahoo + ESPN)', 'espn': 'ESPN'}   # the first: the default
 INJURED = {'O'}   # Yahoo's injury flags that count as injured on the Vaimanieki page
 MIN_INJURED = 1   # injured players listed there: worth at least this many dollars
@@ -69,6 +83,7 @@ def main():
     odds = sims(teams, yahoo, pairs)
     starters, names = starter_weeks(teams, yahoo, odds)
     hurt = injuries(teams, rows, yahoo)
+    graded = accuracy(teams, yahoo, odds)
 
     shutil.rmtree(SITE, ignore_errors=True)
     SITE.mkdir()
@@ -79,6 +94,13 @@ def main():
     page('keepers.html', 'keepers.html', keepers)
     page('vaimanieki.html', 'vaimanieki.html', hurt)
     page('redirect.html', 'odds.html', {})
+    page('accuracy.html', 'accuracy.html', {
+        'season': season,
+        'teams': [{'id': int(i), 'team': t['name'], 'manager': t['manager']} for i, t in teams.items()],
+        'categories': [{'id': c, 'label': label} for c, label, _ in CATEGORIES],
+        'sources': [{'id': s, 'label': SOURCES.get(s, s)} for s in odds],
+        'graded': graded,
+    })
     page('standings.html', 'standings.html', {
         'teams': [{'id': int(i), 'team': t['name'], 'manager': t['manager']} for i, t in teams.items()],
         'standings': standings(yahoo['standings']),
@@ -326,6 +348,93 @@ def sims(teams, yahoo, pairs):
                 if s and both['frozen'] and len(s['matchups']) != len(both['live']['matchups']):
                     die(f'data/yahoo/odds.csv: {source} week {week}: live and frozen have different pairings')
     return dict(sorted(out.items(), key=lambda kv: list(SOURCES).index(kv[0]) if kv[0] in SOURCES else len(SOURCES)))
+
+
+def accuracy(teams, yahoo, odds):
+    """{weeks, matchups, categories, totals}: every graded event (see the docstring's Accuracy), the sums the page
+    makes. weeks: [{week, versions: {source: frozen version}}]; matchups: [source, week, team1, team2, rps, rps
+    expected if true, favourite's expected points, its variance, its points, team1's expected points, its points];
+    categories: [source, week, team1, team2, category, rps, rps expected if true, favourite's expected points,
+    variance, points]; totals: [source, week, team, category, z]. A coin flip's RPS is 0.25."""
+    score = {(int(r['week']), int(r['team1']), int(r['team2'])): (int(r['score1']), int(r['score2']))
+             for r in yahoo['matchups'] if r['team1'] and r['score1'] != ''}
+    if yahoo['players_week'] and VARS[0] not in yahoo['players_week'][0]:
+        die('data/yahoo/players_week.csv has no variances; run scripts/import.py')
+    lock = {}
+    for r in yahoo['players_week']:
+        if r['kind'] == 'lock':
+            t = lock.setdefault((r['source'], int(r['week']), int(r['team_id'])), dict.fromkeys(STATS + VARS, 0.0))
+            for k in t:
+                t[k] += float(r[k])
+    weeks, matchups, categories, totals = {}, [], [], []
+    for source, ws in odds.items():
+        for week, both in ws.items():
+            live, fr = both['live'], both['frozen']
+            if week == 'season' or live['state'] != 'finished' or not fr or fr['version'].endswith('-2'):
+                continue
+            w = int(week)
+            weeks.setdefault(w, {})[source] = fr['version']
+            result = {(m['team1'], m['team2']): m['categories'] for m in live['matchups']}
+            for m in fr['matchups']:
+                a, b = m['team1'], m['team2']
+                won = {c: max(range(3), key=lambda i: o[i]) for c, o in result[(a, b)].items()}   # 0 a, 1 tie, 2 b
+                s1, s2 = score[(w, a, b)]
+                if (sum(i == 0 for i in won.values()), sum(i == 2 for i in won.values())) != (s1, s2):
+                    warn(f'accuracy: {source} week {w} {a}-{b} left out: the box scores win categories '
+                         f'{sum(i == 0 for i in won.values())}-{sum(i == 2 for i in won.values())}, Yahoo scored '
+                         f'{s1}-{s2} (a stat correction?)')
+                    continue
+                p = [m['win1'], m['tie'], m['win2']]
+                outcome = 0 if s1 > s2 else 1 if s1 == s2 else 2
+                matchups.append([source, w, a, b, rps(p, outcome), expected_rps(p), *favourite(p, outcome),
+                                 m['win1'] + m['tie'] / 2, 1 - outcome / 2])
+                for c, o in m['categories'].items():
+                    categories.append([source, w, a, b, c, rps(o, won[c]), expected_rps(o), *favourite(o, won[c])])
+            for team, t in (live.get('totals') or {}).items():
+                if (source, w, team) not in lock:
+                    continue
+                f, actual = lock[(source, w, team)], t['played']
+                for c, _, _ in CATEGORIES:
+                    if c in ('fg', 'ft'):
+                        att = f[f'{c}a']
+                        mean, var = (f[f'{c}m'] / att, f[f'{c}_var'] / att ** 2) if att else (0, 0)
+                        x = actual[f'{c}m'] / actual[f'{c}a'] if actual[f'{c}a'] else 0
+                    else:
+                        mean, var, x = f[c], f[f'{c}_var'], actual[c]
+                    if var > 0:
+                        totals.append([source, w, team, c, round((x - mean) / math.sqrt(var), 3)])
+    return {'weeks': [{'week': w, 'versions': v} for w, v in sorted(weeks.items())],
+            'matchups': [[round(v, 5) if isinstance(v, float) else v for v in r] for r in matchups],
+            'categories': [[round(v, 5) if isinstance(v, float) else v for v in r] for r in categories],
+            'totals': totals}
+
+
+def rps(p, outcome):
+    """The ranked probability score of forecast p (probabilities of ordered outcomes) when outcome (an index)
+    happened: Σ over the cuts of (forecast's cumulative − result's)², ÷ (outcomes − 1), so 0 (sure and right) to 1."""
+    total, cum = 0.0, 0.0
+    for i, q in enumerate(p[:-1]):
+        cum += q
+        total += (cum - (i >= outcome)) ** 2
+    return total / (len(p) - 1)
+
+
+def expected_rps(p):
+    """The RPS forecast p expects if it's the truth: Σ over the cuts of P(1 − P), ÷ (outcomes − 1)."""
+    total, cum = 0.0, 0.0
+    for q in p[:-1]:
+        cum += q
+        total += cum * (1 - cum)
+    return total / (len(p) - 1)
+
+
+def favourite(p, outcome):
+    """(expected points, their variance, points) of the favourite (the likelier winner; team1 if even) of forecast
+    p = (win1, tie, win2) when outcome (0 team1 won, 1 tie, 2 team2) happened: a win 1, a tie ½, a loss 0."""
+    win, tie, loss = p if p[0] >= p[2] else p[::-1]
+    expected = win + tie / 2
+    got = 0.5 if outcome == 1 else float((outcome == 0) == (p[0] >= p[2]))
+    return expected, win + tie / 4 - expected ** 2, got
 
 
 def starter_weeks(teams, yahoo, odds):
