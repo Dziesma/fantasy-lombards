@@ -82,9 +82,6 @@
   tbody tr:hover { background: var(--row-hover); }
   td.n { color: var(--muted); }
   .empty { color: var(--muted); padding: 14px; background: var(--panel); border: 1px dashed var(--line); border-radius: 8px; }
-  #tip { position: fixed; z-index: 10; pointer-events: none; background: var(--panel); color: var(--text);
-    border: 1px solid var(--line); border-radius: 6px; padding: 6px 9px; font-size: 13px; max-width: 280px;
-    box-shadow: 0 4px 14px rgb(0 0 0 / 0.12); }
   details { margin-top: 34px; }
   summary { cursor: pointer; font-weight: 600; }
   details p { color: var(--muted); font-size: 14px; max-width: 760px; }
@@ -129,7 +126,6 @@
   </details>
   <footer>Built from the league's data files. <a href="index.html">The week's odds</a>.</footer>
 </main>
-<div id="tip" hidden></div>
 <script>
 const D = /*__DATA__*/null;
 const G = D.graded;
@@ -159,16 +155,10 @@ const pct = v => Number.isFinite(v) ? Math.round(v * 100) + "%" : "–";
 const one = v => (Math.round(v * 10) / 10).toLocaleString("en", { maximumFractionDigits: 1 });
 const signed = v => (v > 0.05 ? "+" : v < -0.05 ? "−" : "") + one(Math.abs(v));
 
-// tooltips: any element with a tip
-const tipBox = document.getElementById("tip");
+// tooltips: the browser's own, as on the week page (an SVG mark's <title>, an HTML element's title)
 function tip(node, text) {
-  node.addEventListener("mouseenter", () => { tipBox.textContent = text; tipBox.hidden = false; });
-  node.addEventListener("mousemove", e => {
-    const x = Math.min(e.clientX + 14, innerWidth - tipBox.offsetWidth - 8);
-    tipBox.style.left = x + "px"; tipBox.style.top = (e.clientY + 14) + "px";
-  });
-  node.addEventListener("mouseleave", () => { tipBox.hidden = true; });
   if (node.namespaceURI === SVGNS) node.append(sv("title", {}, text));
+  else node.title = text;
   return node;
 }
 
