@@ -7,7 +7,7 @@ player_id,name,nba_team,positions,status
 4614,DeMar DeRozan,DEN,"SF,PF",
 4622,Jrue Holiday,POR,"PG,SG",
 4725,Paul George,BOS,"SF,PF",
-4840,Kyrie Irving,DAL,PG,Q
+4840,Kyrie Irving,DAL,"PG,SG",Q
 4886,Jonas Valančiūnas,DEN,C,NA
 4892,Klay Thompson,MIA,"SG,SF",
 4896,Kawhi Leonard,TOR,"SG,SF,PF",O
@@ -45,7 +45,7 @@ player_id,name,nba_team,positions,status
 5640,Jakob Poeltl,TOR,C,O
 5642,Domantas Sabonis,SAC,"PF,C",
 5658,Pascal Siakam,IND,"PF,C",
-5660,Dejounte Murray,NOP,PG,
+5660,Dejounte Murray,NOP,"PG,SG",
 5663,Ivica Zubac,IND,C,O
 5727,Fred VanVleet,HOU,PG,
 5747,Derrick Jones Jr.,LAC,"SF,PF",Q
@@ -226,7 +226,7 @@ player_id,name,nba_team,positions,status
 10496,Maxime Raynaud,SAC,C,O
 10565,Bez Mbeng,MIA,"PG,SG",NA
 10570,Allen Graves,TOR,PF,
-10571,Yaxel Lendeborg,GSW,PF,
+10571,Yaxel Lendeborg,GSW,"SF,PF",
 10572,Morez Johnson Jr.,DAL,PF,
 10573,Bennett Stirtz,OKC,PG,
 10574,Kingston Flemings,ATL,PG,O
