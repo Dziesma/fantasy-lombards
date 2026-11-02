@@ -18,7 +18,8 @@ Writes, each file whole (don't edit them by hand):
     fetched.csv       table, fetched: when each of the tables above was last fetched from Yahoo (UTC)
     sims.csv          source, week, version, as_of, projections, state, played, projected: the sims each week's
                       odds come from; version: live, or the lock it's frozen at; state (live): open (before the
-                      lock), locked (its games being played), finished (the result); played, projected: its
+                      lock), locked (its games being played), finished (Yahoo has scored it: every team's w + l + t in
+                      standings counts it); played, projected: its
                       starter games so far (empty when the sim doesn't say)
     odds.csv          source, week, version, team1, team2, win1, tie, win2, cats1, cats2, games1, games2,
                       played1, played2, <cat>_win1, <cat>_tie, <cat>_win2: each pairing; games: starter games (a
@@ -78,7 +79,7 @@ def main():
         _die(f'curated players has no {sorted(missing, key=int)}, who are drafted or in a transaction')
     tables = {'players': players} | {name: yahoo[name] for name in ('draft', 'transactions', 'matchups', 'standings')}
     tables['fetched'] = fetched(current, list(tables))
-    tables['sims'], odds, power, h2h, totals, starters = sims(root)
+    tables['sims'], odds, power, h2h, totals, starters = sims(root, scored(yahoo['standings']))
 
     OUT.mkdir(parents=True, exist_ok=True)
     for name, rows in tables.items():
@@ -106,10 +107,16 @@ def fetched(current, names):
     return [{'table': n, 'fetched': found[n]} for n in names]
 
 
-def sims(root):
+def scored(standings):
+    """How many weeks Yahoo has scored: the fewest matchups (w + l + t) any team has in its standings."""
+    return min(int(r['w']) + int(r['l']) + int(r['t']) for r in standings)
+
+
+def sims(root, weeks_scored):
     """(sims, odds, power, h2h, totals, starters) rows of every source's sims: each week's live one and its newest
     frozen one (a lock passed); and the season's power ranking. h2h: the live ones' only; totals: the live ones' with
-    pairings; starters: the weeks' with a frozen one."""
+    pairings; starters: the weeks' with a frozen one. A live sim's state is finished if its week is one of the
+    weeks_scored, else yfbb's, but locked for yfbb's finished (Yahoo hasn't scored it yet)."""
     live, frozen = root / 'sim' / 'live', root / 'sim' / 'frozen'
     if not (live / 'season').is_dir():
         _die(f'no {live / "season"}; run `yfbb sim`')
@@ -123,7 +130,10 @@ def sims(root):
             if locks:
                 folders[locks[-1]] = frozen / locks[-1] / source / LINEUP
             for version, folder in folders.items():
-                rows.append(_sim(source, week, version, folder))
+                rows.append(row := _sim(source, week, version, folder))
+                if version == 'live':
+                    row['state'] = ('finished' if week <= weeks_scored else
+                                    'locked' if row['state'] == 'finished' else row['state'])
                 odds += [{'source': source, 'version': version} | r for r in _read(folder / 'odds.csv')]
                 power += [{'source': source, 'week': week, 'version': version} | r
                           for r in _read(folder / 'power.csv')]

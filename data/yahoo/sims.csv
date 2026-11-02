@@ -1,7 +1,7 @@
 source,week,version,as_of,projections,state,played,projected
 blend,1,live,2026-11-02T10:31:57Z,"yahoo 2026-11-02T10:27:23Z, espn 2026-11-02T10:31:42Z, yahoo-week 2026-11-02T10:29:33Z",finished,429,0
 blend,1,week-01,2026-10-20T19:00:00Z,"yahoo 2026-10-20T17:45:38Z, espn 2026-10-20T17:47:47Z, yahoo-week 2026-10-20T18:59:59Z",locked,0,459
-blend,2,live,2026-11-02T10:31:57Z,"yahoo 2026-11-02T10:27:23Z, espn 2026-11-02T10:31:42Z, yahoo-week 2026-11-02T10:29:33Z",locked,473,0
+blend,2,live,2026-11-02T10:31:57Z,"yahoo 2026-11-02T10:27:23Z, espn 2026-11-02T10:31:42Z, yahoo-week 2026-11-02T10:29:33Z",finished,473,0
 blend,2,week-02,2026-10-26T23:00:00Z,"yahoo 2026-10-26T18:09:08Z, espn 2026-10-26T18:13:26Z, yahoo-week 2026-10-26T18:11:16Z",locked,0,514
 blend,3,live,2026-11-02T10:31:57Z,"yahoo 2026-11-02T10:27:23Z, espn 2026-11-02T10:31:42Z, yahoo-week 2026-11-02T10:29:33Z",open,,
 blend,4,live,2026-11-02T10:31:57Z,"yahoo 2026-11-02T10:27:23Z, espn 2026-11-02T10:31:42Z, yahoo-week 2026-11-02T10:29:33Z",open,,
@@ -24,7 +24,7 @@ blend,20,live,2026-11-02T10:31:57Z,"yahoo 2026-11-02T10:27:23Z, espn 2026-11-02T
 blend,season,live,2026-11-02T10:31:57Z,"yahoo 2026-11-02T10:27:23Z, espn 2026-11-02T10:31:42Z, yahoo-week 2026-11-02T10:29:33Z",,,
 espn,1,live,2026-11-02T10:31:57Z,"yahoo 2026-11-02T10:27:23Z, espn 2026-11-02T10:31:42Z, yahoo-week 2026-11-02T10:29:33Z",finished,429,0
 espn,1,week-01,2026-10-20T19:00:00Z,"yahoo 2026-10-20T17:45:38Z, espn 2026-10-20T17:47:47Z, yahoo-week 2026-10-20T18:59:59Z",locked,0,459
-espn,2,live,2026-11-02T10:31:57Z,"yahoo 2026-11-02T10:27:23Z, espn 2026-11-02T10:31:42Z, yahoo-week 2026-11-02T10:29:33Z",locked,473,0
+espn,2,live,2026-11-02T10:31:57Z,"yahoo 2026-11-02T10:27:23Z, espn 2026-11-02T10:31:42Z, yahoo-week 2026-11-02T10:29:33Z",finished,473,0
 espn,2,week-02,2026-10-26T23:00:00Z,"yahoo 2026-10-26T18:09:08Z, espn 2026-10-26T18:13:26Z, yahoo-week 2026-10-26T18:11:16Z",locked,0,514
 espn,3,live,2026-11-02T10:31:57Z,"yahoo 2026-11-02T10:27:23Z, espn 2026-11-02T10:31:42Z, yahoo-week 2026-11-02T10:29:33Z",open,,
 espn,4,live,2026-11-02T10:31:57Z,"yahoo 2026-11-02T10:27:23Z, espn 2026-11-02T10:31:42Z, yahoo-week 2026-11-02T10:29:33Z",open,,
@@ -47,7 +47,7 @@ espn,20,live,2026-11-02T10:31:57Z,"yahoo 2026-11-02T10:27:23Z, espn 2026-11-02T1
 espn,season,live,2026-11-02T10:31:57Z,"yahoo 2026-11-02T10:27:23Z, espn 2026-11-02T10:31:42Z, yahoo-week 2026-11-02T10:29:33Z",,,
 yahoo,1,live,2026-11-02T10:31:57Z,"yahoo 2026-11-02T10:27:23Z, espn 2026-11-02T10:31:42Z, yahoo-week 2026-11-02T10:29:33Z",finished,429,0
 yahoo,1,week-01,2026-10-20T19:00:00Z,"yahoo 2026-10-20T17:45:38Z, espn 2026-10-20T17:47:47Z, yahoo-week 2026-10-20T18:59:59Z",locked,0,459
-yahoo,2,live,2026-11-02T10:31:57Z,"yahoo 2026-11-02T10:27:23Z, espn 2026-11-02T10:31:42Z, yahoo-week 2026-11-02T10:29:33Z",locked,473,0
+yahoo,2,live,2026-11-02T10:31:57Z,"yahoo 2026-11-02T10:27:23Z, espn 2026-11-02T10:31:42Z, yahoo-week 2026-11-02T10:29:33Z",finished,473,0
 yahoo,2,week-02,2026-10-26T23:00:00Z,"yahoo 2026-10-26T18:09:08Z, espn 2026-10-26T18:13:26Z, yahoo-week 2026-10-26T18:11:16Z",locked,0,514
 yahoo,3,live,2026-11-02T10:31:57Z,"yahoo 2026-11-02T10:27:23Z, espn 2026-11-02T10:31:42Z, yahoo-week 2026-11-02T10:29:33Z",open,,
 yahoo,4,live,2026-11-02T10:31:57Z,"yahoo 2026-11-02T10:27:23Z, espn 2026-11-02T10:31:42Z, yahoo-week 2026-11-02T10:29:33Z",open,,
