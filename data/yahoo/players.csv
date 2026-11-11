@@ -19,7 +19,7 @@ player_id,name,nba_team,positions,status
 5012,Damian Lillard,POR,PG,
 5069,Draymond Green,GSW,"PF,C",
 5161,CJ McCollum,ATL,"PG,SG",
-5185,Giannis Antetokounmpo,MIA,"PF,C",P
+5185,Giannis Antetokounmpo,MIA,"PF,C",
 5187,Dennis Schröder,CHA,"PG,SG",O
 5197,Rudy Gobert,MIN,C,
 5292,Andrew Wiggins,MIA,"SG,SF,PF",
@@ -44,7 +44,7 @@ player_id,name,nba_team,positions,status
 5636,Kris Dunn,LAC,"PG,SG",
 5638,Jamal Murray,DEN,PG,
 5640,Jakob Poeltl,TOR,C,
-5642,Domantas Sabonis,SAC,"PF,C",Q
+5642,Domantas Sabonis,SAC,"PF,C",
 5658,Pascal Siakam,IND,"PF,C",
 5660,Dejounte Murray,NOP,"PG,SG",
 5663,Ivica Zubac,IND,C,
@@ -54,7 +54,7 @@ player_id,name,nba_team,positions,status
 5754,Alex Caruso,OKC,"SG,SF",
 5765,Jayson Tatum,BOS,"SF,PF",
 5767,De'Aaron Fox,SAS,PG,
-5769,Lauri Markkanen,UTA,"SF,PF",Q
+5769,Lauri Markkanen,UTA,"SF,PF",O
 5824,Malik Monk,SAC,"PG,SG",
 5826,Donovan Mitchell,CLE,"PG,SG",
 5827,Bam Adebayo,MIA,"PF,C",
@@ -63,7 +63,7 @@ player_id,name,nba_team,positions,status
 5836,OG Anunoby,NYK,"SF,PF",
 5840,Kyle Kuzma,MIL,"SF,PF",
 5842,Derrick White,BOS,"PG,SG",
-5843,Josh Hart,NYK,"SG,SF",Q
+5843,Josh Hart,NYK,"SG,SF",O
 5856,Isaiah Hartenstein,OKC,C,
 5858,Dillon Brooks,PHX,"SF,PF",
 5958,Deandre Ayton,WAS,C,
@@ -85,7 +85,7 @@ player_id,name,nba_team,positions,status
 6047,Mitchell Robinson,BOS,C,
 6057,De'Anthony Melton,GSW,"PG,SG",
 6073,Duncan Robinson,DET,"SG,SF",
-6163,Zion Williamson,NOP,"PF,C",O
+6163,Zion Williamson,NOP,"PF,C",
 6164,Ja Morant,POR,PG,O
 6165,RJ Barrett,TOR,"SG,SF,PF",
 6166,De'Andre Hunter,SAC,"SF,PF",
@@ -95,7 +95,7 @@ player_id,name,nba_team,positions,status
 6171,Rui Hachimura,LAC,"SF,PF",
 6173,Cameron Johnson,DEN,"SF,PF",
 6174,P.J. Washington,DAL,"PF,C",
-6175,Tyler Herro,MIL,"PG,SG",Q
+6175,Tyler Herro,MIL,"PG,SG",O
 6205,Nickeil Alexander-Walker,ATL,"PG,SG",
 6208,Matisse Thybulle,LAL,"SG,SF",
 6212,Ty Jerome,MEM,"PG,SG",
@@ -113,14 +113,14 @@ player_id,name,nba_team,positions,status
 6400,Obi Toppin,IND,"SF,PF",
 6401,Deni Avdija,POR,"SG,SF,PF",
 6402,Jalen Smith,CHI,"PF,C",
-6403,Devin Vassell,SAS,"SG,SF",O
+6403,Devin Vassell,SAS,"SG,SF",Q
 6404,Tyrese Haliburton,IND,"PG,SG",O
 6406,Aaron Nesmith,IND,"SG,SF",
-6408,Isaiah Stewart,MEM,"PF,C",O
+6408,Isaiah Stewart,MEM,"PF,C",Q
 6411,Saddiq Bey,NOP,"SF,PF",
-6412,Precious Achiuwa,SAC,"PF,C",
+6412,Precious Achiuwa,SAC,"PF,C",O
 6413,Tyrese Maxey,PHI,PG,
-6417,Immanuel Quickley,TOR,"PG,SG",O
+6417,Immanuel Quickley,TOR,"PG,SG",Q
 6418,Payton Pritchard,BOS,PG,
 6420,Jaden McDaniels,MIN,SF,
 6422,Desmond Bane,ORL,"SG,SF",
@@ -139,10 +139,10 @@ player_id,name,nba_team,positions,status
 6552,Ziaire Williams,LAL,"SG,SF",
 6556,Moses Moody,GSW,"SG,SF,PF",O
 6558,Alperen Şengün,HOU,"PF,C",
-6559,Trey Murphy III,NOP,"SG,SF",O
+6559,Trey Murphy III,NOP,"SG,SF",P
 6562,Jalen Johnson,ATL,"SF,PF",
 6564,Isaiah Jackson,LAC,C,
-6567,Quentin Grimes,LAL,"SG,SF",O
+6567,Quentin Grimes,LAL,"SG,SF",Q
 6568,Bones Hyland,MIN,"PG,SG",
 6571,Day'Ron Sharpe,BKN,C,
 6572,Santi Aldama,DAL,PF,
@@ -152,13 +152,13 @@ player_id,name,nba_team,positions,status
 6581,Neemias Queta,BOS,C,
 6596,Sandro Mamukelashvili,LAL,"PF,C",
 6597,Aaron Wiggins,ATL,"SG,SF",
-6606,Austin Reaves,LAL,"PG,SG,SF",O
+6606,Austin Reaves,LAL,"PG,SG,SF",
 6619,Sam Hauser,BOS,"SF,PF",
 6632,Justin Champagnie,WAS,"SF,PF",O
 6691,Paolo Banchero,ORL,PF,O
 6692,Chet Holmgren,OKC,"PF,C",O
 6693,Jabari Smith Jr.,HOU,"PF,C",
-6694,Keegan Murray,SAC,"SF,PF",Q
+6694,Keegan Murray,SAC,"SF,PF",
 6696,Bennedict Mathurin,NOP,"SG,SF",
 6697,Shaedon Sharpe,POR,"PG,SG",O
 6698,Dyson Daniels,ATL,"SG,SF",
@@ -171,7 +171,7 @@ player_id,name,nba_team,positions,status
 6720,Peyton Watson,CLE,"SF,PF",
 6721,Andrew Nembhard,IND,"PG,SG",
 6725,Max Christie,DAL,"SG,SF",
-6733,Moussa Diabaté,CHA,C,O
+6733,Moussa Diabaté,CHA,C,Q
 6734,Ryan Rollins,MIL,"PG,SG",
 6742,Karlo Matković,NOP,"PF,C",
 6745,Gui Santos,GSW,"SF,PF",
@@ -188,16 +188,16 @@ player_id,name,nba_team,positions,status
 10095,Anthony Black,ORL,"PG,SG,SF",
 10096,Ausar Thompson,DET,"SG,SF,PF",
 10097,Dereck Lively II,DAL,C,O
-10099,Bilal Coulibaly,WAS,"SG,SF",O
+10099,Bilal Coulibaly,WAS,"SG,SF",
 10100,Keyonte George,UTA,"PG,SG",O
-10104,Brandon Miller,CHA,"SF,PF",O
+10104,Brandon Miller,CHA,"SF,PF",Q
 10107,Cason Wallace,OKC,"PG,SG,SF",O
 10108,Amen Thompson,HOU,"PG,SG",
 10115,Brandin Podziemski,GSW,"PG,SG",
 10265,Matas Buzelis,CHI,"SF,PF",
 10272,Kyshawn George,WAS,"SG,SF,PF",
 10274,Kel'el Ware,MIL,C,
-10275,Tristan da Silva,ORL,"SF,PF",
+10275,Tristan da Silva,ORL,"SF,PF",O
 10276,Jared McCain,OKC,"PG,SG",
 10278,Ja'Kobe Walter,TOR,"PG,SG",
 10279,Jaylon Tyson,CLE,"SG,SF,PF",O
@@ -219,13 +219,13 @@ player_id,name,nba_team,positions,status
 10340,Jaylen Wells,MEM,"SG,SF",
 10440,Jeremiah Fears,NOP,"PG,SG",
 10441,Yanic Konan Niederhäuser,LAC,C,O
-10443,Collin Murray-Boyles,TOR,"PF,C",O
+10443,Collin Murray-Boyles,TOR,"PF,C",Q
 10444,Derik Queen,NOP,"PF,C",
 10445,Egor Dëmin,BKN,"PG,SG",O
 10447,Khaman Maluach,PHX,C,
 10450,Kon Knueppel,CHA,"SG,SF",O
 10454,VJ Edgecombe,PHI,"PG,SG",
-10455,Nolan Traore,BKN,PG,
+10455,Nolan Traore,BKN,PG,Q
 10460,Joan Beringer,MIN,"PF,C",
 10462,Ace Bailey,UTA,"SF,PF",
 10465,Cedric Coward,MEM,"SG,SF",
@@ -236,7 +236,7 @@ player_id,name,nba_team,positions,status
 10565,Bez Mbeng,MIA,"PG,SG",NA
 10570,Allen Graves,TOR,PF,
 10571,Yaxel Lendeborg,GSW,"SF,PF",
-10572,Morez Johnson Jr.,DAL,PF,O
+10572,Morez Johnson Jr.,DAL,PF,Q
 10573,Bennett Stirtz,OKC,PG,
 10574,Kingston Flemings,ATL,PG,
 10576,Brayden Burries,MIL,SG,
@@ -247,7 +247,7 @@ player_id,name,nba_team,positions,status
 10582,Darius Acuff Jr.,SAC,PG,
 10585,Keaton Wagler,LAC,SG,
 10586,Sergio De Larrea,DAL,PG,O
-10588,Mikel Brown Jr.,BKN,PG,P
+10588,Mikel Brown Jr.,BKN,PG,
 10590,Darryn Peterson,UTA,SG,
 10591,Karim Lopez,MEM,SF,
 10592,Cameron Boozer,MEM,PF,
